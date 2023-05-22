@@ -4,25 +4,28 @@ import './Login.css';
 
 function Login() { 
   return (
-    <body>
-      <h1 class = "welcomeMessage">
+    <div className="container">
+      <div className="logo">
+          <img src="logo.svg" alt="Schedule Manager" />
+      </div>
+      <h1 className="welcomeMessage">
         Welcome to Schedule Manger. 
         <br></br>
         Please Login to continue.
       </h1>
-      <div class = "loginBox">
-        Username
-        <div class = "inputUsernameBox"></div>
-        Password
-        <div class = "inputPasswordBox"></div>
-        <li class = "loginButton">
-            <Link to="/Landing">Login</Link>
-        </li>
-        <li class = "regButton">
+      <div className="loginBox">
+        <form className="form">
+          <input type="username" placeholder="Username" />
+          <input type="password" placeholder="Password" />
+          <button type="sumbit">
+            <Link to="/landing">Login</Link>
+          </button>
+          <button type="registrationButton">
             <Link to="/register">Register</Link>
-        </li>
+          </button>
+        </form>
       </div>
-    </body>
+    </div>
   );
 }
 
