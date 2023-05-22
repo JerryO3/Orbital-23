@@ -12,7 +12,11 @@ function Register() {
       <div class = "loginBox">
         Username
         <div class = "inputBox"></div>
+        Email
+        <div class = "inputBox"></div>
         Password
+        <div class = "inputBox"></div>
+        Confirm Password
         <div class = "inputBox"></div>
         <li class = "loginPageButton">
             Already have an account?
