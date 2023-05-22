@@ -1,33 +1,34 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import './Register.css';
 
-function Register() { 
+function Login() {
   return (
-    <body>
-      <h1 class = "welcomeMessage">
-        Welcome to Schedule Manger. 
-        <br></br>
-        Please make an account to proceed.
-      </h1>
-      <div class = "loginBox">
-        Username
-        <div class = "inputBox"></div>
-        Email
-        <div class = "inputBox"></div>
-        Password
-        <div class = "inputBox"></div>
-        Confirm Password
-        <div class = "inputBox"></div>
-        <li class = "loginPageButton">
-            Already have an account?
-            <Link to="/Login">Login</Link>
-        </li>
-        <li class = "loginPageButton">
-            <Link to="/Submit">Submit</Link>
-        </li>
+    <div className="container">
+      <div className="logo">
+          <img src="logo.svg" alt="Schedule Manager" />
       </div>
-    </body>
+      <h1 className="welcomeMessage">
+        Welcome to Schedule Manger.
+        <br></br>
+        Please Login to continue.
+      </h1>
+      <div className="loginBox">
+        <form className="form">
+          <input type="username" placeholder="Username" />
+          <input type="email" placeholder="Email" />
+          <input type="password" placeholder="Password" />
+          <input type="confirmPassword" placeholder="Confirm Password" />
+          <button type="submit">
+            <Link to="/landing">Already Have an Account?</Link>
+          </button>
+          <button type="registrationButton">
+            <Link to="/register">Submit</Link>
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
 
-export default Register;
+export default Login;
