@@ -9,17 +9,18 @@ import Submit from './Submit';
 function App() {
   return (
     <Router>
-      <nav>
+      <nav className='navigationBar'>
         <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
+          <button class="split" type="home">
+            <Link to="/"><img src={logo} alt="Schedule Manager" /></Link>
+          </button>
+          <text>Schedule Manager</text>
+          <button type="register">
             <Link to="/register">Register</Link>
-          </li>
+          </button>
+          <button type="login">
+            <Link to="/login">Login</Link>
+          </button>
         </ul>
       </nav>
 
