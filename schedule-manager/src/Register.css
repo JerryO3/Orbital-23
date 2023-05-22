@@ -1,4 +1,5 @@
 /* Welcome message */
+
 .welcomeMessage {
   position: relative;
 
@@ -49,6 +50,7 @@
 }
 
 .form input {
+  font-family: 'Roboto', sans-serif;
   margin-bottom: 1rem;
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -68,5 +70,5 @@
 }
 
 .form button:hover {
-  background-color: #357ae8;
+  background-color: #3EC4C8;
 }

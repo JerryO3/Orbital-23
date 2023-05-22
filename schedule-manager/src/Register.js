@@ -9,7 +9,7 @@ function Login() {
           <img src="logo.svg" alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Welcome to Schedule Manger.
+        Welcome to Schedule Manager.
         <br></br>
         Please Login to continue.
       </h1>
