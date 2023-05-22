@@ -1,0 +1,93 @@
+.Login {
+  text-align: center;
+}
+
+.welcomeMessage {
+/* Welcome Back! */
+
+
+position: absolute;
+width: 196px;
+height: 28px;
+
+font-family: 'League Spartan';
+font-style: normal;
+font-weight: 700;
+font-size: 30px;
+line-height: 28px;
+/* identical to box height */
+
+
+color: #000000;
+}
+
+.loginBox {
+/* Rectangle 1 */
+
+
+box-sizing: border-box;
+
+position: absolute;
+width: 272px;
+height: 253px;
+
+background: #FFFFFF;
+border: 2px solid #000000;
+border-radius: 10px;
+}
+
+.inputUsernameBox {
+/* Rectangle 2 */
+
+
+position: absolute;
+left: 12.13%;
+right: 9.93%;
+top: 38.74%;
+bottom: 53.45%;
+
+background: #E1E1E1;
+border-radius: 10px;
+}
+
+.inputPasswordBox {
+/* Rectangle 3 */
+
+
+position: absolute;
+left: 12.13%;
+right: 9.93%;
+top: 58.56%;
+bottom: 33.63%;
+
+background: #E1E1E1;
+border-radius: 10px;
+}
+
+.loginButton {
+/* Rectangle 4 */
+
+
+position: absolute;
+left: 12.13%;
+right: 9.93%;
+top: 78.38%;
+bottom: 13.81%;
+
+background: #32AAAE;
+border-radius: 10px;
+}
+
+.regButton {
+/* Rectangle 5 */
+
+
+position: absolute;
+left: 12.13%;
+right: 9.93%;
+top: 87.69%;
+bottom: 4.5%;
+
+background: #32AAAE;
+border-radius: 10px;
+}

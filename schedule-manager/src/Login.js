@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import './Login.css';
 
 function Login() { 
   return (
@@ -11,13 +12,13 @@ function Login() {
       </h1>
       <div class = "loginBox">
         Username
-        <div class = "inputBox"></div>
+        <div class = "inputUsernameBox"></div>
         Password
-        <div class = "inputBox"></div>
-        <li class = "loginPageButton">
+        <div class = "inputPasswordBox"></div>
+        <li class = "loginButton">
             <Link to="/Landing">Login</Link>
         </li>
-        <li class = "loginPageButton">
+        <li class = "regButton">
             <Link to="/register">Register</Link>
         </li>
       </div>
