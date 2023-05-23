@@ -20,8 +20,8 @@ function Login() {
         Please Login to continue.
       </h1>
       <div className="loginBox">
-        <form className="form">
-        <input
+        <form className="form" onSubmit={(e) => e.preventDefault()}>
+          <input
             type="username"
             placeholder="Username"
             name="username"
@@ -35,9 +35,9 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)} />
           <button type="submit"
 //            onClick={ readData(username) }
-              onClick={ checkParticulars(username, password) }
+              onClick={() => checkParticulars(username, password) }
             >
-            Login
+            <Link to="/landing">Login</Link>
           </button>
           <button type="registrationButton">
             <Link to="/register">Register</Link>
