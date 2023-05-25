@@ -5,42 +5,78 @@
   overflow: hidden;
 }
 
+.ul {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.leftItems{
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+.rightItems{
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
 .navigationBar button {
-  /* padding: 0.5rem; */
-  background-color: #18758f;
+  display: grid;
+  background-color: #32aaae;
   border: none;
   border-radius: 4px;
-  color: #18758f;
+  color: #ffffff;
+  font-family: 'League Spartan';
+  font-style: normal;
   cursor: pointer;
   width: 100px;
-
+  border-radius: 0;
+  position: relative;
   float: right;
   text-align: center;
   padding: 20px 16px;
   text-decoration: none;
   font-size: 20px;
+  align-items: flex-start;
 }
 
 .navigationBar button.split {
-  padding: 0%;
+  padding: 0;
   background-color: #32aaae;
   border: none;
   cursor: pointer;
-  width: 80px;
+  height: 50px;
+  width: 50px;
   float: left;
+  margin-left: 0;
 }
 
-.navigationBar text {
-  font-size: xx-large;
-  font-weight: 100;
+.navigationBar text.split {
+  font-size: 50px;
+  font-weight: 120;
   font-family: 'League Spartan';
   font-style: normal;
+  margin-left: 0px;
+  align-self: center;
 }
 
 .navigationBar button:hover {
-  background-color: #bfbfbf;
+  background-color: #18758f;
 }
 
 .navigationBar button.split:hover {
-  background-color: #32aaae;
+  background-color:  #18758f;
+}
+
+.link:visited{
+  color: inherit;
+}
+
+.logo {
+  height: 50px;
+  width: 50px;
 }

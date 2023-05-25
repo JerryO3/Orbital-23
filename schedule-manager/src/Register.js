@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import './Register.css';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
+import logo from './logo.png';
 import ReactDOM from 'react-dom/client';
 
 function Login() {
@@ -70,12 +71,12 @@ function Login() {
   return (
     <div className="container">
       <div className="logo">
-          <img src="logo.svg" alt="Schedule Manager" />
+          <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
         Welcome to Schedule Manager.
         <br></br>
-        Please Login to continue.
+        Please Register for an Account.
       </h1>
       <div className="loginBox">
         <form className="form">
