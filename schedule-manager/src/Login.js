@@ -9,21 +9,24 @@ import { getDatabase, ref, set, child, get } from "firebase/database";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isValid, setIsValid] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
 
   const checkParticulars = (username, password) => {
       const dbRef = ref(getDatabase());
       get(child(dbRef, `users/${username}`))
           .then((snapshot) => snapshot.exists()
-              ? Promise.resolve(setIsValid(snapshot.val().password === password))
-              : Promise.resolve(setIsValid(false))
+              ? snapshot.val().password == password
+                ? window.location = "/landing"
+                : setHasAttempted(true)
+              : setHasAttempted(true)
           )
-          .then(() => console.log(isValid))
+          .then(() => null)
           .catch((error) => {
               console.error(error);
           })
   }
+
+  {readData(username, password)}
 
   return (
     <div className="container">
@@ -49,18 +52,16 @@ function Login() {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)} />
-            {console.log(isValid)}
+          {hasAttempted && <p>Invalid Login Credentials.</p>}
           <button
               type="submit"
               onClick={
                 () => {
                         checkParticulars(username, password);
-                        window.location = isValid ? "/landing" : "/login";
                       }
                 }
             >
             Submit
-            {hasAttempted && <p>Invalid Login Credentials.</p>}
           </button>
           <button type="registrationButton">
             <Link to="/register">Register</Link>
