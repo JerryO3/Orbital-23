@@ -19,6 +19,12 @@ function Login() {
   const [emailChar, setEmailChar] = useState(false);
   const [passwordChar, setPasswordChar] = useState(false);
   const [confirmPasswordMatch, setConfirmPasswordMatch] = useState(false);
+
+  const [usernameAttempt, setUsernameAttempt] = useState(false);
+  const [emailAttempt, setEmailAttempt] = useState(false);
+  const [passwordAttempt, setPasswordAttempt] = useState(false);
+  const [confirmPasswordAttempt, setConfirmPasswordAttempt] = useState(false);
+  
   
   function writeUserData(username, email, password) {
     if (!usernameAvailable || !emailAvailable) {
@@ -85,49 +91,60 @@ function Login() {
             placeholder="Username" 
             name="username" 
             value={username} 
+            onClick = {() => setUsernameAttempt(true)}
             onChange={(e) => {
               setUsername(e.target.value);
               checkAvailability("username", e.target.value, setUsernameAvailable);
               setUsernameLength(e.target.value.length)
               }
             } />
-            {!usernameAvailable && <p>This username is already taken. Please choose a different one.</p>}
+            
 
           <input 
-            type="email" 
+            type="emailAddress" 
             placeholder="Email" 
             name="email" value={email} 
+            onClick={() => setEmailAttempt(true)}
             onChange={(e) => {
               setEmail(e.target.value);
               checkAvailability("email", e.target.value, setEmailAvailable);
               checkEmailChar(e.target.value)
               }
             } />
-            {!emailAvailable && <p>This email is already in use. Please use a different one.</p>}
+            
 
           <input 
             type="password" 
             placeholder="Password" 
             name="password" 
             value={password} 
+            onClick={() => setPasswordAttempt(true)}
             onChange={(e) => {
               setPassword(e.target.value)
               checkPasswordChar(e.target.value)
               checkPasswordMatch(e.target.value, confirmPassword)
               } 
             }/>
-            {!passwordChar && <p>Password must be at least 8 characters long and contain both letters and numbers.</p>}
 
           <input 
             type="password" 
             placeholder="Confirm Password" 
             name="confirmPassword" 
             value={confirmPassword}
+            onClick={() => setConfirmPasswordAttempt(true)}
             onChange={(e) => {
               setConfirmPassword(e.target.value)
               checkPasswordMatch(password, e.target.value)
               }
             } />
+
+          <div className="warningBox">
+            {!usernameAvailable && <p className="warning">This username is already taken. Please choose a different one.</p>}
+            {!emailAvailable && emailAttempt && <p className="warning">This email is already in use. Please use a different one.</p>}
+            {!emailChar && emailAttempt && <p className="warning">Invalid email.</p>}
+            {!passwordChar && passwordAttempt && <p className="warning">Password must be at least 8 characters long and contain both letters and numbers.</p>}
+            {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
+            </div>
 
           <button type="login">
             <Link to="/login">Already Have an Account?</Link>
