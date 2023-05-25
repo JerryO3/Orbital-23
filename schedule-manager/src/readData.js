@@ -1,10 +1,10 @@
 import { getDatabase, ref, set, child, get } from "firebase/database";
 
-const readData = (username) => {
+const readData = (username, password) => {
     const dbRef = ref(getDatabase());
     get(child(dbRef, `users/${username}`)).then((snapshot) => {
       if (snapshot.exists()) {
-        console.log(snapshot.val());
+        console.log(snapshot.val().password == password);
       } else {
         console.log("No data available");
       }
