@@ -5,6 +5,7 @@ import Home from './Home';
 import Login from './Login';
 import Register from './Register';
 import Submit from './Submit';
+import goTo from "./goTo";
 
 function App() {
   return (
@@ -19,12 +20,18 @@ function App() {
           </ul>
 
           <ul className='rightItems'>
-          <button type="login">
-            <Link to="/login" className='link'>Login</Link>
+          <button
+            type="login"
+            onClick={() => goTo("/login")}
+            >
+            Login
           </button>
 
-          <button type="register">
-            <Link to="/register" className='link'>Register</Link>
+          <button
+            type="register"
+            onClick={() => goTo("/register")}
+            >
+            Register
           </button>
           </ul>
         </ul>

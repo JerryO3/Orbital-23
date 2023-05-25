@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import goTo from "./goTo";
 
 function Submit() { 
   return (
@@ -11,7 +12,10 @@ function Submit() {
       </h1>
       <div class = "loginBox">
         <li class = "loginPageButton">
-            <Link to="/Login">Login</Link>
+            <button
+                type="/Login"
+                onClick={() => goTo("/login")}
+            >Login</button>
         </li>
       </div>
     </body>
