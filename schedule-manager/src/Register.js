@@ -78,7 +78,7 @@ function Login() {
         Please Login to continue.
       </h1>
       <div className="loginBox">
-        <form className="form" onSubmit={ writeUserData(username, email, password)}>
+        <form className="form">
           <input 
             type="username" 
             placeholder="Username" 
@@ -131,7 +131,7 @@ function Login() {
           <button type="login">
             <Link to="/login">Already Have an Account?</Link>
           </button>
-          <button type="submit">
+          <button type="submit" onClick = {() => writeUserData(username, email, password)}>
             {allChecks()
               ? (<Link to="/submit">Submit</Link>) 
               : (<button type="submit" disabled>Submit</button>)
