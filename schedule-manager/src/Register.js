@@ -4,6 +4,7 @@ import './Register.css';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
 import logo from './logo.png';
+import goTo from './goTo'
 import ReactDOM from 'react-dom/client';
 
 function Login() {
@@ -24,19 +25,17 @@ function Login() {
   const [emailAttempt, setEmailAttempt] = useState(false);
   const [passwordAttempt, setPasswordAttempt] = useState(false);
   const [confirmPasswordAttempt, setConfirmPasswordAttempt] = useState(false);
-  
+
+  const [hasAttempted, setHasAttempted] = useState(false);
   
   function writeUserData(username, email, password) {
-    if (!usernameAvailable || !emailAvailable) {
-      return; // Do not submit the form
-    }
-
     const db = getDatabase();
     set(ref(db, 'users/' + username), {
       username: username,
       email: email,
       password : password
     });
+    goTo("/submit")
   }
 
   function checkAvailability(fieldName, value, setAvailability) {
@@ -66,12 +65,16 @@ function Login() {
   }
 
   function allChecks() {
-    return usernameAvailable 
+    if (usernameAvailable 
       && emailAvailable 
       && usernameLength > 0 
       && emailChar 
       && passwordChar 
-      && confirmPasswordMatch;
+      && confirmPasswordMatch) {
+        return writeUserData(username, email, password);
+      } else {
+        setHasAttempted(true);
+      }
   }
 
   return (
@@ -85,7 +88,7 @@ function Login() {
         Please Register for an Account.
       </h1>
       <div className="loginBox">
-        <form className="form">
+        <form className="form" onSubmit={(e) => e.preventDefault()}>
           <input 
             type="username" 
             placeholder="Username" 
@@ -146,14 +149,17 @@ function Login() {
             {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
             </div>
 
-          <button type="login">
-            <Link to="/login">Already Have an Account?</Link>
+          <button type="login" onClick={() => goTo("/login")}>
+            Already Have an Account?
           </button>
-          <button type="submit" onClick = {() => writeUserData(username, email, password)}>
-            {allChecks()
+          <button 
+            type="submit" 
+            onClick = {() => {allChecks();}}>
+            Submit
+            {/* {allChecks()
               ? (<Link to="/submit">Submit</Link>) 
               : (<button type="submit" disabled>Submit</button>)
-            }
+            } */}
           </button>
         </form>
       </div>

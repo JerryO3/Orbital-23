@@ -69,7 +69,7 @@
 }
 
 .navigationBar button.split:hover {
-  background-color:  #18758f;
+  background-color:  inherit;
 }
 
 .link:visited{
