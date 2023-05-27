@@ -4,10 +4,24 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
+import Gmail from './Gmail';
 import Submit from './Submit';
+import Landing from './Landing';
 import goTo from "./goTo";
+import { isLoggedIn } from './Login';
+import { useState } from 'react';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
+
+  const handleLogout = () => {
+    // Perform logout logic here
+    // For example, clear the user session and update the logged-in state
+    localStorage.setItem("isLoggedIn", "false");
+    setLoggedIn(false);
+    window.location.href = '/'
+  };
+
   return (
     <Router>
       <nav className='navigationBar'>
@@ -18,30 +32,47 @@ function App() {
           </button>
           <text class="split">Schedule Manager</text>
           </ul>
+          </ul>
 
           <ul className='rightItems'>
-          <button
-            type="login"
-            onClick={() => goTo("/login")}
-            >
-            Login
-          </button>
+            {!loggedIn ?
+            (<ul className='rightItems'>
+              <button
+                type="login"
+                onClick={() => goTo("/login")}
+              >
+                Login
+              </button>
 
-          <button
-            type="register"
-            onClick={() => goTo("/register")}
-            >
-            Register
-          </button>
-          </ul>
-        </ul>
+              <button
+                type="register"
+                onClick={() => goTo("/register")}
+              >
+                Register
+              </button>
+            </ul>
+            )
+            : 
+            (<ul className='rightItems'>
+              <button
+                type="logout"
+                onClick={() => {handleLogout()}}
+              >
+                Logout
+              </button>
+            </ul>
+            )
+            }
+            </ul>
       </nav>
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/gmail" element={<Gmail />} />
         <Route path="/register" element={<Register />} />
         <Route path="/submit" element={<Submit />} />
+        <Route path="/landing" element={<Landing />} />
       </Routes>
     </Router>
   );

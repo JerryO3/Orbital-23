@@ -7,7 +7,7 @@ import logo from './logo.png';
 import goTo from './goTo'
 import ReactDOM from 'react-dom/client';
 
-function Login() {
+function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +35,7 @@ function Login() {
       email: email,
       password : password
     });
-    goTo("/submit")
+    <Link to="/submit"></Link>
   }
 
   function checkAvailability(fieldName, value, setAvailability) {
@@ -149,17 +149,16 @@ function Login() {
             {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
             </div>
 
-          <button type="login" onClick={() => goTo("/login")}>
+          <Link to="/login">
+          <button type="login" >
             Already Have an Account?
           </button>
+          </Link>
+          
           <button 
             type="submit" 
             onClick = {() => {allChecks();}}>
             Submit
-            {/* {allChecks()
-              ? (<Link to="/submit">Submit</Link>) 
-              : (<button type="submit" disabled>Submit</button>)
-            } */}
           </button>
         </form>
       </div>
@@ -167,4 +166,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Register;

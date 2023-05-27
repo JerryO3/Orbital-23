@@ -1,32 +1,3 @@
-.loginButton {
-/* Rectangle 4 */
-
-
-position: absolute;
-left: 12.13%;
-right: 9.93%;
-top: 78.38%;
-bottom: 13.81%;
-
-background: #32AAAE;
-border-radius: 10px;
-}
-
-
-.registrationButton {
-/* Rectangle 5 */
-
-
-position: absolute;
-left: 12.13%;
-right: 9.93%;
-top: 87.69%;
-bottom: 4.5%;
-
-background: #32AAAE;
-border-radius: 10px;
-}
-
 /* Welcome message */
 .welcomeMessage {
   position: relative;
@@ -94,6 +65,7 @@ border-radius: 10px;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
+  width: 100%;
 }
 
 .form button:hover {

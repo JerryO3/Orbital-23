@@ -1,8 +1,9 @@
 .navigationBar {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   background-color: #32aaae;
   overflow: hidden;
+  justify-content: space-between;
 }
 
 .ul {
