@@ -7,52 +7,35 @@ import logo from './logo.png';
 import goTo from './goTo'
 import ReactDOM from 'react-dom/client';
 
-function Register() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
+function NewPw() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [usernameAvailable, setUsernameAvailable] = useState(true);
-  const [emailAvailable, setEmailAvailable] = useState(true);
-
-  const [usernameLength, setUsernameLength] = useState(0);
-  const [emailChar, setEmailChar] = useState(false);
   const [passwordChar, setPasswordChar] = useState(false);
   const [confirmPasswordMatch, setConfirmPasswordMatch] = useState(false);
 
-  const [usernameAttempt, setUsernameAttempt] = useState(false);
-  const [emailAttempt, setEmailAttempt] = useState(false);
   const [passwordAttempt, setPasswordAttempt] = useState(false);
   const [confirmPasswordAttempt, setConfirmPasswordAttempt] = useState(false);
 
   const [hasAttempted, setHasAttempted] = useState(false);
-  
-  function writeUserData(username, email, password) {
+
+  function writeUserData(username, password) {
     const db = getDatabase();
     set(ref(db, 'users/' + username), {
-      username: username,
-      email: email,
       password : password
     });
-    goTo("/submit");
+    goTo("/landing");
   }
 
   function checkAvailability(fieldName, value, setAvailability) {
     const db = getDatabase();
     const usersRef = ref(db, 'users');
-  
+
     onValue(usersRef, (snapshot) => {
       const users = snapshot.val();
       const isTaken = Object.values(users).some(user => user[fieldName] === value);
       setAvailability(!isTaken);
     });
-  }
-
-  function checkEmailChar(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValid = emailPattern.test(email);
-    setEmailChar(isValid);
   }
 
   function checkPasswordChar(password) {
@@ -65,13 +48,9 @@ function Register() {
   }
 
   function allChecks() {
-    if (usernameAvailable 
-      && emailAvailable 
-      && usernameLength > 0 
-      && emailChar 
-      && passwordChar 
+    if ( passwordChar
       && confirmPasswordMatch) {
-        return writeUserData(username, email, password);
+        return writeUserData(password);
       } else {
         setHasAttempted(true);
       }
@@ -83,56 +62,28 @@ function Register() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Welcome to Schedule Manager.
-        <br></br>
-        Please Register for an Account.
+          Reset Your Password
       </h1>
       <div className="loginBox">
         <form className="form" onSubmit={(e) => e.preventDefault()}>
-          <input 
-            type="username" 
-            placeholder="Username" 
-            name="username" 
-            value={username} 
-            onClick = {() => setUsernameAttempt(true)}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              checkAvailability("username", e.target.value, setUsernameAvailable);
-              setUsernameLength(e.target.value.length)
-              }
-            } />
-            
 
-          <input 
-            type="emailAddress" 
-            placeholder="Email" 
-            name="email" value={email} 
-            onClick={() => setEmailAttempt(true)}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              checkAvailability("email", e.target.value, setEmailAvailable);
-              checkEmailChar(e.target.value)
-              }
-            } />
-            
-
-          <input 
-            type="password" 
-            placeholder="Password" 
-            name="password" 
-            value={password} 
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={password}
             onClick={() => setPasswordAttempt(true)}
             onChange={(e) => {
               setPassword(e.target.value)
               checkPasswordChar(e.target.value)
               checkPasswordMatch(e.target.value, confirmPassword)
-              } 
+              }
             }/>
 
-          <input 
-            type="password" 
-            placeholder="Confirm Password" 
-            name="confirmPassword" 
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="confirmPassword"
             value={confirmPassword}
             onClick={() => setConfirmPasswordAttempt(true)}
             onChange={(e) => {
@@ -142,21 +93,12 @@ function Register() {
             } />
 
           <div className="warningBox">
-            {!usernameAvailable && <p className="warning">This username is already taken. Please choose a different one.</p>}
-            {!emailAvailable && emailAttempt && <p className="warning">This email is already in use. Please use a different one.</p>}
-            {!emailChar && emailAttempt && <p className="warning">Invalid email.</p>}
             {!passwordChar && passwordAttempt && <p className="warning">Password must be at least 8 characters long and contain both letters and numbers.</p>}
             {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
             </div>
 
-          <Link to="/login">
-          <button type="login" >
-            Already Have an Account?
-          </button>
-          </Link>
-          
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             onClick = {() => {allChecks();}}>
             Submit
           </button>
@@ -166,4 +108,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default NewPw;

@@ -4,15 +4,18 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import Home from './Home';
 import Login from './Login';
 import Register from './Register';
+import ResetPw from './ResetPw';
 import Gmail from './Gmail';
 import Submit from './Submit';
 import Landing from './Landing';
+import NewPw from './NewPw'
 import goTo from "./goTo";
 import { isLoggedIn } from './Login';
 import { useState } from 'react';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
+  const [userForReset, setUserForReset] = useState(localStorage.getItem("user") === "");
 
   const handleLogout = () => {
     // Perform logout logic here
@@ -21,6 +24,11 @@ function App() {
     setLoggedIn(false);
     window.location.href = '/'
   };
+
+  const clearUser = () => {
+    localStorage.setItem("user", "");
+    setUserForReset("");
+  }
 
   return (
     <Router>
@@ -73,6 +81,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/submit" element={<Submit />} />
         <Route path="/landing" element={<Landing />} />
+        <Route path="/resetPw" element={<ResetPw />} />
+        <Route path="/newPw" element={<NewPw />} />
       </Routes>
     </Router>
   );

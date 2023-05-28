@@ -1,0 +1,64 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import './Register.css';
+import { getDatabase, ref, set, onValue } from "firebase/database";
+import { useState } from 'react';
+import logo from './logo.png';
+import goTo from './goTo'
+import ReactDOM from 'react-dom/client';
+
+const ResetPw = () => {
+    const [email, setEmail] = useState("");
+    const [validEmail, setValidEmail] = useState(true);
+
+    const checkEmail = (email) => {
+        const db = getDatabase();
+        const usersRef = ref(db, 'users');
+        var isValid;
+
+        onValue(usersRef, (snapshot) => {
+          const users = snapshot.val();
+          isValid = Object.values(users).some(user => user.email === email);
+        });
+        if (isValid) {
+            goTo("/newPw");
+        } else {
+            setValidEmail(false);
+        }
+    }
+
+    return  (
+    <div className="container">
+      <div className="logo">
+          <img src={logo} alt="Schedule Manager" />
+      </div>
+      <h1 className="welcomeMessage">
+          Email Authentication
+      </h1>
+      <div className="loginBox">
+        <form className="form" onSubmit={(e) => e.preventDefault()}>
+          <input
+            type="emailAddress"
+            placeholder="Email"
+            name="email" value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              }
+            } />
+
+          <div className="warningBox">
+            {!validEmail && <p className="warning">No such email found!</p>}
+          </div>
+
+          <button
+            type="submit"
+            onClick = {() => {checkEmail(email)}}>
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default ResetPw;
