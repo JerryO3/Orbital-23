@@ -98,6 +98,12 @@ function Login() {
             </button>
           </Link>
 
+          <Link to="/resetPw">
+            <button>
+              Forgot Your Password?
+            </button>
+          </Link>
+
           {/* <Link to="/gmail">
             <button type="gmailLogin" >
             Sign in with Google
