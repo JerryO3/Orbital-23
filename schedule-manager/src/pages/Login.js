@@ -2,9 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import './Login.css';
-import Gmail from "../deprecated/Gmail";
 import { useState } from 'react';
-import Landing from "./Landing";
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
 
@@ -63,11 +61,9 @@ function Login() {
             </button>
           </Link>
 
-          {/* <Link to="/gmail">
-            <button type="gmailLogin" >
+          <button onClick={() => fn.loginWGoogle()}>
             Sign in with Google
-            </button>
-          </Link> */}
+          </button>
         </form>
       </div>
     </div>
