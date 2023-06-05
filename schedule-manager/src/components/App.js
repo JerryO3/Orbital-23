@@ -1,13 +1,7 @@
 import logo from '../assets/logo.png';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import ResetPw from '../pages/ResetPw';
-import Submit from '../pages/Submit';
-import Dashboard from '../pages/Dashboard';
-import NewPw from '../pages/NewPw';
+import * as p from '../pages/pages'
 import * as fn from "../backend/functions";
 
 
@@ -66,13 +60,16 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/submit" element={<Submit />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/resetPw" element={<ResetPw />} />
-        <Route path="/newPw" element={<NewPw />} />
+        <Route path="/" element={<p.Home />} />
+        <Route path="/login" element={<p.Login />} />
+        <Route path="/register" element={<p.Register />} />
+        <Route path="/submit" element={<p.Submit />} />
+        <Route path="/dashboard" element={<p.Dashboard />} />
+        <Route path="/resetPw" element={<p.ResetPw />} />
+        <Route path="/newPw" element={<p.NewPw />} />
+        <Route path='/blockout' element={<p.Blockout />} />
+        <Route path='/settings' element={<p.Settings />} />
+        <Route path='/newProject' element={<p.NewProject />} />
       </Routes>
     </Router>
   );
