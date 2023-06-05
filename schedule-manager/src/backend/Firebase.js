@@ -13,8 +13,8 @@ const firebaseConfig = {
   projectId: "schedule-manager-94579",
   storageBucket: "schedule-manager-94579.appspot.com",
   messagingSenderId: "764458942352",
-  appId: "1:764458942352:web:71ae5ddf5b1030e68d7d15",
-  measurementId: "G-VLQD379BV3"
+  appId: "1:764458942352:web:a3ab85410368e1248d7d15",
+  measurementId: "G-R7DMDK6E0W"
 };
 
 // Initialize Firebase

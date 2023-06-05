@@ -4,7 +4,7 @@ import './Register.css';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
 import logo from './logo.png';
-import goTo from './goTo'
+import goTo from '../deprecated/goTo'
 import ReactDOM from 'react-dom/client';
 
 function Register() {

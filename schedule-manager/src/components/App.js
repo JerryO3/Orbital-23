@@ -1,16 +1,16 @@
 import logo from './logo.png';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
-import Home from './Home';
-import Login from './Login';
-import Register from './Register';
-import ResetPw from './ResetPw';
-import Gmail from './Gmail';
-import Submit from './Submit';
-import Landing from './Landing';
-import NewPw from './NewPw'
-import goTo from "./goTo";
-import { isLoggedIn } from './Login';
+import Home from '../Home';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
+import ResetPw from '../ResetPw';
+import Gmail from '../Gmail';
+import Submit from '../Submit';
+import Landing from '../Landing';
+import NewPw from '../NewPw'
+import goTo from "../goTo";
+import { isLoggedIn } from '../pages/Login';
 import { useState } from 'react';
 
 function App() {
