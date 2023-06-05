@@ -1,6 +1,7 @@
 import { firebase, app } from './Firebase';
-import { getDatabase, ref, set, child, get } from "firebase/database";
+import { getDatabase, ref, set, child, get, update } from "firebase/database";
 import * as authpkg from "firebase/auth";
+import * as time from "./time.js";
 
 export var loggedIn = !(authpkg.getAuth(app).currentUser === null);
 
@@ -24,10 +25,10 @@ const initializeData = (userEmail, userName) => {
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     const db = getDatabase();
     set(ref(db, "/users/" + uniqueId), {
-        projects : 1,
-        blockouts : 1,
-        settings : 1, // can be initialized to default
-        profile : 1
+        projects : "none",
+        blockouts : "none",
+        settings : "none", // can be initialized to default
+        profile : "none"
     });
     set(ref(db, "/users/" + uniqueId + "/profile"), {
         email : userEmail,
@@ -59,7 +60,7 @@ export const registerWithEmailandPw = (username, email, password) => {
 
 export async function login(email, password) {
     const creds = await authpkg.signInWithEmailAndPassword(authpkg.getAuth(app), email, password)
-    .then(() => window.location.href = '/landing')
+    .then(() => window.location.href = '/dashboard')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
 
@@ -173,3 +174,28 @@ export async function sendPasswordResetEmail(email) {
         // You can display an error message to the user
       });
   };
+
+export const newProject = (projectName) => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName), {
+        name : projectName,
+        events : "none"
+    })
+}
+
+export const newEventByDuration = (projectName, eventName, startDate, startTime, durationDays, durationHours, durationNearestFiveMin) => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
+
+    })
+}
+
+export const newEventByStartEnd = (projectName, eventName, startDate, startTime, endDate, endTime) => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
+
+    })
+}
