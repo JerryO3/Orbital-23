@@ -3,58 +3,17 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import './Login.css';
 import Gmail from "../deprecated/Gmail";
-import readData from '../deprecated/readData';
-import checkParticulars from '../deprecated/checkParticulars';
-import App from "./App";
 import { useState } from 'react';
-import { getDatabase, ref, set, child, get } from "firebase/database";
 import Landing from "./Landing";
-import logo from './logo.png';
+import logo from '../assets/logo.png';
+import * as fn from "../backend/functions";
 
 function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [hasAttempted, setHasAttempted] = useState(false);
 
   const navigate = useNavigate();
-
-  // const checkParticulars = (username, password) => {
-  //     const dbRef = ref(getDatabase());
-  //     get(child(dbRef, `users/${username}`))
-  //         .then((snapshot) => snapshot.exists()
-  //             ? snapshot.val().password == password
-  //               ? isLoggedIn = true
-  //               : setHasAttempted(true)
-  //             : setHasAttempted(true)
-  //         )
-  //         .then(isLoggedIn? <Link to={Landing}></Link> : null)
-  //         .then(() => null)
-  //         .catch((error) => {
-  //             console.error(error);
-  //         })
-  // }
-
-  const checkParticulars = (username, password) => {
-    const dbRef = ref(getDatabase());
-    get(child(dbRef, `users/${username}`))
-        .then((snapshot) => {
-          if(snapshot.exists()) {
-            if(snapshot.val().password == password){
-              localStorage.setItem("isLoggedIn", "true");
-              window.location.href = '/landing';
-            }
-            setHasAttempted(true)
-          }
-
-          setHasAttempted(true)
-        })
-        .then(() => null)
-        .catch((error) => {
-            console.error(error);
-        })
-}
-
-  {readData(username, password)}
 
   return (
     <div className="container">
@@ -69,11 +28,11 @@ function Login() {
       <div className="loginBox">
         <form className="form" onSubmit={(e) => e.preventDefault()}>
           <input
-            type="username"
-            placeholder="Username"
-            name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)} />
+            type="email"
+            placeholder="Email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)} />
           <input
             type="password"
             placeholder="Password"
@@ -85,7 +44,7 @@ function Login() {
               type="submit"
               onClick={
                 () => {
-                        checkParticulars(username, password);
+                        fn.login(email, password);
                       }
                 }
             >

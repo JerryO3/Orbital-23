@@ -1,15 +1,13 @@
-import logo from './logo.png';
+import logo from '../assets/logo.png';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
-import Home from '../Home';
+import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
-import ResetPw from '../ResetPw';
-import Gmail from '../Gmail';
-import Submit from '../Submit';
-import Landing from '../Landing';
-import NewPw from '../NewPw'
-import goTo from "../goTo";
+import ResetPw from '../pages/ResetPw';
+import Submit from '../pages/Submit';
+import Landing from '../pages/Landing';
+import NewPw from '../pages/NewPw'
 import { isLoggedIn } from '../pages/Login';
 import { useState } from 'react';
 
@@ -45,19 +43,17 @@ function App() {
           <ul className='rightItems'>
             {!loggedIn ?
             (<ul className='rightItems'>
-              <button
-                type="login"
-                onClick={() => goTo("/login")}
-              >
+              <Link to="/login">
+                <button>
                 Login
-              </button>
-
-              <button
-                type="register"
-                onClick={() => goTo("/register")}
-              >
-                Register
-              </button>
+                </button>
+              </Link>
+              
+              <Link to="/register">
+                <button>
+                  Register
+                </button>
+              </Link>
             </ul>
             )
             : 
@@ -77,7 +73,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/gmail" element={<Gmail />} />
         <Route path="/register" element={<Register />} />
         <Route path="/submit" element={<Submit />} />
         <Route path="/landing" element={<Landing />} />

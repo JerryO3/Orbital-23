@@ -55,6 +55,7 @@ export const registerWithEmailandPw = (email, password) => {
 
 export async function login(email, password) {
     const creds = await authpkg.signInWithEmailAndPassword(authpkg.getAuth(app), email, password)
+    .then(() => window.location.href = '/landing')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
     loggedIn = true;

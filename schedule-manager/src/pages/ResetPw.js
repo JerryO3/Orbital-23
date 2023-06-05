@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import './Register.css';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
-import logo from './logo.png';
-import goTo from './goTo'
+import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
 
 const ResetPw = () => {
@@ -21,7 +20,7 @@ const ResetPw = () => {
           isValid = Object.values(users).some(user => user.email === email);
         });
         if (isValid) {
-            goTo("/newPw");
+            window.location.href = "/newPw";
         } else {
             setValidEmail(false);
         }

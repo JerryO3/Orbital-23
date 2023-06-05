@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import './Register.css';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
-import logo from './logo.png';
-import goTo from './goTo'
+import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
 
 function NewPw() {
@@ -24,7 +23,7 @@ function NewPw() {
     set(ref(db, 'users/' + username), {
       password : password
     });
-    goTo("/landing");
+    window.location.href = "/landing";
   }
 
   function checkAvailability(fieldName, value, setAvailability) {
