@@ -1,6 +1,7 @@
 import { firebase, app } from './Firebase';
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import * as authpkg from "firebase/auth";
+import Landing from "../pages/Landing";
 
 export const printOne = () => {
     console.log(1);
@@ -18,15 +19,20 @@ export const writeData = (data) => {
     }
 }
 
-export const initializeData = () => {
+const initializeData = (userEmail, userName) => {
     if (loggedIn) {
         const uniqueId = authpkg.getAuth(app).currentUser.uid;
         const db = getDatabase();
         set(ref(db, "/users/" + uniqueId), {
             projects : 1,
             blockouts : 1,
-            settings : 1 // can be initialized to default
+            settings : 1, // can be initialized to default
+            profile : 1
         });
+        set(ref(db), "/users/" + uniqueId + "/profile", {
+            email : userEmail,
+            username : userName
+        })
     } else {
         console.log("Not Logged In");
     }
@@ -47,9 +53,9 @@ export const readData = () => {
     });
 }
 
-export const registerWithEmailandPw = (email, password) => {
+export const registerWithEmailandPw = (username, email, password) => {
     authpkg.createUserWithEmailAndPassword(authpkg.getAuth(app), email, password)
-    .then((value) => {console.log(value)})
+    .then(() => initializeData(email, username))
     .catch((error) => {console.log(error)});
 }
 
@@ -65,6 +71,7 @@ export var loggedIn = false;
 
 export async function loginWithCreds(credential) {
     const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
+    .then(() => window.location.href = '/landing')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
     loggedIn = true;

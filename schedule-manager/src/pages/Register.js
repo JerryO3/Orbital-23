@@ -5,6 +5,7 @@ import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
 import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
+import { registerWithEmailandPw } from "../backend/functions";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -27,15 +28,15 @@ function Register() {
 
   const [hasAttempted, setHasAttempted] = useState(false);
   
-  function writeUserData(username, email, password) {
-    const db = getDatabase();
-    set(ref(db, 'users/' + username), {
-      username: username,
-      email: email,
-      password : password
-    });
-    window.location.href = "/submit";
-  }
+  // function writeUserData(username, email, password) {
+  //   const db = getDatabase();
+  //   set(ref(db, 'users/' + username), {
+  //     username: username,
+  //     email: email,
+  //     password : password
+  //   });
+  //   window.location.href = "/submit";
+  // }
 
   function checkAvailability(fieldName, value, setAvailability) {
     const db = getDatabase();
@@ -70,7 +71,7 @@ function Register() {
       && emailChar 
       && passwordChar 
       && confirmPasswordMatch) {
-        return writeUserData(username, email, password);
+        return registerWithEmailandPw(username, email, password);
       } else {
         setHasAttempted(true);
       }
