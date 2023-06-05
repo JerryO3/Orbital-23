@@ -11,7 +11,11 @@ function Login() {
   const [password, setPassword] = useState("");
   const [hasAttempted, setHasAttempted] = useState(false);
 
-  const navigate = useNavigate();
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+      // User is logged in, redirect to the desired page
+      window.location.href = '/landing';
+  };
 
   return (
     <div className="container">

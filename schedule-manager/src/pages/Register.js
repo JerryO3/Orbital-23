@@ -28,15 +28,11 @@ function Register() {
 
   const [hasAttempted, setHasAttempted] = useState(false);
   
-  // function writeUserData(username, email, password) {
-  //   const db = getDatabase();
-  //   set(ref(db, 'users/' + username), {
-  //     username: username,
-  //     email: email,
-  //     password : password
-  //   });
-  //   window.location.href = "/submit";
-  // }
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+      // User is logged in, redirect to the desired page
+      window.location.href = '/landing';
+  };
 
   function checkAvailability(fieldName, value, setAvailability) {
     const db = getDatabase();
