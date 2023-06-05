@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { firebase, app } from '../backend/Firebase';
+import * as authpkg from "firebase/auth";
 
 function Landing() {
-  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
-
-  if (!loggedIn) {
+  const storedUser = localStorage.getItem('user');
+  if (!storedUser) {
       // User is not logged in, redirect to the desired page
       window.location.href = '/';
     };

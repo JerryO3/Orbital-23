@@ -8,19 +8,11 @@ import ResetPw from '../pages/ResetPw';
 import Submit from '../pages/Submit';
 import Landing from '../pages/Landing';
 import NewPw from '../pages/NewPw';
-import { useState } from 'react';
 import * as fn from "../backend/functions";
 
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
-  const [userForReset, setUserForReset] = useState(localStorage.getItem("user") === "");
-
-
-  const clearUser = () => {
-    localStorage.setItem("user", "");
-    setUserForReset("");
-  }
+  const storedUser = localStorage.getItem('user');
 
   return (
     <Router>
@@ -33,9 +25,8 @@ function App() {
           <text class="split">Schedule Manager</text>
           </ul>
           </ul>
-
           <ul className='rightItems'>
-            {!fn.loggedIn ?
+            {!storedUser ?
             (<ul className='rightItems'>
               <Link to="/login">
                 <button>

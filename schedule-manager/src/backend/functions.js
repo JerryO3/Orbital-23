@@ -2,6 +2,8 @@ import { firebase, app } from './Firebase';
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import * as authpkg from "firebase/auth";
 
+export var loggedIn = !(authpkg.getAuth(app).currentUser === null);
+
 export const printOne = () => {
     console.log(1);
 }
@@ -60,23 +62,29 @@ export async function login(email, password) {
     .then(() => window.location.href = '/landing')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
-    loggedIn = true;
+
+    const user = authpkg.getAuth(app).currentUser;
+    localStorage.setItem('user', JSON.stringify(user));
 }
 
-export var loggedIn = false;
+
 
 export async function loginWithCreds(credential) {
     const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
     .then(() => window.location.href = '/landing')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
-    loggedIn = true;
+    
+    const user = authpkg.getAuth(app).currentUser;
+    localStorage.setItem('user', JSON.stringify(user));
 }
 
 export async function logout() {
     authpkg.getAuth(app).signOut()
+    .then(() => window.location.href = '/')
     .catch((error) => {console.log(error)});
-    loggedIn = false;
+
+    localStorage.removeItem('user');
 }
 
 export const debugAuth = () => {
@@ -148,3 +156,18 @@ export const loadData = () => {
         console.log("Not Logged In");
     }
 }
+
+export const sendPasswordResetEmail = (email) => {
+    authpkg.getAuth(app)
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        // Password reset email sent successfully
+        console.log("Password reset email sent.");
+        // You can display a success message or redirect the user to a confirmation page
+      })
+      .catch((error) => {
+        // An error occurred while sending the password reset email
+        console.error("Error sending password reset email:", error);
+        // You can display an error message to the user
+      });
+  };

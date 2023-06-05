@@ -5,6 +5,7 @@ import { getDatabase, ref, set, onValue } from "firebase/database";
 import { useState } from 'react';
 import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
+import * as fn from '../backend/functions';
 
 const ResetPw = () => {
     const [email, setEmail] = useState("");
@@ -17,9 +18,10 @@ const ResetPw = () => {
 
         onValue(usersRef, (snapshot) => {
           const users = snapshot.val();
-          isValid = Object.values(users).some(user => user.email === email);
+          isValid = Object.values(users).some(user => user.profile.email === email);
         });
         if (isValid) {
+            fn.sendPasswordResetEmail(email);
             window.location.href = "/newPw";
         } else {
             setValidEmail(false);
