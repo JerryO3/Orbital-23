@@ -6,22 +6,21 @@ import { useState } from 'react';
 import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
 import * as fn from '../backend/functions';
-import { wait } from "@testing-library/user-event/dist/utils";
-import { waitFor } from "@testing-library/react";
 
 const ResetPw = () => {
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(true);
 
     const checkEmail = (email) => {
-        // const db = getDatabase();
-        // const usersRef = ref(db, 'users');
-        // let isValid = false;
-
-        fn.sendPasswordResetEmail(email);
-
-        // setValidEmail(false);
-        // }
+        const db = getDatabase();
+        const usersRef = ref(db, 'users');       
+        
+        onValue(usersRef, (snapshot) => {
+          const users = snapshot.val();
+          Object.values(users).some(user => user.profile.email === email)
+          ?  fn.sendPasswordResetEmail(email)
+          :  setValidEmail(false);
+        });
     }
 
     return  (
