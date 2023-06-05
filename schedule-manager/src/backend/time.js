@@ -1,16 +1,16 @@
-import * as lux from luxon;
+import * as lux from "luxon";
 
 export const now = () => {
-    return lux.now();
+    return lux.DateTime.now();
 }
 
 export const moment = (
-    year = lux.now().year,
-    month = lux.now().month,
+    year = lux.DateTime.now().year,
+    month = lux.DateTime.now().month,
     day,
     hour,
     min ) => {
-    return lux.local(
+    return lux.DateTime.local(
         year,
         month,
         day,
@@ -20,5 +20,5 @@ export const moment = (
 }
 
 export const timeTo = (date) => {
-    
+
 }
