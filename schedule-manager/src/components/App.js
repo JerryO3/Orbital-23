@@ -6,7 +6,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ResetPw from '../pages/ResetPw';
 import Submit from '../pages/Submit';
-import Landing from '../pages/Landing';
+import Dashboard from '../pages/Dashboard';
 import NewPw from '../pages/NewPw';
 import * as fn from "../backend/functions";
 
@@ -43,6 +43,16 @@ function App() {
             )
             : 
             (<ul className='rightItems'>
+              <Link to="/dashboard">
+                <button>
+                  Home
+                </button>
+              </Link>
+
+              <button>
+                Settings
+              </button>
+              
               <button
                 type="logout"
                 onClick={() => {fn.logout()}}
@@ -60,7 +70,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/submit" element={<Submit />} />
-        <Route path="/landing" element={<Landing />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/resetPw" element={<ResetPw />} />
         <Route path="/newPw" element={<NewPw />} />
       </Routes>

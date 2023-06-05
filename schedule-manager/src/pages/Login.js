@@ -14,7 +14,7 @@ function Login() {
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
       // User is logged in, redirect to the desired page
-      window.location.href = '/landing';
+      window.location.href = '/dashboard';
   };
 
   return (
