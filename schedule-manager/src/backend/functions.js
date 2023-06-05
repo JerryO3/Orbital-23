@@ -157,13 +157,15 @@ export const loadData = () => {
     }
 }
 
-export const sendPasswordResetEmail = (email) => {
-    authpkg.getAuth(app)
-      .sendPasswordResetEmail(email)
+export async function sendPasswordResetEmail(email) {
+    const auth = authpkg.getAuth(app);
+    const temp = await authpkg
+      .sendPasswordResetEmail(auth, email)
       .then(() => {
         // Password reset email sent successfully
         console.log("Password reset email sent.");
         // You can display a success message or redirect the user to a confirmation page
+        window.location.href = "/newPw";
       })
       .catch((error) => {
         // An error occurred while sending the password reset email

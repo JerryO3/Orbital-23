@@ -6,26 +6,22 @@ import { useState } from 'react';
 import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
 import * as fn from '../backend/functions';
+import { wait } from "@testing-library/user-event/dist/utils";
+import { waitFor } from "@testing-library/react";
 
 const ResetPw = () => {
     const [email, setEmail] = useState("");
     const [validEmail, setValidEmail] = useState(true);
 
     const checkEmail = (email) => {
-        const db = getDatabase();
-        const usersRef = ref(db, 'users');
-        var isValid;
+        // const db = getDatabase();
+        // const usersRef = ref(db, 'users');
+        // let isValid = false;
 
-        onValue(usersRef, (snapshot) => {
-          const users = snapshot.val();
-          isValid = Object.values(users).some(user => user.profile.email === email);
-        });
-        if (isValid) {
-            fn.sendPasswordResetEmail(email);
-            window.location.href = "/newPw";
-        } else {
-            setValidEmail(false);
-        }
+        fn.sendPasswordResetEmail(email);
+
+        // setValidEmail(false);
+        // }
     }
 
     return  (
