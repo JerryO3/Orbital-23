@@ -1,7 +1,6 @@
 import { firebase, app } from './Firebase';
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import * as authpkg from "firebase/auth";
-import Landing from "../pages/Landing";
 
 export const printOne = () => {
     console.log(1);
@@ -20,22 +19,19 @@ export const writeData = (data) => {
 }
 
 const initializeData = (userEmail, userName) => {
-    if (loggedIn) {
-        const uniqueId = authpkg.getAuth(app).currentUser.uid;
-        const db = getDatabase();
-        set(ref(db, "/users/" + uniqueId), {
-            projects : 1,
-            blockouts : 1,
-            settings : 1, // can be initialized to default
-            profile : 1
-        });
-        set(ref(db), "/users/" + uniqueId + "/profile", {
-            email : userEmail,
-            username : userName
-        })
-    } else {
-        console.log("Not Logged In");
-    }
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const db = getDatabase();
+    set(ref(db, "/users/" + uniqueId), {
+        projects : 1,
+        blockouts : 1,
+        settings : 1, // can be initialized to default
+        profile : 1
+    });
+    set(ref(db, "/users/" + uniqueId + "/profile"), {
+        email : userEmail,
+        username : userName
+    })
+    window.location.href = "/submit";
 }
 
 export const readData = () => {

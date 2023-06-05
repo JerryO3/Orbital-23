@@ -44,8 +44,10 @@ function Register() {
   
     onValue(usersRef, (snapshot) => {
       const users = snapshot.val();
-      const isTaken = Object.values(users).some(user => user[fieldName] === value);
-      setAvailability(!isTaken);
+      if (users !== null) {
+        const isTaken = Object.values(users).some(user => user.profile[fieldName] === value);
+        setAvailability(!isTaken);
+      }
     });
   }
 
