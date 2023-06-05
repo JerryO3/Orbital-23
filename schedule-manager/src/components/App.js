@@ -7,21 +7,15 @@ import Register from '../pages/Register';
 import ResetPw from '../pages/ResetPw';
 import Submit from '../pages/Submit';
 import Landing from '../pages/Landing';
-import NewPw from '../pages/NewPw'
-import { isLoggedIn } from '../pages/Login';
+import NewPw from '../pages/NewPw';
 import { useState } from 'react';
+import * as fn from "../backend/functions";
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [userForReset, setUserForReset] = useState(localStorage.getItem("user") === "");
 
-  const handleLogout = () => {
-    // Perform logout logic here
-    // For example, clear the user session and update the logged-in state
-    localStorage.setItem("isLoggedIn", "false");
-    setLoggedIn(false);
-    window.location.href = '/'
-  };
 
   const clearUser = () => {
     localStorage.setItem("user", "");
@@ -41,7 +35,7 @@ function App() {
           </ul>
 
           <ul className='rightItems'>
-            {!loggedIn ?
+            {!fn.loggedIn ?
             (<ul className='rightItems'>
               <Link to="/login">
                 <button>
@@ -60,7 +54,7 @@ function App() {
             (<ul className='rightItems'>
               <button
                 type="logout"
-                onClick={() => {handleLogout()}}
+                onClick={() => {fn.logout()}}
               >
                 Logout
               </button>
