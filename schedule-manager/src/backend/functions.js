@@ -72,7 +72,7 @@ export async function login(email, password) {
 
 export async function loginWithCreds(credential) {
     const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
-    .then(() => window.location.href = '/landing')
+    .then(() => window.location.href = '/dashboard')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
     
@@ -219,6 +219,38 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
 
     update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
         name: eventName,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime
+    })
+}
+
+export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+
+    const startDateInput = startDate;
+    const startYear = startDateInput.substr(0,4);
+    const startMonth = startDateInput.substr(5,2);
+    const startDay = startDateInput.substr(8,2);
+
+    const startTimeInput = startTime;
+    const startHour = startTimeInput.substr(0,2);
+    const startMin = startTimeInput.substr(3,2);
+
+    const endDateInput = endDate;
+    const endYear = endDateInput.substr(0,4);
+    const endMonth = endDateInput.substr(5,2);
+    const endDay = endDateInput.substr(8,4);
+
+    const endTimeInput = endTime;
+    const endHour = endTimeInput.substr(0,2);
+    const endMin = endTimeInput.substr(3,2);
+
+    const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
+    const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
+
+    update(ref(db, "/users/" + uniqueId + "/blockouts/" + blockoutName), {
+        name: blockoutName,
         startDateTime: startDateTime,
         endDateTime: endDateTime
     })
