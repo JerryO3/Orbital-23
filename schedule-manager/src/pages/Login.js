@@ -50,7 +50,7 @@ function Login() {
                       }
                 }
             >
-            Submit
+            Sign In
           </button>
         
           <Link to="/register">

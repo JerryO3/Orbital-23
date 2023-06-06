@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 function Submit() { 
   const storedUser = localStorage.getItem('user');
@@ -9,22 +10,25 @@ function Submit() {
   };
   
   return (
-    <body>
+    <div className="container">
+      <div className="logo">
+          <img src={logo} alt="Schedule Manager" />
+      </div>
       <h1 class = "welcomeMessage">
         An account has been created successfully!
         <br></br>
         Please login to continue.
       </h1>
-      <div class = "loginBox">
-        <li class = "loginPageButton">
+      <form className="form" onSubmit={(e) => e.preventDefault()}>
+      <div className="loginBox">
           <Link to="/login">
             <button>
                 Login
             </button>
           </Link>
-        </li>
       </div>
-    </body>
+      </form>
+    </div>
   );
 }
 

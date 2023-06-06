@@ -43,10 +43,12 @@ function App() {
                 </button>
               </Link>
 
+              <Link to='/settings'>
               <button>
                 Settings
               </button>
-              
+              </Link>
+
               <button
                 type="logout"
                 onClick={() => {fn.logout()}}

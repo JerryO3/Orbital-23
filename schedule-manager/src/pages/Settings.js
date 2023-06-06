@@ -3,7 +3,7 @@ import React from "react";
 function Settings() { 
   return (
     <h1>
-      Welcome to the Settings Page!
+      Customise Your Settings Here!
     </h1>
   );
 }

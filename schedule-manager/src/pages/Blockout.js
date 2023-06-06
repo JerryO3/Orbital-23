@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
+import './Blockout.css'
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
 function Blockout() { 
@@ -10,6 +11,7 @@ function Blockout() {
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [successfulCreation, setSuccessfulCreation] = useState(false);
   // const [hasAttempted, setHasAttempted] = useState(false);
 
   return (
@@ -20,6 +22,7 @@ function Blockout() {
       <h1 className="welcomeMessage">
         Set a Blockout Period.
       </h1>
+      {successfulCreation && <p className="successful">Blockout Created Successfully!</p>}
       <div className="loginBox">
         <form className="form" onSubmit={(e) => e.preventDefault()}>
 
@@ -63,6 +66,7 @@ function Blockout() {
               onClick={
                 () => {
                         fn.newBlockoutByStartEnd(name, startDate, startTime, endDate, endTime);
+                        setSuccessfulCreation(true);
                       }
                 }
             >
