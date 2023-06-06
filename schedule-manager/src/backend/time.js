@@ -28,6 +28,9 @@ export const clash = (interval1, interval2) => {
 }
 
 const minsTo = (moment) => {
+    console.log(now());
+    console.log(moment);
+    console.log(lux.Interval.fromDateTimes(now(), moment).length('minutes'));
     return lux.Interval.fromDateTimes(now(), moment).length('minutes');
 }
 
@@ -47,8 +50,15 @@ class Node {
     }
 }
 
+export function newNode(eventObj) {
+    return new Node(eventObj);
+}
+
 function addNode(node1, node2) {
-    if (node1.start < node2.start) {
+    if (node2 === undefined) {
+        return node1;
+    }
+    else if (node1.start < node2.start) {
         if (node1.right) {
             return addNode(node1.right, node2);
         } else {
@@ -65,11 +75,12 @@ function addNode(node1, node2) {
     return node1;
 }
 
-export function buildTree(nodes) {
-    var tree = nodes.reduce(addNode);
-    console.log(tree);
-    return tree;
+export function buildTree(nodes, accumulator) {
+    return nodes.length > 0
+    ? buildTree(nodes.slice(1), addNode(nodes[0], accumulator))
+    : accumulator;
 }
+
 
 
 

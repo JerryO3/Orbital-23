@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import * as p from '../pages/pages'
 import * as fn from "../backend/functions";
+import BackendTest from '../pages/BackendTest';
 
 
 function App() {
@@ -70,6 +71,7 @@ function App() {
         <Route path='/blockout' element={<p.Blockout />} />
         <Route path='/settings' element={<p.Settings />} />
         <Route path='/newProject' element={<p.NewProject />} />
+        <Route path='/TestingPage' element={<BackendTest />} />
       </Routes>
     </Router>
   );
