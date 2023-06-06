@@ -195,7 +195,31 @@ export const newEventByDuration = (projectName, eventName, startDate, startTime,
 export const newEventByStartEnd = (projectName, eventName, startDate, startTime, endDate, endTime) => {
     const db = getDatabase();
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
 
+    const startDateInput = startDate.stringify();
+    const startDay = startDateInput.substr(0,2);
+    const startMonth = startDateInput.substr(3,2);
+    const startYear = startDateInput.substr(6,4);
+
+    const startTimeInput = startTime.stringify();
+    const startHour = startTimeInput.substr(0,2);
+    const startMin = startTimeInput.substr(3,2);
+
+    const endDateInput = endDate.stringify();
+    const endDay = endDateInput.substr(0,2);
+    const endMonth = endDateInput.substr(3,2);
+    const endYear = endDateInput.substr(6,4);
+
+    const endTimeInput = endTime.stringify();
+    const endHour = endTimeInput.substr(0,2);
+    const endMin = endTimeInput.substr(3,2);
+
+    const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
+    const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
+
+    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
+        name: eventName,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime
     })
 }
