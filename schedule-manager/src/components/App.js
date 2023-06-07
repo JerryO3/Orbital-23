@@ -71,8 +71,11 @@ function App() {
         <Route path="/resetPw" element={<p.ResetPw />} />
         <Route path="/newPw" element={<p.NewPw />} />
         <Route path='/blockout' element={<p.Blockout />} />
+        <Route path='/blockoutCreated' element={<p.BlockoutCreated />} />
         <Route path='/settings' element={<p.Settings />} />
         <Route path='/newProject' element={<p.NewProject />} />
+        <Route path='/projectCreated' element={<p.ProjectCreated />} />
+        <Route path='/updateProject' element={<p.UpdateProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />
       </Routes>
     </Router>

@@ -21,11 +21,11 @@ function Dashboard() {
       </button>
       </Link>
 
-
+      <Link to='/updateProject'>
       <button>
         Update A Project
       </button>
-
+      </Link>
 
       <Link to='/blockout'>
       <button>
