@@ -4,7 +4,7 @@ import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
-function Blockout() { 
+function NewEvent() { 
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -19,14 +19,14 @@ function Blockout() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Set a Blockout Period.
+        Choose an existing event to update or create a new event.
       </h1>
       <div className="loginBox">
         <form className="form" onSubmit={(e) => e.preventDefault()}>
 
           <input
             type="name"
-            placeholder="Blockout Name"
+            placeholder="Event Name"
             name="name"
             value={name}
             onChange={(e) => setName(e.target.value)} />
@@ -63,7 +63,7 @@ function Blockout() {
               type="submit"
               onClick={
                 () => {
-                        fn.newBlockoutByStartEnd(name, startDate, startTime, endDate, endTime);
+                        fn.newEventByStartEnd(name, startDate, startTime, endDate, endTime);
                       }
                 }
             >
@@ -75,4 +75,4 @@ function Blockout() {
   );
 }
 
-export default Blockout;
+export default NewEvent;

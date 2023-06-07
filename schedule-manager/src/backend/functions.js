@@ -1,5 +1,5 @@
-import { firebase, app } from './Firebase';
-import { getDatabase, ref, set, child, get, update } from "firebase/database";
+import { app } from './Firebase';
+import { getDatabase, ref, set, child, get, update, onValue } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 
@@ -24,32 +24,31 @@ export const writeData = (data) => {
 const initializeData = (userEmail, userName) => {
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     const db = getDatabase();
-    set(ref(db, "/users/" + uniqueId), {
-        projects : "none",
-        blockouts : "none",
-        settings : "none", // can be initialized to default
-        profile : "none"
-    });
-    set(ref(db, "/users/" + uniqueId + "/profile"), {
+    update(ref(db, "/users/" + uniqueId + "/profile"), {
         email : userEmail,
         username : userName
     })
     window.location.href = "/submit";
 }
 
-export const readData = () => {
-    const dbRef = ref(getDatabase());
-    get(dbRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        console.log(snapshot.val());
-      } else {
-        console.log("no records found")
-      }
-    })
-    .then(() => {})
-    .catch((error) => {
-      console.log(error)
-    });
+export const readProjectsData = () => {
+    return new Promise((resolve, reject) => {
+        const db = getDatabase();
+        const uniqueId = authpkg.getAuth(app).currentUser.uid;
+        const itemsRef = ref(db, "/users/" + uniqueId + "/projects/");
+    
+        onValue(itemsRef, (snapshot) => {
+          const projects = snapshot.val();
+          if (projects) {
+            const items = Object.values(projects);
+            resolve(items);
+          } else {
+            resolve([]);
+          }
+        }, (error) => {
+          reject(error);
+        });
+      });
 }
 
 export const registerWithEmailandPw = (username, email, password) => {
@@ -72,6 +71,11 @@ export async function login(email, password) {
 
 export async function loginWithCreds(credential) {
     const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
+    .then(() => authpkg.getAuth(app).onAuthStateChanged((user) => {
+          const email = user.email;
+          const username = user.displayName;
+          initializeData(email, username);
+    }))
     .then(() => window.location.href = '/dashboard')
     .catch((error) => {console.log(error)});
     // console.log(creds.user !== null);
@@ -118,6 +122,7 @@ export async function loginWGoogle() {
                 })
             }
         })
+
         const result = await promise;
         const user = result.user;
         const credential = authpkg.GoogleAuthProvider.credentialFromResult(result);
@@ -180,8 +185,8 @@ export const newProject = (projectName) => {
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     update(ref(db, "/users/" + uniqueId + "/projects/" + projectName), {
         name : projectName,
-        events : "none"
     })
+    window.location.href='/projectCreated';
 }
 
 export const newEventByDuration = (projectName, eventName, startDate, startTime, durationDays, durationHours, durationNearestFiveMin) => {
@@ -229,29 +234,31 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
 
     const startDateInput = startDate;
-    const startYear = startDateInput.substr(0,4);
-    const startMonth = startDateInput.substr(5,2);
-    const startDay = startDateInput.substr(8,2);
+    const startYear = parseInt(startDateInput.substr(0,4), 10);
+    const startMonth = parseInt(startDateInput.substr(5,2), 10);
+    const startDay = parseInt(startDateInput.substr(8,2), 10);
 
     const startTimeInput = startTime;
-    const startHour = startTimeInput.substr(0,2);
-    const startMin = startTimeInput.substr(3,2);
+    const startHour = parseInt(startTimeInput.substr(0,2), 10);
+    const startMin = parseInt(startTimeInput.substr(3,2), 10);
 
     const endDateInput = endDate;
-    const endYear = endDateInput.substr(0,4);
-    const endMonth = endDateInput.substr(5,2);
-    const endDay = endDateInput.substr(8,4);
+    const endYear = parseInt(endDateInput.substr(0,4), 10);
+    const endMonth = parseInt(endDateInput.substr(5,2), 10);
+    const endDay = parseInt(endDateInput.substr(8,4), 10);
 
     const endTimeInput = endTime;
-    const endHour = endTimeInput.substr(0,2);
-    const endMin = endTimeInput.substr(3,2);
+    const endHour = parseInt(endTimeInput.substr(0,2), 10);
+    const endMin = parseInt(endTimeInput.substr(3,2), 10);
 
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
-    const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
+    const endDateTime = time.moment(endYear, endMonth, endDay, endHour, endMin);
 
     update(ref(db, "/users/" + uniqueId + "/blockouts/" + blockoutName), {
         name: blockoutName,
         startDateTime: startDateTime,
-        endDateTime: endDateTime
+        endDateTime: endDateTime,
     })
-}
+
+    window.location.href='/blockoutCreated';
+}  
