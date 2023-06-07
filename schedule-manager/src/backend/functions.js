@@ -51,6 +51,26 @@ export const readProjectsData = () => {
       });
 }
 
+export const readEventsData = () => {
+    return new Promise((resolve, reject) => {
+        const db = getDatabase();
+        const uniqueId = authpkg.getAuth(app).currentUser.uid;
+        const itemsRef = ref(db, "/users/" + uniqueId + "/projects/" + localStorage.getItem('projectName') + '/events/');
+    
+        onValue(itemsRef, (snapshot) => {
+          const events = snapshot.val();
+          if (events) {
+            const items = Object.values(events);
+            resolve(items);
+          } else {
+            resolve([]);
+          }
+        }, (error) => {
+          reject(error);
+        });
+      });
+}
+
 export const registerWithEmailandPw = (username, email, password) => {
     authpkg.createUserWithEmailAndPassword(authpkg.getAuth(app), email, password)
     .then(() => initializeData(email, username))
@@ -201,32 +221,34 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
     const db = getDatabase();
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
 
-    const startDateInput = startDate.stringify();
-    const startDay = startDateInput.substr(0,2);
-    const startMonth = startDateInput.substr(3,2);
-    const startYear = startDateInput.substr(6,4);
+    const startDateInput = startDate;
+    const startYear = parseInt(startDateInput.substr(0,4), 10);
+    const startMonth = parseInt(startDateInput.substr(5,2), 10);
+    const startDay = parseInt(startDateInput.substr(8,2), 10);
 
-    const startTimeInput = startTime.stringify();
-    const startHour = startTimeInput.substr(0,2);
-    const startMin = startTimeInput.substr(3,2);
+    const startTimeInput = startTime;
+    const startHour = parseInt(startTimeInput.substr(0,2), 10);
+    const startMin = parseInt(startTimeInput.substr(3,2), 10);
 
-    const endDateInput = endDate.stringify();
-    const endDay = endDateInput.substr(0,2);
-    const endMonth = endDateInput.substr(3,2);
-    const endYear = endDateInput.substr(6,4);
+    const endDateInput = endDate;
+    const endYear = parseInt(endDateInput.substr(0,4), 10);
+    const endMonth = parseInt(endDateInput.substr(5,2), 10);
+    const endDay = parseInt(endDateInput.substr(8,4), 10);
 
-    const endTimeInput = endTime.stringify();
-    const endHour = endTimeInput.substr(0,2);
-    const endMin = endTimeInput.substr(3,2);
+    const endTimeInput = endTime;
+    const endHour = parseInt(endTimeInput.substr(0,2), 10);
+    const endMin = parseInt(endTimeInput.substr(3,2), 10);
 
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
-    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
+    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
         name: eventName,
         startDateTime: startDateTime,
         endDateTime: endDateTime
-    })
+    });
+    
+    window.location.href='/eventCreated';
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -262,3 +284,25 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
 
     window.location.href='/blockoutCreated';
 }  
+
+export const getEvent = () => {
+    return new Promise((resolve, reject) => {
+        const db = getDatabase();
+        const uniqueId = authpkg.getAuth(app).currentUser.uid;
+        const itemsRef = ref(db, "/users/" + uniqueId + "/projects/" 
+        + localStorage.getItem('projectName') + '/events/'
+        + localStorage.getItem('eventName'));
+    
+        onValue(itemsRef, (snapshot) => {
+            const events = snapshot.val();
+            if (events) {
+            const items = Object.values(events);
+            resolve(items);
+            } else {
+            resolve([]);
+            }
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
