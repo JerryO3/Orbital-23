@@ -55,6 +55,7 @@ function BackendTest() {
     return (
         <>
         <ClickDebug func={() => console.log(time.buildTree(nodesArr))} buttonText="Test" />
+        <ClickDebug func={() => console.log(time.fastIntervalQuery(nodesArr[0], nodesArr[1]))} buttonText="Test2" />
         </>
     );
 }
