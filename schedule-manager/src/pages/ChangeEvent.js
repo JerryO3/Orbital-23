@@ -1,23 +1,18 @@
 import React from "react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
+import * as lux from "luxon";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
-function NewEvent() { 
-  const [name, setName] = useState("");
+function ChangeEvent() { 
+  const thisEvent = localStorage.getItem('eventName');
+  const thisProject = localStorage.getItem('projectName');
+
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [successfulCreation, setSuccessfulCreation] = useState(false);
-  // const [hasAttempted, setHasAttempted] = useState(false);
-
-  const thisProject = localStorage.getItem('projectName');
-  // localStorage.removeItem('projectName')
-  const thisEvent = localStorage.getItem('eventName');
-  // localStorage.removeItem('eventName')
-
+  const [endTime, setEndTime] = useState(""); 
 
   // if (projectName === null || eventName === null) { 
   //     window.location.href = '/updateProject'
@@ -28,7 +23,7 @@ function NewEvent() {
             <img src={logo} alt="Schedule Manager" />
         </div>
         <h1 className="welcomeMessage">
-          Create a new event.
+          Update Event '{thisEvent}'.
         </h1>
         <div className="loginBox">
           <form className="form" onSubmit={(e) => e.preventDefault()}>
@@ -37,8 +32,7 @@ function NewEvent() {
               type="name"
               placeholder="Event Name"
               name="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)} />
+              value={thisEvent} />
   
             <input
               type="date"
@@ -72,7 +66,7 @@ function NewEvent() {
                 type="submit"
                 onClick={
                   () => {
-                          fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
+                          fn.newEventByStartEnd(thisProject, thisEvent, startDate, startTime, endDate, endTime);
                         }
                   }
               >
@@ -85,4 +79,4 @@ function NewEvent() {
   // } 
 }
 
-export default NewEvent;
+export default ChangeEvent;

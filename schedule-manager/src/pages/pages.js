@@ -11,3 +11,7 @@ export {default as Register} from './Register';
 export {default as ResetPw} from './ResetPw';
 export {default as Settings} from './Settings'
 export {default as Submit} from './Submit';
+export {default as NewEvent} from './NewEvent';
+export {default as EventCreated} from './EventCreated';
+export {default as UpdateEvent} from './UpdateEvent';
+export {default as ChangeEvent} from './ChangeEvent';

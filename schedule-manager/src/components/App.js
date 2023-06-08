@@ -74,6 +74,10 @@ function App() {
         <Route path='/blockoutCreated' element={<p.BlockoutCreated />} />
         <Route path='/settings' element={<p.Settings />} />
         <Route path='/newProject' element={<p.NewProject />} />
+        <Route path='/newEvent' element={<p.NewEvent />} />
+        <Route path='/eventCreated' element={<p.EventCreated />} />
+        <Route path='/updateEvent' element={<p.UpdateEvent />} />
+        <Route path='/changeEvent' element={<p.ChangeEvent />} />
         <Route path='/projectCreated' element={<p.ProjectCreated />} />
         <Route path='/updateProject' element={<p.UpdateProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />

@@ -30,13 +30,28 @@ function UpdateProject() {
           {projects.length > 0 ? (
             <form className="form" onSubmit={(e) => e.preventDefault()}>
               {projects.map((project) => (
-                <button key={project.id}>{project.name}</button>
+                <Link to='/updateEvent'>
+                  <button key={project.id} onClick={() => localStorage.setItem('projectName', project.name)}>
+                    {project.name}
+                  </button>
+                </Link>
               ))}
+              <Link to='/newProject'>
+                  <button>
+                    Create New Project
+                  </button>
+                </Link>
             </form>
             ) : (
               <form className="form" onSubmit={(e) => e.preventDefault()}>
-                No Projects found
+                <p className='warning'>No Projects Found</p>
+                <Link to='/newProject'>
+                  <button>
+                    Create New Project
+                  </button>
+                </Link>
                 </form>
+                
              )}
       </div>
     </div>
