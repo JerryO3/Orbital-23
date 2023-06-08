@@ -61,6 +61,40 @@ export function newNode(eventObj) {
     return new Node(eventObj);
 }
 
+export function addNodeWithClashes(node1, node2) {
+    if (node1.start === node2.start && node1.end === node2.end) {
+        console.log(node2);
+    } else 
+    if (node2) {
+        var currNode = node1;
+        while (currNode) {
+            if (currNode === node2) {
+                break;
+            } else if (node2.start > currNode.start) {
+                if (currNode.right) {
+                    currNode.right.parent = currNode;
+                    currNode = currNode.right;
+                } else {
+                    currNode.right = node2;
+                    currNode.right.parent = currNode;
+                    break;
+                }
+            } else {
+                if (currNode.left) {
+                    currNode.right.parent = currNode;
+                    currNode = currNode.left;
+                } else {
+                    currNode.left = node2;
+                    currNode.left.parent = currNode;
+                    break;
+                }
+            }
+        }
+        updateMax(node2,node2.maxEnd);
+    }
+    return node1;
+}
+
 export function addNode(node1, node2) {
     if (!intervalQuery(node1,node2)) {
         console.log(node2);
@@ -97,7 +131,7 @@ export function addNode(node1, node2) {
 
 function isInInterval(query, node) {
     if (node !== null) {
-        return query < node.end && query > node.start;
+        return query <= node.end && query >= node.start;
     }
 }
 

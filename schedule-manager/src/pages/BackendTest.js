@@ -50,6 +50,13 @@ const durations5 = [
     5,50
 ]
 
+const timesFrom6 = [ // identical intervals
+    10,10
+]
+const durations6 = [
+    5,5
+]
+
 function eventGenerator(startTime, durations) {
     var i = -1;
     var j = -1;
@@ -92,6 +99,7 @@ const nodesArr2 = makeTest(eventGenerator(timesFrom2,durations2));
 const nodesArr3 = makeTest(eventGenerator(timesFrom3,durations3));
 const nodesArr4 = makeTest(eventGenerator(timesFrom4,durations4));
 const nodesArr5 = makeTest(eventGenerator(timesFrom5,durations5));
+const nodesArr6 = makeTest(eventGenerator(timesFrom6,durations6));
 
 function BackendTest() {
     return (
@@ -126,6 +134,9 @@ function BackendTest() {
         <ClickDebug func={() => console.log(
             time.intervalQuery(nodesArr5[0],nodesArr5[1]))} 
             buttonText="Testcase5" />
+        <ClickDebug func={() => console.log(
+            time.intervalQuery(nodesArr6[0],nodesArr6[1]))} 
+            buttonText="Testcase6" />
         </div>
         <ClickDebug func={() => {time.buildTree(nodesArr); time.updateMax(nodesArr[0],0)}} buttonText="TestUpdateMax" />
         </>
