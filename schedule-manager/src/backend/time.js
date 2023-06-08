@@ -55,30 +55,36 @@ export function newNode(eventObj) {
     return new Node(eventObj);
 }
 
-function addNode(node1, node2) {
-    if (node2 === undefined) {
-        return node1;
-    } else {
-        node2.parent = node1;
-        if (fastIntervalQuery(node1,node2)) {
-            if (node1.start < node2.start) {
-                if (node1.right) {
-                    return addNode(node1.right, node2);
+export function addNode(node1, node2) {
+    // if (intervalQuery(node1,node2)) {
+    //     return intervalQuery(node1,node2);
+    // } else 
+    if (node2) {
+        var currNode = node1;
+        while (currNode) {
+            if (currNode === node2) {
+                break;
+            } else if (node2.start > currNode.start) {
+                if (currNode.right) {
+                    currNode.right.parent = currNode;
+                    currNode = currNode.right;
                 } else {
-                    node1.right = node2;
-                    node1.maxEnd = node2.end;
-                    updateMax(node2, node2.maxEnd);
+                    currNode.right = node2;
+                    currNode.right.parent = currNode;
+                    break;
                 }
             } else {
-                if (node1.left) {
-                    return addNode(node1.left, node2);
+                if (currNode.left) {
+                    currNode.right.parent = currNode;
+                    currNode = currNode.left;
                 } else {
-                    node1.left = node2;
+                    currNode.left = node2;
+                    currNode.left.parent = currNode;
+                    break;
                 }
             }
-        } else {
-            console.log("overlapping events");
         }
+        updateMax(node2,node2.maxEnd);
     }
     return node1;
 }
@@ -89,39 +95,104 @@ function isInInterval(query, node) {
     }
 }
 
-function updateMax(node, max) {
+export function updateMax(node, max) {
     var currNode = node;
-    while (currNode.parent) {
-        currNode.maxEnd = max;
-        currNode = currNode.parent;
+    if (max) {
+        while (currNode) {
+            console.log(2);
+            if (max > currNode.maxEnd) {
+                console.log(1);
+                currNode.maxEnd = max;
+            }
+            currNode = currNode.parent;
+        }
     }
 }
 
-export function fastIntervalQuery(rootNode, queryNode) {
-    var parent = rootNode;
-    var query = queryNode.start;
+function timeQuery(rootNode, query) { //to Fix
     var root = rootNode;
     while (root && !isInInterval(query,root)) {
         if (!root.left) {
             root = root.right;
         } else if (query > root.left.maxEnd) {
-            parent = null;
             root = root.right;
         } else {
-            parent = root;
             root = root.left;
         }
     }
-    return parent == null 
-        ? !root && queryNode.end < parent.start
-        : true;
+    return root === undefined;
+}
+
+function searchMin(rootNode) { // returns the smallest node in the subtree
+    let currNode = rootNode;
+    while (currNode && currNode.left) {
+        currNode = currNode.left
+    }
+    return currNode;
+}
+
+function getSuccessorFromPred(rootNode) { // returns successor or null when given predecessor
+    if (rootNode.right) {
+        return searchMin(rootNode.right);
+    }
+    var currNode = rootNode;
+    while (currNode.parent && currNode == currNode.parent.right) {
+        currNode = currNode.parent;
+    }
+    return currNode.parent;
+}
+
+function keySearch(rootNode, key) { // returns predecessor or successor
+    var parent;
+    var currNode = rootNode;
+    while (currNode && currNode.start !== key) {
+        parent = currNode;
+        if (key < currNode.start) {
+            currNode = currNode.left;
+        } else {
+            currNode = currNode.right;
+        }
+    }
+    return currNode 
+            ? currNode 
+            : parent;
+}
+
+function getSuccessor(rootNode, queryNode) {
+    var query = queryNode.start;
+    var successor = keySearch(rootNode,query);
+    if (successor == queryNode) {
+        console.log("failed to detect clash"); // shouldnt happen
+    } else if (successor.start <= query){
+        successor = getSuccessorFromPred(successor);
+    } 
+    return successor;
+}
+
+export function intervalQuery(rootNode, queryNode) {
+    console.log(rootNode.start);
+    console.log(rootNode.end);
+    console.log(queryNode.start);
+    console.log(queryNode.end);
+    var successor = getSuccessor(rootNode, queryNode);
+    console.log(successor);
+    if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
+        if (!successor) {
+            return true;
+        }
+        // console.log(queryNode.end);
+        // console.log(successor.start);
+        return queryNode.end < successor.start
+    } 
+    console.log("flag");
+    return false;
 }
 
 export function buildTree(nodes) {
     var accumulator = nodes[0];
     var currNodes = nodes.slice(1);
     while (currNodes.length > 0) {
-        console.log("1");
+        // console.log("1");
         accumulator = addNode(currNodes[0], accumulator);
         currNodes = currNodes.slice(1);
     }
