@@ -28,9 +28,9 @@ export const clash = (interval1, interval2) => {
 }
 
 const minsTo = (moment) => {
-    console.log(now());
-    console.log(moment);
-    console.log(lux.Interval.fromDateTimes(now(), moment).length('minutes'));
+    // console.log(now());
+    // console.log(moment);
+    // console.log(lux.Interval.fromDateTimes(now(), moment).length('minutes'));
     return lux.Interval.fromDateTimes(now(), moment).length('minutes');
 }
 
@@ -49,6 +49,12 @@ class Node {
         this.maxEnd = this.end;
         this.event = eventObj;
     }
+
+    clearProperties = () => {
+        this.left = undefined;
+        this.right = undefined;
+        this.parent = undefined;
+    }
 }
 
 export function newNode(eventObj) {
@@ -56,9 +62,9 @@ export function newNode(eventObj) {
 }
 
 export function addNode(node1, node2) {
-    // if (intervalQuery(node1,node2)) {
-    //     return intervalQuery(node1,node2);
-    // } else 
+    if (!intervalQuery(node1,node2)) {
+        console.log(node2);
+    } else 
     if (node2) {
         var currNode = node1;
         while (currNode) {
@@ -99,9 +105,7 @@ export function updateMax(node, max) {
     var currNode = node;
     if (max) {
         while (currNode) {
-            console.log(2);
             if (max > currNode.maxEnd) {
-                console.log(1);
                 currNode.maxEnd = max;
             }
             currNode = currNode.parent;
@@ -170,12 +174,8 @@ function getSuccessor(rootNode, queryNode) {
 }
 
 export function intervalQuery(rootNode, queryNode) {
-    console.log(rootNode.start);
-    console.log(rootNode.end);
-    console.log(queryNode.start);
-    console.log(queryNode.end);
     var successor = getSuccessor(rootNode, queryNode);
-    console.log(successor);
+    // console.log(successor);
     if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
         if (!successor) {
             return true;
@@ -184,7 +184,6 @@ export function intervalQuery(rootNode, queryNode) {
         // console.log(successor.start);
         return queryNode.end < successor.start
     } 
-    console.log("flag");
     return false;
 }
 
@@ -192,7 +191,7 @@ export function buildTree(nodes) {
     var accumulator = nodes[0];
     var currNodes = nodes.slice(1);
     while (currNodes.length > 0) {
-        // console.log("1");
+        currNodes[0].clearProperties(); //important to reset the tree!
         accumulator = addNode(currNodes[0], accumulator);
         currNodes = currNodes.slice(1);
     }

@@ -8,7 +8,6 @@ import * as time from '../backend/time';
 import * as lux from 'luxon';
 import { update } from "firebase/database";
 
-const testNodes = [];
 const timesFrom = [
     8,5,1,12,15
 ]
@@ -24,7 +23,7 @@ const durations1 = [
 ]
 
 const timesFrom2 = [ // both start and end clash
-    1,5
+    2,6
 ]
 const durations2 = [
     30,5
@@ -79,33 +78,41 @@ class EventNew {
 }
 
 function makeTest(events) {
+    const testNodes = [];
     for (let i = 0; i < events.length; i ++) {
         testNodes[i] = new time.newNode(events[i]);
     }
     return testNodes
 }
 
-var nodesArr = makeTest(eventGenerator(timesFrom,durations));
+const nodesArr = makeTest(eventGenerator(timesFrom,durations));
 
-var nodesArr1 = makeTest(eventGenerator(timesFrom1,durations1));
-var nodesArr2 = makeTest(eventGenerator(timesFrom2,durations2));
-var nodesArr3 = makeTest(eventGenerator(timesFrom3,durations3));
-var nodesArr4 = makeTest(eventGenerator(timesFrom4,durations4));
-var nodesArr5 = makeTest(eventGenerator(timesFrom5,durations5));
+const nodesArr1 = makeTest(eventGenerator(timesFrom1,durations1));
+const nodesArr2 = makeTest(eventGenerator(timesFrom2,durations2));
+const nodesArr3 = makeTest(eventGenerator(timesFrom3,durations3));
+const nodesArr4 = makeTest(eventGenerator(timesFrom4,durations4));
+const nodesArr5 = makeTest(eventGenerator(timesFrom5,durations5));
 
 function BackendTest() {
     return (
         <>
         <ClickDebug func={() => console.log(time.buildTree(nodesArr))} buttonText="Test" />
         <div>
-        <ClickDebug func={() => { 
-                console.log(nodesArr == nodesArr3)
-                console.log(nodesArr);
-                console.log(nodesArr3);
-                // console.log(nodesArr1[1]);
-                // console.log(time.intervalQuery(nodesArr1[0],nodesArr1[1]));
-                }
-            }
+        {/* <ClickDebug func={() => console.log(timesFrom1)} buttonText="TF1" />
+        <ClickDebug func={() => console.log(durations1)} buttonText="D1" />
+
+        <ClickDebug func={() => console.log(eventGenerator(timesFrom1,durations1))} buttonText="E1" />
+        <ClickDebug func={() => console.log(makeTest(eventGenerator(timesFrom1,durations1)))} buttonText="N1" />
+
+        <ClickDebug func={() => console.log(timesFrom2)} buttonText="TF2" />
+        <ClickDebug func={() => console.log(durations2)} buttonText="D2" />
+
+        <ClickDebug func={() => console.log(eventGenerator(timesFrom2,durations2))} buttonText="E2" />
+        <ClickDebug func={() => console.log(makeTest(eventGenerator(timesFrom2,durations2)))} buttonText="N2" /> */}
+        </div>
+        <div>
+        <ClickDebug func={() => console.log(
+            time.intervalQuery(nodesArr1[0],nodesArr1[1]))} 
             buttonText="Testcase1" />
         <ClickDebug func={() => console.log(
             time.intervalQuery(nodesArr2[0],nodesArr2[1]))} 
