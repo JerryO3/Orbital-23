@@ -70,7 +70,18 @@ function ChangeEvent() {
                         }
                   }
               >
-              Create
+              Update Event
+            </button>
+
+            <button
+                type="submit"
+                onClick={
+                  () => {
+                          fn.removeEvent();
+                        }
+                  }
+              >
+              Delete Event
             </button>
           </form>
         </div>

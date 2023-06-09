@@ -1,5 +1,5 @@
 import { app } from './Firebase';
-import { getDatabase, ref, set, child, get, update, onValue } from "firebase/database";
+import { getDatabase, ref, set, remove, get, update, onValue } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 
@@ -285,24 +285,37 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
     window.location.href='/blockoutCreated';
 }  
 
-export const getEvent = () => {
-    return new Promise((resolve, reject) => {
-        const db = getDatabase();
-        const uniqueId = authpkg.getAuth(app).currentUser.uid;
-        const itemsRef = ref(db, "/users/" + uniqueId + "/projects/" 
-        + localStorage.getItem('projectName') + '/events/'
-        + localStorage.getItem('eventName'));
-    
-        onValue(itemsRef, (snapshot) => {
-            const events = snapshot.val();
-            if (events) {
-            const items = Object.values(events);
-            resolve(items);
-            } else {
-            resolve([]);
-            }
-        }, (error) => {
-            reject(error);
-        });
+export const removeEvent = () => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
+    + localStorage.getItem('projectName') + '/events/'
+    + localStorage.getItem('eventName'));
+
+    remove(itemRef)
+    .then(() => {
+        console.log("Item deleted successfully");
+    })
+    .catch((error) => {
+        console.error("Error deleting item:", error);
     });
+
+    window.location.href='/eventCreated'
+}
+
+export const removeProject = () => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
+    + localStorage.getItem('projectName'));
+
+    remove(itemRef)
+    .then(() => {
+        console.log("Item deleted successfully");
+    })
+    .catch((error) => {
+        console.error("Error deleting item:", error);
+    });
+
+    window.location.href='/projectCreated'
 }

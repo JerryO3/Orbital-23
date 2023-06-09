@@ -31,7 +31,7 @@ function UpdateEvent() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Choose an existing event for project '{thisProject}''.
+        Choose an existing event for project '{thisProject}'.
       </h1>
       <div className="loginBox">
           {events.length > 0 ? (
@@ -57,6 +57,16 @@ function UpdateEvent() {
                   </button>
                 </Link>
               
+              <button
+                type="submit"
+                onClick={
+                  () => {
+                          fn.removeProject();
+                        }
+                  }
+              >
+                Delete Event
+              </button>
             </form>
             ) : (
               <form className="form" onSubmit={(e) => e.preventDefault()}>
@@ -72,6 +82,17 @@ function UpdateEvent() {
                     Return to Projects
                   </button>
                 </Link>
+                
+                <button
+                type="submit"
+                onClick={
+                  () => {
+                          fn.removeProject();
+                        }
+                  }
+                >
+                  Delete Project
+                </button>
                 </form>
                 
              )}

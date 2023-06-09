@@ -12,7 +12,7 @@ function EventCreated() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-      Event Created Successfully!
+      Event Updated Successfully!
       </h1>
       <div className="loginBox">
         <form className="form">

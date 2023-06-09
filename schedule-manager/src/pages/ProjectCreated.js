@@ -12,7 +12,7 @@ function ProjectCreated() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-      Project Created Successfully!
+      Project Updated Successfully!
       </h1>
       <div className="loginBox">
         <form className="form">
