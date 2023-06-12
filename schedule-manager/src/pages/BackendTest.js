@@ -11,10 +11,10 @@ import * as tc from '../backend/testcases';
 
 
 const timesFrom = [
-    8,5,1,15,12
+    8,5,1,15,12,18,21
 ]
 const durations = [
-    10,10,10,10,10
+    10,10,10,10,10,10,10
 ]
 
 function eventGenerator(startTime, durations) {
@@ -63,7 +63,7 @@ function BackendTest() {
                 makeTest(eventGenerator(timesFrom,durations))))} 
             buttonText="Build Tree" />
         <ClickDebug func={
-            () => console.log(time.deleteNode(tree, nodesArr[3]))} 
+            () => console.log(time.deleteNode(tree, nodesArr[0]))} 
             buttonText="Delete Node" />
         </>
     );

@@ -100,7 +100,7 @@ export function addNodeWithClashes(node1, node2) { // adds Nodes even with clash
                 }
             }
         }
-        updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
+        updateMax(node2); // update all the maxes from leaf to root
     }
     return node1;
 }
@@ -147,23 +147,42 @@ function isInInterval(query, node) { // helper function for timeQuery
     }
 }
 
-function updateMax(node, max) { // helper function to update the maxEnd of each node
+function updateMax(node) { // helper function to update the maxEnd of each node
     var currNode = node;
-    if (max) {
-        while (currNode) {
-            if (max > currNode.maxEnd) {
-                currNode.maxEnd = max;
+    while (currNode) {
+        if (!currNode.left && ! currNode.right) {
+            currNode.maxEnd = currNode.end;
+        } else {
+            if (currNode.left && currNode.right) {
+                currNode.maxEnd = Math.max(currNode.left.maxEnd,
+                                           currNode.end, 
+                                           currNode.right.maxEnd);
+            } else if (currNode.left) {
+                currNode.maxEnd = Math.max(currNode.left.maxEnd,
+                                           currNode.end);
+            } else {
+                currNode.maxEnd = Math.max(currNode.end,
+                                           currNode.right.maxEnd);
             }
-            currNode = currNode.parent;
         }
+        currNode = currNode.parent;
     }
 }
 
 function updateHeights(node) {
     var currNode = node;
     while (currNode) {
-        if (currNode.parent && currNode.parent.height < currNode.height + 1) {
-            currNode.parent.height = currNode.height + 1;
+        if (!currNode.left && ! currNode.right) {
+            currNode.height = 0;
+        } else {
+            if (currNode.left && currNode.right) {
+                currNode.height = Math.max(currNode.left.height, 
+                                           currNode.right.height) + 1;
+            } else if (currNode.left) {
+                currNode.height = currNode.left.height + 1;
+            } else {
+                currNode.height = currNode.right.height + 1;
+            }
         }
         currNode = currNode.parent;
     }
@@ -257,11 +276,81 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 export function deleteNode(rootNode, queryNode) {
     var nearestNode = keySearch(rootNode, queryNode.start);
     if (nearestNode.equals(queryNode)) {
-        if (nearestNode.parent.left === nearestNode) {
-            nearestNode.parent.left = null;
+        if (nearestNode.left && nearestNode.right) {
+            var successor = searchMin(nearestNode.right);
+            if (successor == nearestNode.right) {
+                successor.parent.right = null;
+            } else {
+                successor.parent.left = null;
+            }
+            successor.clearProperties();
+            // nearestNode has 2 children
+            if (nearestNode.parent) {
+                if (nearestNode.parent.right == nearestNode) {
+                    // if nearestNode is a right child
+                    nearestNode.parent.right = successor;
+                } else {
+                    // else nearestNode is a left child 
+                    nearestNode.parent.left = successor;
+                }
+            } else {
+                // nearestNode is the root
+                rootNode = successor;
+            }
+            successor.left = nearestNode.left;
+            successor.right = nearestNode.right;
+            updateMax(successor);
+        } else if (nearestNode.left) {
+            // nearestNode has only 1 left child
+            if (nearestNode.parent) {
+                if (nearestNode.parent.right  == nearestNode) {
+                    // if nearestNode is a right child and has a left child
+                    nearestNode.parent.right = nearestNode.left;
+                } else {
+                    // else nearestNode is a left child and has a left child
+                    nearestNode.parent.left = nearestNode.left;
+                }
+                nearestNode.left.parent = nearestNode.parent;
+            } else {
+                // nearestNode is the root with only one child
+                nearestNode.left.parent = null;
+                rootNode = nearestNode.left;
+            }
+            updateMax(nearestNode.left);
+        } else if (nearestNode.right) {
+            // nearestNode has only 1 right child
+            if (nearestNode.parent) {
+                if (nearestNode.parent.right  == nearestNode) {
+                    // if nearestNode is a right child and has a right child
+                    nearestNode.parent.right = nearestNode.right;
+                } else {
+                    // else nearestNode is a left child and has a right child
+                    nearestNode.parent.left = nearestNode.right;
+                }
+                nearestNode.right.parent = nearestNode.parent;
+            } else {
+                // nearestNode is the root with only one child
+                nearestNode.right.parent = null;
+                rootNode = nearestNode.right;
+            }
+            updateMax(nearestNode.right);
         } else {
-            nearestNode.parent.right = null;
+            // nearestNode is a leaf
+            if (nearestNode.parent) {
+                if (nearestNode.parent.right  == nearestNode) {
+                    // if nearestNode is a right child
+                    nearestNode.parent.right = null;
+                } else {
+                    // else nearestNode is a left child
+                    nearestNode.parent.left = null;
+                }
+                updateMax(nearestNode.parent);
+            } else {
+                // is both leaf and root, then tree is 1 node that is deleted
+                return null;
+            }            
         }
+        updateHeights(nearestNode.parent);
         nearestNode.clearProperties();
     }
     return rootNode;
