@@ -11,11 +11,13 @@ import * as tc from '../backend/testcases';
 
 
 const timesFrom = [
-    8,5,1,15,12,18,21
+    // 8,5,1,15,12,18,21
     // 1,5,8,12,15,18,21
+    4,1
 ]
 const durations = [
-    10,10,10,10,10,10,10
+    // 10,10,10,10,10,10,10
+    10,10
 ]
 
 function eventGenerator(startTime, durations) {

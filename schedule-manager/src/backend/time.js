@@ -36,6 +36,25 @@ export function fromString(str) {
     return lux.DateTime.fromISO(str);
 }
 
+class EventNew {
+    constructor(start,end,name) {
+        this.startDateTime = start;
+        this.endDateTime = end;
+        this.name = name
+    }
+}
+
+function toNode(eventNode) {
+    const eventObj = new EventNew(eventNode.start, eventNode.end, eventNode.eventName);
+    const node = new Node(eventObj);
+    node.maxEnd = eventNode.maxEnd;
+    node.left = eventNode.left;
+    node.right = eventNode.right;
+    node.height = eventNode.height;
+    node.parent = eventNode.parent;
+    node.project = eventNode.project;
+}
+
 class Node {
     start;
     end;
@@ -113,7 +132,8 @@ export function addNodeWithClashes(node1, node2) { // adds Nodes even with clash
 
 export function addNode(node1, node2) { // adds Nodes if they do not clash
     // console.log(node1);
-    if (!intervalQuery(node1,node2)) { // checks for clashes
+    node1 = toNode(node1);
+    if (!intervalQuery(node1, node2)) { // checks for clashes
         console.log(node2);
     } else 
     if (node2) {
@@ -261,6 +281,7 @@ function getSuccessor(rootNode, query) {
     //     // means that the query node exists in the tree
     //     // should be caught by timeQuery during interval query
     // } else 
+    console.log(successor.start);
     if (successor.start === query) {
         // means that the tree has a node start with the same time as the query
         // should be caught by timeQuery during interval query
