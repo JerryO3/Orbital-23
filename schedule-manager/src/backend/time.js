@@ -70,8 +70,8 @@ class Node {
     }
 }
 
-export function newNode(eventObj) {
-    return new Node(eventObj);
+export function newNode(eventObj, project=null) {
+    return new Node(eventObj, project);
 }
 
 export function addNodeWithClashes(node1, node2) { // adds Nodes even with clashes, except same timings which are merged
