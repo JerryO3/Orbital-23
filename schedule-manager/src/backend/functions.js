@@ -112,6 +112,29 @@ export async function logout() {
     localStorage.removeItem('user');
 }
 
+export function getUsername() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const db = getDatabase();
+    const uniqueId = user.uid;
+    const usernameRef = ref(db, "/users/" + uniqueId + "/profile/username");
+    var username;
+
+    onValue(usernameRef, (snapshot) => {
+        if (snapshot.exists()) {
+        username = snapshot.val();
+        console.log(username); 
+        // Do something with the username value
+        } else {
+        console.log("Username field does not exist in the database.");
+        }
+    },
+    (error) => {
+        console.error("Error retrieving username:", error);
+    });
+
+    return username;
+}
+
 export const debugAuth = () => {
     console.log(authpkg.getAuth(app).app);
     console.log(authpkg.getAuth(app).config);
@@ -247,6 +270,8 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
         startDateTime: startDateTime,
         endDateTime: endDateTime
     });
+
+    // tree
     
     window.location.href='/eventCreated';
 }
@@ -318,4 +343,22 @@ export const removeProject = () => {
     });
 
     window.location.href='/projectCreated'
+}
+
+export function updateProfile(username, profilePhoto, darkTheme, notification, notificationDuration) {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const profile = ref(db, "/users/" + uniqueId + "/profile");
+    update(profile, {
+        username : username,
+        darkTheme : darkTheme,
+        notification : notification,
+        notificationDuration : notificationDuration
+    })
+
+    // const storage = getStorage();
+    // const storageRef = ref(storage, 'profile-photos/' + profilePhoto);
+    // uploadBytesResumable(storageRef, profilePhoto)
+    
+    alert('Profile Updated!')
 }
