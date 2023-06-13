@@ -46,6 +46,8 @@
 .form {
   display: flex;
   flex-direction: column;
+  font-family: 'League Spartan';
+  font-size: large;
 }
 
 .form input {

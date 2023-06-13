@@ -17,6 +17,20 @@ function ChangeEvent() {
   // if (projectName === null || eventName === null) { 
   //     window.location.href = '/updateProject'
   //   } else {
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate the form fields
+    if (startDate.trim() === '' || startTime.trim() === '' 
+    || endDate.trim() === '' || endTime.trim() === '' ) {
+      alert('Please fill in all fields.');
+      return; // Stop the submission
+    }
+
+    fn.newEventByStartEnd(thisProject, thisEvent, startDate, startTime, endDate, endTime);
+  };
+
     return (
       <div className="container">
         <div className="logo">
@@ -26,7 +40,7 @@ function ChangeEvent() {
           Update Event '{thisEvent}'.
         </h1>
         <div className="loginBox">
-          <form className="form" onSubmit={(e) => e.preventDefault()}>
+          <form className="form" onSubmit={handleSubmit}>
   
             <input
               type="name"
@@ -64,11 +78,6 @@ function ChangeEvent() {
   
             <button
                 type="submit"
-                onClick={
-                  () => {
-                          fn.newEventByStartEnd(thisProject, thisEvent, startDate, startTime, endDate, endTime);
-                        }
-                  }
               >
               Update Event
             </button>

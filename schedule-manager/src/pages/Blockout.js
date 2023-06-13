@@ -13,6 +13,19 @@ function Blockout() {
   const [successfulCreation, setSuccessfulCreation] = useState(false);
   // const [hasAttempted, setHasAttempted] = useState(false);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate the form fields
+    if (startDate.trim() === '' || startTime.trim() === '' 
+    || endDate.trim() === '' || endTime.trim() === '' ) {
+      alert('Please fill in all fields.');
+      return; // Stop the submission
+    }
+
+    fn.newBlockoutByStartEnd(name, startDate, startTime, endDate, endTime);
+  };
+
   return (
     <div className="container">
       <div className="logo">
@@ -22,7 +35,7 @@ function Blockout() {
         Set a Blockout Period.
       </h1>
       <div className="loginBox">
-        <form className="form" onSubmit={(e) => e.preventDefault()}>
+        <form className="form" onSubmit={handleSubmit}>
 
           <input
             type="name"
@@ -61,11 +74,6 @@ function Blockout() {
 
           <button
               type="submit"
-              onClick={
-                () => {
-                        fn.newBlockoutByStartEnd(name, startDate, startTime, endDate, endTime);
-                      }
-                }
             >
             Create
           </button>

@@ -13,19 +13,29 @@ function NewEvent() {
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [successfulCreation, setSuccessfulCreation] = useState(false);
-  // const [hasAttempted, setHasAttempted] = useState(false);
 
   const thisProject = localStorage.getItem('projectName');
-  const thisEvent = localStorage.getItem('eventName');
 
   const [available, setAvailable] = useState(true);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Validate the form fields
+    if (startDate.trim() === '' || startTime.trim() === '' 
+    || endDate.trim() === '' || endTime.trim() === '' ) {
+      alert('Please fill in all fields.');
+      return; // Stop the submission
+    }
+
+    checkAvailability();
+  };
 
   function checkAvailability() {
     const db = getDatabase();
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     const usersRef = ref(db, "/users/" + uniqueId + "/projects/" + thisProject + "/events/");
-  
+
     onValue(usersRef, (snapshot) => {
       const events = snapshot.val();
       if (events !== null) {
@@ -50,7 +60,7 @@ function NewEvent() {
           Create a new event.
         </h1>
         <div className="loginBox">
-          <form className="form" onSubmit={(e) => e.preventDefault()}>
+          <form className="form" onSubmit={handleSubmit}>
   
             <input
               type="name"
@@ -91,11 +101,6 @@ function NewEvent() {
 
             <button
                 type="submit"
-                onClick={
-                  () => {
-                    checkAvailability();
-                        }
-                  }
               >
               Create
             </button>

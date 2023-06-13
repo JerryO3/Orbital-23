@@ -65,7 +65,7 @@ function UpdateEvent() {
                         }
                   }
               >
-                Delete Event
+                Delete Project
               </button>
             </form>
             ) : (
