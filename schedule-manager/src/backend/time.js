@@ -40,18 +40,20 @@ class Node {
     start;
     end;
     maxEnd;
+    eventName;
     left;
     right;
-    event;
     parent;
     height;
+    project;
 
-    constructor(eventObj) {
-        this.start = minsTo(eventObj.startDateTime);
-        this.end = minsTo(eventObj.endDateTime);
+    constructor(eventObj, project=null) {
+        this.start = eventObj.startDateTime;
+        this.end = eventObj.endDateTime;
         this.maxEnd = this.end;
-        this.event = eventObj;
         this.height = 0;
+        this.project = project;
+        this.eventName = eventObj.name
     }
 
     clearProperties = () => {
@@ -139,9 +141,9 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                 }
             }
         }
+        updateHeights(node2); // increments heights for tree balancing
         if (node2.parent.parent) { balanceTree(node2.parent.parent);}
         updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
-        updateHeights(node2); // increments heights for tree balancing
     }
     return node1;
 }
@@ -159,15 +161,25 @@ function updateMax(node) { // helper function to update the maxEnd of each node
             currNode.maxEnd = currNode.end;
         } else {
             if (currNode.left && currNode.right) {
-                currNode.maxEnd = Math.max(currNode.left.maxEnd,
-                                           currNode.end, 
-                                           currNode.right.maxEnd);
+                const dt1 = currNode.left.maxEnd;
+                const dt2 = currNode.end;
+                const dt3 = currNode.right.maxEnd;
+
+                const dtArr = [dt1,dt2,dt3];
+                const maxDt = dtArr.reduce((max, current) => {return current > max ? current : max});
+                currNode.maxEnd = maxDt;
             } else if (currNode.left) {
-                currNode.maxEnd = Math.max(currNode.left.maxEnd,
-                                           currNode.end);
+                if (currNode.left.maxEnd > currNode.end) {
+                    currNode.maxEnd = currNode.left.maxEnd;
+                } else {
+                    currNode.maxEnd = currNode.end;
+                }
             } else {
-                currNode.maxEnd = Math.max(currNode.end,
-                                           currNode.right.maxEnd);
+                if (currNode.right.maxEnd > currNode.end) {
+                    currNode.maxEnd = currNode.right.maxEnd;
+                } else {
+                    currNode.maxEnd = currNode.end;
+                }
             }
         }
         currNode = currNode.parent;
@@ -432,6 +444,8 @@ function rotateRight(rootNode) {
 export function balanceTree(rootNode) {
     var child;
     console.log(rootNode.left);
+    console.log(rootNode.right);
+    console.log(rootNode.right.height);
     if ((rootNode.left && !rootNode.right && rootNode.left.height >= 1) || 
         (rootNode.left && rootNode.right && rootNode.left.height - rootNode.right.height > 1)) {
         child = rootNode.left;
