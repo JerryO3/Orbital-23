@@ -45,7 +45,7 @@ class EventNew {
 }
 
 function toNode(eventNode) {
-    const eventObj = new EventNew(eventNode.start, eventNode.end, eventNode.eventName);
+    const eventObj = new EventNew(fromString(eventNode.start), fromString(eventNode.end), eventNode.eventName);
     const node = new Node(eventObj);
     node.maxEnd = eventNode.maxEnd;
     node.left = eventNode.left;
