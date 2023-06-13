@@ -32,6 +32,10 @@ const minsTo = (moment) => {
     return lux.Interval.fromDateTimes(now(), moment).length('minutes');
 }
 
+export function fromString(str) {
+    return lux.DateTime.fromISO(str);
+}
+
 class Node {
     start;
     end;
@@ -135,6 +139,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                 }
             }
         }
+        if (node2.parent.parent) { balanceTree(node2.parent.parent);}
         updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
         updateHeights(node2); // increments heights for tree balancing
     }
@@ -237,13 +242,17 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
             : parent;
 }
 
-function getSuccessor(rootNode, queryNode) {
-    var query = queryNode.start;
+function getSuccessor(rootNode, query) {
+    // var query = queryNode.start;
     var successor = keySearch(rootNode,query);
-    if (successor == queryNode) {
-        // means that the query node has the same start time as an existing node
+    // if (successor == queryNode) {
+    //     // means that the query node exists in the tree
+    //     // should be caught by timeQuery during interval query
+    // } else 
+    if (successor.start === query) {
+        // means that the tree has a node start with the same time as the query
         // should be caught by timeQuery during interval query
-    } else if (successor.start <= query){
+    } else if (successor.start < query){
         successor = getSuccessorFromPred(successor);
     } 
     return successor;
@@ -251,7 +260,7 @@ function getSuccessor(rootNode, queryNode) {
 
 export function intervalQuery(rootNode, queryNode) { // checks if there are clashes
     if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
-        var successor = getSuccessor(rootNode, queryNode);
+        var successor = getSuccessor(rootNode, queryNode.start);
         if (!successor) {
             return true;
         }
@@ -356,4 +365,90 @@ export function deleteNode(rootNode, queryNode) {
     return rootNode;
 }
 
+export function nodesFromNowTill(rootNode, key) {
+    var currNode = rootNode;
+    const nodeArr = [];
+    while (currNode) {
+        if (key < currNode.start) {
+            currNode = currNode.left;
+        } else {
+            nodeArr.push(currNode);
+            currNode = currNode.right;
+        }
+    }
+    return nodeArr.flatMap(x => [x.event, DFS(x.left).map(x => x.event)])
+                  .flatMap(x => x);
+}
 
+function DFS(rootNode) {
+    const stack = [];
+    const nodeArr = [];
+    var currNode = rootNode;
+    while (currNode) {
+        if (currNode.right) { stack.push(currNode.right); }
+        if (currNode.left) { stack.push(currNode.left); }
+        nodeArr.push(currNode);
+        currNode = stack.pop();
+    }
+    console.log(nodeArr);
+    return nodeArr;
+}
+
+function rotateLeft(rootNode) {
+    var child = rootNode.right;
+
+    child.parent = rootNode.parent;
+
+    if (rootNode.parent) {
+        if (rootNode.parent.left && rootNode.parent.left === rootNode) {rootNode.parent.left = child}
+        else {rootNode.parent.right = child};
+    }
+
+    rootNode.right = child.left;
+    rootNode.parent = child;
+
+    child.left = rootNode;
+    child.left.parent = rootNode;
+}
+
+function rotateRight(rootNode) {
+    var child = rootNode.left;
+
+    child.parent = rootNode.parent;
+
+    if (rootNode.parent) {
+        if (rootNode.parent.left === rootNode) {rootNode.parent.left = child}
+        else {rootNode.parent.right = child};
+    }
+
+    rootNode.left = child.right;
+    child.right.parent = rootNode;
+
+    child.right = rootNode;
+    rootNode.parent = child; 
+}
+
+
+export function balanceTree(rootNode) {
+    var child;
+    console.log(rootNode.left);
+    if ((rootNode.left && !rootNode.right && rootNode.left.height >= 1) || 
+        (rootNode.left && rootNode.right && rootNode.left.height - rootNode.right.height > 1)) {
+        child = rootNode.left;
+        if ((child.right && !child.left && child.right.height >= 1) ||
+            (child.left && child.right && child.left.height - child.right.height < -1)) { // left-right
+            rotateLeft(child);
+        } 
+        rotateRight(rootNode);
+        console.log(1)
+    } else if ((rootNode.right && !rootNode.left && rootNode.right.height >= 1) ||
+               (rootNode.left && rootNode.right && rootNode.left.height - rootNode.right.height < -1)) {
+        child = rootNode.right;
+        if ((child.left && !child.right && child.left.height >= 1) ||
+            (child.left && child.right && child.left.height - child.right.height > 1)) { // right-left
+            rotateRight(child);
+        } 
+        rotateLeft(rootNode);
+        console.log(2);
+    }
+}
