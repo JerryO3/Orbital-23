@@ -55,19 +55,19 @@ class Node {
         this.project = project;
         this.eventName = eventObj.name
     }
+}
 
-    clearProperties = () => {
-        this.left = undefined;
-        this.right = undefined;
-        this.parent = undefined;
-        this.height = 0;
-    }
+const clearProperties = (node) => {
+    node.left = undefined;
+    node.right = undefined;
+    node.parent = undefined;
+    node.height = 0;
+}
 
-    equals = (node) => {
-        return this.start == node.start
-            && this.end == node.end
-            && this.event == node.event;
-    }
+const equals = (node1, node2) => {
+    return node1.start == node2.start
+        && node1.end == node2.end
+        && node1.event == node2.event;
 }
 
 export function newNode(eventObj, project=null) {
@@ -142,7 +142,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
             }
         }
         updateHeights(node2); // increments heights for tree balancing
-        if (node2.parent.parent) { balanceTree(node2.parent.parent);}
+        // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
         updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
     }
     return node1;
@@ -287,7 +287,7 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
     var accumulator = nodes[0];
     var currNodes = nodes.slice(1);
     while (currNodes.length > 0) {
-        currNodes[0].clearProperties(); //important to reset the tree!
+        clearProperties(currNodes[0]); //important to reset the tree!
         accumulator = addNode(accumulator, currNodes[0]);
         currNodes = currNodes.slice(1);
     }
@@ -296,7 +296,7 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 
 export function deleteNode(rootNode, queryNode) {
     var nearestNode = keySearch(rootNode, queryNode.start);
-    if (nearestNode.equals(queryNode)) {
+    if (equals(nearestNode, queryNode)) {
         if (nearestNode.left && nearestNode.right) {
             var successor = searchMin(nearestNode.right);
             if (successor == nearestNode.right) {
@@ -304,7 +304,7 @@ export function deleteNode(rootNode, queryNode) {
             } else {
                 successor.parent.left = null;
             }
-            successor.clearProperties();
+            clearProperties(successor);
             // nearestNode has 2 children
             if (nearestNode.parent) {
                 if (nearestNode.parent.right == nearestNode) {
@@ -372,7 +372,7 @@ export function deleteNode(rootNode, queryNode) {
             }            
         }
         updateHeights(nearestNode.parent);
-        nearestNode.clearProperties();
+        clearProperties(nearestNode);
     }
     return rootNode;
 }
@@ -443,9 +443,9 @@ function rotateRight(rootNode) {
 
 export function balanceTree(rootNode) {
     var child;
-    console.log(rootNode.left);
-    console.log(rootNode.right);
-    console.log(rootNode.right.height);
+    // console.log(rootNode.left);
+    // console.log(rootNode.right);
+    // console.log(rootNode.right.height);
     if ((rootNode.left && !rootNode.right && rootNode.left.height >= 1) || 
         (rootNode.left && rootNode.right && rootNode.left.height - rootNode.right.height > 1)) {
         child = rootNode.left;
