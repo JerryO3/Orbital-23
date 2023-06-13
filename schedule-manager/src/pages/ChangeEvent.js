@@ -18,9 +18,7 @@ function ChangeEvent() {
   //     window.location.href = '/updateProject'
   //   } else {
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     // Validate the form fields
     if (startDate.trim() === '' || startTime.trim() === '' 
     || endDate.trim() === '' || endTime.trim() === '' ) {
@@ -40,7 +38,7 @@ function ChangeEvent() {
           Update Event '{thisEvent}'.
         </h1>
         <div className="loginBox">
-          <form className="form" onSubmit={handleSubmit}>
+          <form className="form" onSubmit={(e) =>e.preventDefault()}>
   
             <input
               type="name"
@@ -78,6 +76,11 @@ function ChangeEvent() {
   
             <button
                 type="submit"
+                onClick={
+                  () => {
+                          handleSubmit();
+                        }
+                  }
               >
               Update Event
             </button>

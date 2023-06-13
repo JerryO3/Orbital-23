@@ -5,6 +5,14 @@ import * as time from "./time.js";
 
 export var loggedIn = !(authpkg.getAuth(app).currentUser === null);
 
+class EventNew {
+    constructor(start,end,name) {
+        this.startDateTime = start;
+        this.endDateTime = end;
+        this.name = name;
+    }
+}
+
 export const printOne = () => {
     console.log(1);
 }
@@ -265,15 +273,49 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
-    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
-        name: eventName,
-        startDateTime: startDateTime,
-        endDateTime: endDateTime
-    });
+    const eventObj = new EventNew(startDateTime, endDateTime, eventName);
+    const eventNode = time.newNode(eventObj, projectName);
+    const timeTree = ref(db, "/users/" + uniqueId + '/timeTree/')
+    onValue(timeTree, (snapshot) =>  {
+        if (snapshot.exists()) {
+            const root = time.toNode(snapshot.val().eventNode);
+            console.log(root)
+            if (time.intervalQuery(root, eventNode)) {
+                // time tree
+                update(timeTree, time.addNode(root, eventNode));
 
-    // tree
+                // project tree
+                update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
+                    name: eventName,
+                    startDateTime: startDateTime,
+                    endDateTime: endDateTime
+                });
+
+                window.location.href='/eventCreated';
+
+            } else {
+                alert('Event Clashing');
+            }
+        } else {
+            // time tree
+            update(timeTree, {eventNode});
+
+            // project tree
+            update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
+                name: eventName,
+                startDateTime: startDateTime,
+                endDateTime: endDateTime
+            });
+
+            window.location.href='/eventCreated';
+
+        }
+        }
+    )
+
+
     
-    window.location.href='/eventCreated';
+    
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -317,6 +359,28 @@ export const removeEvent = () => {
     + localStorage.getItem('projectName') + '/events/'
     + localStorage.getItem('eventName'));
 
+    //time tree
+    var event;
+
+    onValue(itemRef, (snapshot) => {
+        if (snapshot.exists()) {
+        event = snapshot.val();
+        console.log(event); 
+        // Do something with the username value
+        } else {
+        console.log("Username field does not exist in the database.");
+        }
+    },
+    (error) => {
+        console.error("Error retrieving username:", error);
+    });
+
+    const eventRef = new EventNew(time.fromString(event.startDateTime), time.fromString(event.endDateTime), event.name);
+    console.log(eventRef);
+    const queryNode = time.newNode(eventRef);
+    console.log(queryNode);
+
+    //project tree
     remove(itemRef)
     .then(() => {
         console.log("Item deleted successfully");

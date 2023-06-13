@@ -44,15 +44,16 @@ class EventNew {
     }
 }
 
-function toNode(eventNode) {
+export function toNode(eventNode) {
     const eventObj = new EventNew(fromString(eventNode.start), fromString(eventNode.end), eventNode.eventName);
     const node = new Node(eventObj);
-    node.maxEnd = eventNode.maxEnd;
-    node.left = eventNode.left;
-    node.right = eventNode.right;
+    node.maxEnd = fromString(eventNode.maxEnd);
+    node.left = eventNode.left ? eventNode.left : null;
+    node.right = eventNode.right ? eventNode.right : null;
     node.height = eventNode.height;
-    node.parent = eventNode.parent;
+    node.parent = eventNode.parent ? eventNode.parent : null;
     node.project = eventNode.project;
+    return node;
 }
 
 class Node {
@@ -236,7 +237,7 @@ function timeQuery(rootNode, query) { //to Fix
             root = root.left;
         }
     }
-    return root === undefined;
+    return root === null;
 }
 
 function searchMin(rootNode) { // returns the smallest node in the subtree
