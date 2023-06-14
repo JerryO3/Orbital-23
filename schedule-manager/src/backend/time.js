@@ -369,21 +369,26 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 
 export function deleteNode(rootNode, queryNode) {
     rootNode = toNode(rootNode);
+    DFSforParent(rootNode);
     var nearestNode = keySearch(rootNode, queryNode.start);
     // console.log(nearestNode);
     console.log(equal(nearestNode, queryNode));
     if (equal(nearestNode, queryNode)) {
-        console.log(2);
+        console.log(0);
         if (nearestNode.left && nearestNode.right) {
+            console.log(1)
             var successor = searchMinWithParent(nearestNode.right); // with parent
             if (successor == nearestNode.right) {
+                console.log(10)
                 successor.parent.right = null;
             } else {
+                console.log(11)
                 successor.parent.left = null;
             }
             removeParents(successor);
             // nearestNode has 2 children
             if (nearestNode.parent) {
+                console.log(2)
                 if (nearestNode.parent.right == nearestNode) {
                     // if nearestNode is a right child
                     nearestNode.parent.right = successor;
@@ -392,6 +397,7 @@ export function deleteNode(rootNode, queryNode) {
                     nearestNode.parent.left = successor;
                 }
             } else {
+                console.log(3)
                 // nearestNode is the root
                 rootNode = successor;
             }
@@ -400,6 +406,7 @@ export function deleteNode(rootNode, queryNode) {
             updateHeights(successor);
             updateMax(successor);
         } else if (nearestNode.left) {
+            console.log('a')
             // nearestNode has only 1 left child
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -417,6 +424,7 @@ export function deleteNode(rootNode, queryNode) {
             }
             updateMax(nearestNode.left);
         } else if (nearestNode.right) {
+            console.log('a')
             // nearestNode has only 1 right child
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -434,6 +442,7 @@ export function deleteNode(rootNode, queryNode) {
             }
             updateMax(nearestNode.right);
         } else {
+            console.log('a')
             // nearestNode is a leaf
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -453,6 +462,8 @@ export function deleteNode(rootNode, queryNode) {
         removeParents(nearestNode.parent);
         clearProperties(nearestNode);
     }
+    DFStoRemoveParent(rootNode);
+    console.log(DFSCount(rootNode));
     return rootNode;
 }
 
@@ -483,6 +494,40 @@ function DFS(rootNode) {
     }
     console.log(nodeArr);
     return nodeArr;
+}
+
+function DFSforParent(rootNode) {
+    const stack = [];
+    var currNode = rootNode;
+    while (currNode) {
+        if (currNode.right) { currNode.right.parent = currNode; stack.push(currNode.right); }
+        if (currNode.left) { currNode.left.parent = currNode; stack.push(currNode.left); }
+        currNode = stack.pop();
+    }
+}
+
+function DFStoRemoveParent(rootNode) {
+    const stack = [];
+    var currNode = rootNode;
+    while (currNode) {
+        if (currNode.right) { stack.push(currNode.right); }
+        if (currNode.left) { stack.push(currNode.left); }
+        currNode.parent = null;
+        currNode = stack.pop();
+    }
+}
+
+function DFSCount(rootNode) {
+    const stack = [];
+    var counter = 0;
+    var currNode = rootNode;
+    while (currNode) {
+        if (currNode.right) { stack.push(currNode.right); }
+        if (currNode.left) { stack.push(currNode.left); }
+        counter++;
+        currNode = stack.pop();
+    }
+    return counter;
 }
 
 function rotateLeft(rootNode) {
