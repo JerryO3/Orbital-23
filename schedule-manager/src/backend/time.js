@@ -164,7 +164,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                     break;
                 }
             }
-            currNode = toNode(currNode);
+            if (typeof currNode === 'string' || currNode instanceof String) { currNode = toNode(currNode); }
         }
         updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
