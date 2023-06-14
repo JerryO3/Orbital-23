@@ -84,7 +84,7 @@ const clearProperties = (node) => {
     node.height = 0;
 }
 
-const equals = (node1, node2) => {
+const equal = (node1, node2) => {
     console.log(node1.start.equals(node2.start));
     console.log(node2.end.equals(node1.end));
     console.log(node1.event === node2.event);
@@ -164,6 +164,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                     break;
                 }
             }
+            currNode = toNode(currNode);
         }
         updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
@@ -272,6 +273,7 @@ function searchMinWithParent(rootNode) {
 }
 
 function getSuccessorFromPred(rootNode) { // returns successor or null when given predecessor
+    rootNode = toNode(rootNode);
     if (rootNode.right) {
         return searchMin(rootNode.right);
     }
@@ -284,7 +286,7 @@ function getSuccessorFromPred(rootNode) { // returns successor or null when give
 
 function keySearch(rootNode, key) { // returns predecessor or successor or queryNode
     var parent;
-    var currNode = rootNode;
+    var currNode = toNode(rootNode);
     while (currNode && !currNode.start.equals(key)) {
         parent = currNode;
         if (key < currNode.start) {
@@ -293,6 +295,10 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
         } else {
             if (currNode.right) {currNode.right.parent = currNode;}
             currNode = currNode.right;
+        }
+        
+        if (currNode !== null) {
+            currNode = toNode(currNode)
         }
     }
     return currNode 
@@ -311,13 +317,18 @@ function getSuccessor(rootNode, query) {
     if (successor.start === query) {
         // means that the tree has a node start with the same time as the query
         // should be caught by timeQuery during interval query
+        removeParents(successor);
     } else if (successor.start < query){
-        successor = getSuccessorFromPred(successor);
+        const temp = getSuccessorFromPred(successor);
+        removeParents(successor);
+        successor = temp;
     } 
+    
     return successor;
 }
 
 export function intervalQuery(rootNode, queryNode) { // checks if there are clashes
+    rootNode = toNode(rootNode);
     if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
         var successor = getSuccessor(rootNode, queryNode.start);
         if (!successor) {
@@ -342,11 +353,11 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 }
 
 export function deleteNode(rootNode, queryNode) {
-    // console.log(queryNode);
+    rootNode = toNode(rootNode);
     var nearestNode = keySearch(rootNode, queryNode.start);
     // console.log(nearestNode);
-    console.log(equals(nearestNode, queryNode));
-    if (equals(nearestNode, queryNode)) {
+    console.log(equal(nearestNode, queryNode));
+    if (equal(nearestNode, queryNode)) {
         console.log(2);
         if (nearestNode.left && nearestNode.right) {
             var successor = searchMinWithParent(nearestNode.right); // with parent
@@ -355,7 +366,7 @@ export function deleteNode(rootNode, queryNode) {
             } else {
                 successor.parent.left = null;
             }
-            clearProperties(successor);
+            removeParents(successor);
             // nearestNode has 2 children
             if (nearestNode.parent) {
                 if (nearestNode.parent.right == nearestNode) {

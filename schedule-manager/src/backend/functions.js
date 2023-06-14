@@ -2,6 +2,7 @@ import { app } from './Firebase';
 import { getDatabase, ref, set, remove, get, update, onValue } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
+import { once } from 'events';
 
 export var loggedIn = !(authpkg.getAuth(app).currentUser === null);
 
@@ -276,46 +277,47 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
     const eventObj = new EventNew(startDateTime, endDateTime, eventName);
     const eventNode = time.newNode(eventObj, projectName);
     const timeTree = ref(db, "/users/" + uniqueId + '/timeTree/')
-    onValue(timeTree, (snapshot) =>  {
+
+    get(timeTree)
+    .then((snapshot) => {
         if (snapshot.exists()) {
             const root = time.toNode(snapshot.val().eventNode);
-            console.log(root)
-            if (time.intervalQuery(root, eventNode)) {
-                // time tree
-                update(timeTree, time.addNode(root, eventNode));
-
-                // project tree
-                update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
-                    name: eventName,
-                    startDateTime: startDateTime,
-                    endDateTime: endDateTime
-                });
-
-                window.location.href='/eventCreated';
-
-            } else {
-                alert('Event Clashing');
-            }
-        } else {
+            console.log(root);
+            // if (time.intervalQuery(root, eventNode)) {
             // time tree
-            update(timeTree, {eventNode});
+            update(ref(db, "/users/" + uniqueId + '/timeTree/eventNode'), time.addNode(root, eventNode));
 
             // project tree
             update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
                 name: eventName,
                 startDateTime: startDateTime,
-                endDateTime: endDateTime
+                endDateTime: endDateTime,
             });
 
-            window.location.href='/eventCreated';
+            window.location.href = '/eventCreated';
 
+            // } else {
+            //     alert('Event Clashing');
+            // }
+        } else {
+            // time tree
+            update(timeTree, { eventNode });
+
+            // project tree
+            update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
+                name: eventName,
+                startDateTime: startDateTime,
+                endDateTime: endDateTime,
+            });
+
+            window.location.href = '/eventCreated';
         }
-        }
-    )
+    })
+    .catch((error) => {
+        // Handle the error
+        console.error('Error retrieving data:', error);
+    });
 
-
-    
-    
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -358,6 +360,7 @@ export const removeEvent = () => {
     const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
     + localStorage.getItem('projectName') + '/events/'
     + localStorage.getItem('eventName'));
+    const timeTree = ref(db, "/users/" + uniqueId + '/timeTree/eventNode')
 
     //time tree
     var event;
@@ -366,7 +369,6 @@ export const removeEvent = () => {
         if (snapshot.exists()) {
         event = snapshot.val();
         console.log(event); 
-        // Do something with the username value
         } else {
         console.log("Username field does not exist in the database.");
         }
@@ -375,11 +377,22 @@ export const removeEvent = () => {
         console.error("Error retrieving username:", error);
     });
 
-    const eventRef = new EventNew(time.fromString(event.startDateTime), time.fromString(event.endDateTime), event.name);
-    console.log(eventRef);
-    const queryNode = time.newNode(eventRef);
-    console.log(queryNode);
-
+    get(timeTree)
+    .then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log(1)
+            const eventRef = new EventNew(time.fromString(event.startDateTime), time.fromString(event.endDateTime), event.name);
+            const tree = snapshot.val();
+            const queryNode = time.newNode(eventRef);
+            const newTree = time.deleteNode(tree, queryNode);
+            update(ref(db, "/users/" + uniqueId + '/timeTree/eventNode'), newTree);
+        }
+    })
+    .catch((error) => {
+        // Handle the error
+        console.error('Error retrieving data:', error);
+    });
+    
     //project tree
     remove(itemRef)
     .then(() => {
