@@ -51,7 +51,6 @@ export function toNode(eventNode) {
     node.left = eventNode.left ? eventNode.left : null;
     node.right = eventNode.right ? eventNode.right : null;
     node.height = eventNode.height;
-    node.parent = eventNode.parent ? eventNode.parent : null;
     node.project = eventNode.project;
     return node;
 }
@@ -73,6 +72,7 @@ class Node {
         this.maxEnd = this.end;
         this.height = 0;
         this.project = project;
+        this.parent = null;
         this.eventName = eventObj.name
     }
 }
@@ -144,27 +144,27 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                 console.log("illegally adding identical node, but cleared checks");
             } else if (node2.start > currNode.start) {
                 if (currNode.right) { // traverse right
-                    currNode.right.parent = currNode;
+                    // currNode.right.parent = currNode;
                     currNode = currNode.right;
                 } else { // set right node as node2
                     currNode.right = node2;
-                    currNode.right.parent = currNode;
+                    // currNode.right.parent = currNode;
                     break;
                 }
             } else {
                 if (currNode.left) { // traverse left
-                    currNode.left.parent = currNode;
+                    // currNode.left.parent = currNode;
                     currNode = currNode.left;
                 } else { // set left node as node2
                     currNode.left = node2;
-                    currNode.left.parent = currNode;
+                    // currNode.left.parent = currNode;
                     break;
                 }
             }
         }
-        updateHeights(node2); // increments heights for tree balancing
+        // updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
-        updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
+        // updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
     }
     return node1;
 }
@@ -237,7 +237,7 @@ function timeQuery(rootNode, query) { //to Fix
             root = root.left;
         }
     }
-    return root === null;
+    return root === null || root === undefined;
 }
 
 function searchMin(rootNode) { // returns the smallest node in the subtree
