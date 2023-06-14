@@ -85,6 +85,9 @@ const clearProperties = (node) => {
 }
 
 const equals = (node1, node2) => {
+    console.log(node1.start.equals(node2.start));
+    console.log(node2.end.equals(node1.end));
+    // console.log(node1.event === node2.event);
     return node1.start == node2.start
         && node1.end == node2.end
         && node1.event == node2.event;
@@ -144,29 +147,39 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                 console.log("illegally adding identical node, but cleared checks");
             } else if (node2.start > currNode.start) {
                 if (currNode.right) { // traverse right
-                    // currNode.right.parent = currNode;
+                    currNode.right.parent = currNode;
                     currNode = currNode.right;
                 } else { // set right node as node2
                     currNode.right = node2;
-                    // currNode.right.parent = currNode;
+                    currNode.right.parent = currNode;
                     break;
                 }
             } else {
                 if (currNode.left) { // traverse left
-                    // currNode.left.parent = currNode;
+                    currNode.left.parent = currNode;
                     currNode = currNode.left;
                 } else { // set left node as node2
                     currNode.left = node2;
-                    // currNode.left.parent = currNode;
+                    currNode.left.parent = currNode;
                     break;
                 }
             }
         }
-        // updateHeights(node2); // increments heights for tree balancing
+        updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
-        // updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
+        updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
+        removeParents(node2);
     }
     return node1;
+}
+
+function removeParents(node) {
+    var currNode = node;
+    while (currNode.parent) {
+        currNode = currNode.parent;
+        if (currNode.left && currNode.left.parent) {currNode.left.parent = null; }
+        if (currNode.right && currNode.right.parent) {currNode.right.parent = null; }
+    }
 }
 
 function isInInterval(query, node) { // helper function for timeQuery
@@ -248,6 +261,16 @@ function searchMin(rootNode) { // returns the smallest node in the subtree
     return currNode;
 }
 
+function searchMinWithParent(rootNode) {
+    let currNode = rootNode;
+    while (currNode && currNode.left) {
+        currNode.left.parent = currNode;
+        currNode = currNode.left;
+    }
+    removeParents(currNode.parent);
+    return currNode;
+}
+
 function getSuccessorFromPred(rootNode) { // returns successor or null when given predecessor
     if (rootNode.right) {
         return searchMin(rootNode.right);
@@ -265,8 +288,10 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
     while (currNode && currNode.start !== key) {
         parent = currNode;
         if (key < currNode.start) {
+            if (currNode.left) {currNode.left.parent = currNode;}
             currNode = currNode.left;
         } else {
+            if (currNode.right) {currNode.right.parent = currNode;}
             currNode = currNode.right;
         }
     }
@@ -282,7 +307,7 @@ function getSuccessor(rootNode, query) {
     //     // means that the query node exists in the tree
     //     // should be caught by timeQuery during interval query
     // } else 
-    console.log(successor.start);
+    // console.log(successor.start);
     if (successor.start === query) {
         // means that the tree has a node start with the same time as the query
         // should be caught by timeQuery during interval query
@@ -317,10 +342,14 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 }
 
 export function deleteNode(rootNode, queryNode) {
+    console.log(queryNode);
     var nearestNode = keySearch(rootNode, queryNode.start);
+    console.log(rootNode);
+    // console.log(equals(nearestNode, queryNode));
     if (equals(nearestNode, queryNode)) {
+        console.log(2);
         if (nearestNode.left && nearestNode.right) {
-            var successor = searchMin(nearestNode.right);
+            var successor = searchMinWithParent(nearestNode.right); // with parent
             if (successor == nearestNode.right) {
                 successor.parent.right = null;
             } else {
@@ -394,6 +423,7 @@ export function deleteNode(rootNode, queryNode) {
             }            
         }
         updateHeights(nearestNode.parent);
+        removeParents(nearestNode.parent);
         clearProperties(nearestNode);
     }
     return rootNode;
