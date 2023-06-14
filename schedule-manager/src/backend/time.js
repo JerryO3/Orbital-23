@@ -87,9 +87,9 @@ const clearProperties = (node) => {
 const equals = (node1, node2) => {
     console.log(node1.start.equals(node2.start));
     console.log(node2.end.equals(node1.end));
-    // console.log(node1.event === node2.event);
-    return node1.start == node2.start
-        && node1.end == node2.end
+    console.log(node1.event === node2.event);
+    return node1.start.equals(node2.start)
+        && node1.end.equals(node2.end)
         && node1.event == node2.event;
 }
 
@@ -175,7 +175,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
 
 function removeParents(node) {
     var currNode = node;
-    while (currNode.parent) {
+    while (currNode && currNode.parent) {
         currNode = currNode.parent;
         if (currNode.left && currNode.left.parent) {currNode.left.parent = null; }
         if (currNode.right && currNode.right.parent) {currNode.right.parent = null; }
@@ -285,7 +285,7 @@ function getSuccessorFromPred(rootNode) { // returns successor or null when give
 function keySearch(rootNode, key) { // returns predecessor or successor or queryNode
     var parent;
     var currNode = rootNode;
-    while (currNode && currNode.start !== key) {
+    while (currNode && !currNode.start.equals(key)) {
         parent = currNode;
         if (key < currNode.start) {
             if (currNode.left) {currNode.left.parent = currNode;}
@@ -342,10 +342,10 @@ export function buildTree(nodes) { // builds trees using the addNodes function f
 }
 
 export function deleteNode(rootNode, queryNode) {
-    console.log(queryNode);
+    // console.log(queryNode);
     var nearestNode = keySearch(rootNode, queryNode.start);
-    console.log(rootNode);
-    // console.log(equals(nearestNode, queryNode));
+    // console.log(nearestNode);
+    console.log(equals(nearestNode, queryNode));
     if (equals(nearestNode, queryNode)) {
         console.log(2);
         if (nearestNode.left && nearestNode.right) {
@@ -371,6 +371,7 @@ export function deleteNode(rootNode, queryNode) {
             }
             successor.left = nearestNode.left;
             successor.right = nearestNode.right;
+            updateHeights(successor);
             updateMax(successor);
         } else if (nearestNode.left) {
             // nearestNode has only 1 left child
