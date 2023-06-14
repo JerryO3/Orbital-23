@@ -45,16 +45,23 @@ class EventNew {
 }
 
 export function toNode(eventNode) {
-    if (typeof eventNode === 'string' || eventNode instanceof String) {
+    if (eventNode) {
+        if (typeof eventNode === 'string' || eventNode instanceof String) {
+            eventNode = JSON.parse(eventNode);
+        }
         const eventObj = new EventNew(fromString(eventNode.start), fromString(eventNode.end), eventNode.eventName);
         const node = new Node(eventObj);
         node.maxEnd = fromString(eventNode.maxEnd);
-        node.left = eventNode.left ? eventNode.left : null;
-        node.right = eventNode.right ? eventNode.right : null;
+        // console.log(eventNode);
+        // console.log(eventNode.left);
+        node.left = toNode(eventNode.left);
+        node.right = toNode(eventNode.right);
         node.height = eventNode.height;
         node.project = eventNode.project;
-        return node;
+        node.parent = null;
+        eventNode = node;
     }
+    // console.log(eventNode);
     return eventNode;
 }
 
@@ -138,12 +145,14 @@ export function addNodeWithClashes(node1, node2) { // adds Nodes even with clash
 }
 
 export function addNode(node1, node2) { // adds Nodes if they do not clash
-    // console.log(node1);
+    console.log(node1);
     node1 = toNode(node1);
+    console.log(node1);
     if (!intervalQuery(node1, node2)) { // checks for clashes
         console.log(node2);
     } else 
     if (node2) {
+        console.log(node1);
         var currNode = node1;
         while (currNode) {
             if (currNode === node2) { // catches infinite loop; shouldnt happen because of clash check
@@ -161,20 +170,21 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                 if (currNode.left) { // traverse left
                     currNode.left.parent = currNode;
                     currNode = currNode.left;
+                    // console.log("moved")
                 } else { // set left node as node2
                     currNode.left = node2;
                     currNode.left.parent = currNode;
                     break;
                 }
             }
-            currNode = toNode(currNode);
         }
         updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
         updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
         removeParents(node2);
     }
-    return node1;
+    console.log(node1);
+    return JSON.stringify(node1);
 }
 
 function removeParents(node) {
@@ -289,8 +299,9 @@ function getSuccessorFromPred(rootNode) { // returns successor or null when give
 
 function keySearch(rootNode, key) { // returns predecessor or successor or queryNode
     var parent;
-    var currNode = toNode(rootNode);
-    while (currNode && !currNode.start.equals(key)) {
+    var currNode = rootNode;
+    while (currNode && !key.equals(currNode.start)) {
+        console.log(currNode);
         parent = currNode;
         if (key < currNode.start) {
             if (currNode.left) {currNode.left.parent = currNode;}
@@ -298,10 +309,6 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
         } else {
             if (currNode.right) {currNode.right.parent = currNode;}
             currNode = currNode.right;
-        }
-        
-        if (currNode !== null) {
-            currNode = toNode(currNode)
         }
     }
     return currNode 
@@ -311,7 +318,9 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
 
 function getSuccessor(rootNode, query) {
     // var query = queryNode.start;
-    var successor = keySearch(rootNode,query);
+    console.log(rootNode);
+    var successor = keySearch(rootNode,query); // turns successor into raw json
+    console.log(successor);
     // if (successor == queryNode) {
     //     // means that the query node exists in the tree
     //     // should be caught by timeQuery during interval query
@@ -320,20 +329,23 @@ function getSuccessor(rootNode, query) {
     if (successor.start === query) {
         // means that the tree has a node start with the same time as the query
         // should be caught by timeQuery during interval query
-        removeParents(successor);
+        
     } else if (successor.start < query){
         const temp = getSuccessorFromPred(successor);
         removeParents(successor);
         successor = temp;
     } 
-    
+    removeParents(successor);
     return successor;
 }
 
 export function intervalQuery(rootNode, queryNode) { // checks if there are clashes
-    rootNode = toNode(rootNode);
+    console.log(timeQuery(rootNode, queryNode.start));
+    console.log(timeQuery(rootNode, queryNode.end));
     if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
         var successor = getSuccessor(rootNode, queryNode.start);
+        console.log(successor);
+        console.log(queryNode.end)
         if (!successor) {
             return true;
         }
@@ -506,7 +518,6 @@ function rotateRight(rootNode) {
     child.right = rootNode;
     rootNode.parent = child; 
 }
-
 
 export function balanceTree(rootNode) {
     var child;

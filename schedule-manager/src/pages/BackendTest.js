@@ -11,12 +11,12 @@ import * as tc from '../backend/testcases';
 
 
 const timesFrom = [
-    8,5,1,15,12,18,21
+    30,25,8,5,1,15,12,18,21,40
     // 1,5,8,12,15,18,21
     // 4,1
 ]
 const durations = [
-    10,10,10,10,10,10,10
+    10,10,10,10,10,10,10,10,10,10,10
     // 10,10
 ]
 
@@ -56,16 +56,16 @@ function makeTest(events) {
 }
 
 var nodesArr = makeTest(eventGenerator(timesFrom,durations));
-var tree = time.buildTree(nodesArr);
+// var tree = time.buildTree(nodesArr);
 
 function BackendTest() {
     return (
         <>
         <ClickDebug func={
-            () => console.log(time.buildTree(
-                makeTest(eventGenerator(timesFrom,durations))))} 
+            () => console.log(JSON.parse(time.buildTree(
+                makeTest(eventGenerator(timesFrom,durations)))))} 
             buttonText="Build Tree" />
-        <ClickDebug func={
+        {/* <ClickDebug func={
             () => console.log(tree)} 
             buttonText="Show Tree" />
         <ClickDebug func={
@@ -73,7 +73,7 @@ function BackendTest() {
             buttonText="Delete Node" />
         <ClickDebug func={
             () => console.log(time.nodesFromNowTill(tree,105))} 
-            buttonText="Get DFS Array" />
+            buttonText="Get DFS Array" /> */}
         </>  
     );
 }
