@@ -45,14 +45,17 @@ class EventNew {
 }
 
 export function toNode(eventNode) {
-    const eventObj = new EventNew(fromString(eventNode.start), fromString(eventNode.end), eventNode.eventName);
-    const node = new Node(eventObj);
-    node.maxEnd = fromString(eventNode.maxEnd);
-    node.left = eventNode.left ? eventNode.left : null;
-    node.right = eventNode.right ? eventNode.right : null;
-    node.height = eventNode.height;
-    node.project = eventNode.project;
-    return node;
+    if (typeof eventNode === 'string' || eventNode instanceof String) {
+        const eventObj = new EventNew(fromString(eventNode.start), fromString(eventNode.end), eventNode.eventName);
+        const node = new Node(eventObj);
+        node.maxEnd = fromString(eventNode.maxEnd);
+        node.left = eventNode.left ? eventNode.left : null;
+        node.right = eventNode.right ? eventNode.right : null;
+        node.height = eventNode.height;
+        node.project = eventNode.project;
+        return node;
+    }
+    return eventNode;
 }
 
 class Node {
@@ -164,7 +167,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
                     break;
                 }
             }
-            if (typeof currNode === 'string' || currNode instanceof String) { currNode = toNode(currNode); }
+            currNode = toNode(currNode);
         }
         updateHeights(node2); // increments heights for tree balancing
         // if (node2.parent.parent) { balanceTree(node2.parent.parent);}
