@@ -82,10 +82,11 @@ function BackendTest() {
         <ClickDebug func={
             () => console.log(time.nodesFromNowTill(tree,105))} 
             buttonText="Get DFS Array" />
-        </>  
-        <ClickDebug func={
+            <ClickDebug func={
             () => console.log('help tap me up')} 
             buttonText="check ur phone plssss" />
+        </>  
+        
     );
 }
 
