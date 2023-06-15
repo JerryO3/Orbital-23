@@ -6,23 +6,30 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
 function UpdateEvent() { 
   const [events, setEvents] = useState([]);
-  const thisProject = localStorage.getItem('projectName');
+  const thisProjectId = localStorage.getItem('projectId');
+  const thisProjectName = localStorage.getItem('projectName');
   
-
+  
   useEffect(() => {
-    // Fetch the projects data when the component mounts
-    fn.readEventsData()
-      .then((items) => {
-        setEvents(items);
-      })
-      .catch((error) => {
-        console.error("Error retrieving projects:", error);
-      });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const promise = fn.queryByField("events", "projectId", thisProjectId);
+        const result = await promise;
+        setEvents(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [thisProjectId]);
+  //   setEvents(fn.queryByField("events", "projectId", thisProjectId));
+  // })
 
   // localStorage.removeItem('projectName')
+  console.log(events);
 
-  if (thisProject === null) { 
+  if (thisProjectName === null) { 
     window.location.href = '/updateProject'
   } else {
     return (
@@ -31,7 +38,7 @@ function UpdateEvent() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Choose an existing event for project '{thisProject}'.
+        Choose an existing event for project '{thisProjectName}'.
       </h1>
       <div className="loginBox">
           {events.length > 0 ? (

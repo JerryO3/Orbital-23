@@ -7,8 +7,10 @@ function Settings() {
   // const [darkMode, setDarkMode] = useState(false);
   // const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [notificationDuration, setNotificationDuration] = useState(0);
-  const [displayName, setDisplayName] = useState(fn.getUsername());
-  const [telegramHandle, setTelegramHandle] = useState("@")
+  const [displayName, setDisplayName] = useState(fn.getField("username"));
+  const [telegramHandle, setTelegramHandle] = useState(fn.getField('telegramHandle') === null 
+                                                        ? "@" 
+                                                        : fn.getField('telegramHandle'))
   // const [profilePhoto, setProfilePhoto] = useState(null);
   // const fileInputRef = useRef(null);
 

@@ -1,5 +1,5 @@
 import { app } from './Firebase';
-import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo } from "firebase/database";
+import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo, child } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
@@ -20,15 +20,17 @@ export const printOne = () => {
     console.log(1);
 }
 
-
-function filterByUser(db, userID) {
-    const dataRef = ref(db, "project")
-    
-    const filteredDataQuery = query(dataRef, orderByChild("parentKey/childKey").equalTo(userID));
-
-    console.log(filteredDataQuery)
-    return filteredDataQuery;
+export const getUserId = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user.uid;
 }
+
+// function filterByUser(db, userId) {
+//     const dataRef = ref(db, "project")
+//     // console.log(userId);
+//     const filteredDataQuery = query(dataRef, orderByChild("userID"), equalTo(userId, "userID"));
+//     return filteredDataQuery;
+// }
 
 export const writeData = (data) => {
     if (loggedIn) {
@@ -52,34 +54,61 @@ const initializeData = (userEmail, userName) => {
     window.location.href = "/submit";
 }
 
-export const objArr = (dbRef, query) => {
-    return new Promise((resolve, reject) => {
-        onValue(dbRef, (snapshot) => {
-        const projects = snapshot.val();
-        // const projects = snapshot._node.children_.root_.value.children_.root_.left.key;
-        
-        console.log(projects);
-          if (projects == query) {
-            const items = Object.values(projects);
-            resolve(items);
-          } else {
-            resolve([]);
-          }
-        }, (error) => {
-            reject(error);
-        });
+export const queryByField = (dbRef, field, queryId) => {
+    const db = getDatabase();
+    const eventsRef = ref(db, dbRef);
+    const eventsQuery = query(eventsRef, orderByChild(field), equalTo(queryId));
+    return get(eventsQuery).then((snapshot) => {
+        // console.log(snapshot.exists());
+        // console.log(1);
+
+        if (snapshot.exists()) {
+          const events = [];
+          snapshot.forEach((childSnapshot) => {
+            const eventId = childSnapshot.key;
+            const eventData = childSnapshot.val();
+            events.push({ eventId, ...eventData });
+          });
+          return events;
+        } else {
+          return [];
+        }
     });
 }
 
 export const readProjectsData = () => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    const itemsRef = ref(db, "/projects");
+    const user = JSON.parse(localStorage.getItem('user'));
+    const uniqueId = user.uid;
+    const dbRef = ref(db, "/projects/" + uniqueId)
 
-    return objArr(itemsRef, uniqueId);
+    return new Promise((resolve, reject) => {
+        const db = getDatabase();
+        const uniqueId = authpkg.getAuth(app).currentUser.uid;
+        const itemsRef = ref(db, "/projects/" + uniqueId);
+    
+        onValue(itemsRef, (snapshot) => {
+          const events = snapshot.val();
+          if (events) {
+            const items = Object.values(events);
+            resolve(items);
+          } else {
+            resolve([]);
+          }
+        }, (error) => {
+          reject(error);
+        });
+      });
 }
 
 export const readEventsData = () => {
+    const db = getDatabase();
+    const user = JSON.parse(localStorage.getItem('user'));
+    const uniqueId = user.uid;
+    const dbRef = ref(db, "/events/" + uniqueId)
+
+    // return objArr(dbRef);
+
     return new Promise((resolve, reject) => {
         const db = getDatabase();
         const uniqueId = authpkg.getAuth(app).currentUser.uid;
@@ -140,27 +169,28 @@ export async function logout() {
     localStorage.removeItem('user');
 }
 
-export function getUsername() {
+export function getField(field) {
     const user = JSON.parse(localStorage.getItem('user'));
     const db = getDatabase();
     const uniqueId = user.uid;
-    const usernameRef = ref(db, "/users/" + uniqueId + "/username");
-    var username;
+    const fieldRef = ref(db, "/users/" + uniqueId + "/" + [field]);
+    var item;
 
-    onValue(usernameRef, (snapshot) => {
+    onValue(fieldRef, (snapshot) => {
         if (snapshot.exists()) {
-        username = snapshot.val();
-        console.log(username); 
+        item = snapshot.val();
+        // console.log(item); 
         // Do something with the username value
         } else {
-        console.log("Username field does not exist in the database.");
+        item = null;
+        // console.log("Username field does not exist in the database.");
         }
     },
     (error) => {
         console.error("Error retrieving username:", error);
     });
 
-    return username;
+    return item;
 }
 
 export const debugAuth = () => {
@@ -216,7 +246,8 @@ export const updateEmailAdd = (email) => {
 
 export const loadData = () => {
     if (loggedIn) {
-        const uniqueId = authpkg.getAuth(app).currentUser.uid;
+        const user = JSON.parse(localStorage.getItem('user'));
+        const uniqueId = user.uid;
         const dbRef = ref(getDatabase(), "/users/" + uniqueId);
         get(dbRef).then((snapshot) => {
             if (snapshot.exists()) {
@@ -254,29 +285,13 @@ export async function sendPasswordResetEmail(email) {
 export const newProject = (projectName) => {
     const db = getDatabase();
     const uniqueId = uuidv4();
-    update(ref(db, "/projects/" + uniqueId), {
-        name : projectName, 
-    })
-
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
-    const telegramRef = ref(db, "/users/" + userId);
-
-    onValue(telegramRef, (snapshot) => {
-        if (snapshot.exists()) {
-        const telegramHandle = snapshot.val().telegramHandle;
-        console.log(telegramHandle); 
-        // Do something with the username value
-        update(ref(db, "/projects/" + uniqueId + "/" + userId), {
-            telegramHandle :  telegramHandle
-        })
-        } else {
-        console.log("Telegram Handle field does not exist in the database.");
-        }
-    },
-    (error) => {
-        console.error("Error retrieving Telegram Handle:", error);
-    });
+    update(ref(db, "/projects/" + uniqueId), {
+        name : projectName,
+        projectId : uniqueId,
+        userId : userId
+    })
     
     window.location.href='/projectCreated';
 }
@@ -289,9 +304,10 @@ export const newEventByDuration = (projectName, eventName, startDate, startTime,
     })
 }
 
-export const newEventByStartEnd = (projectName, eventName, startDate, startTime, endDate, endTime) => {
+export const newEventByStartEnd = (projectId, eventName, startDate, startTime, endDate, endTime) => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.uid;
 
     const startDateInput = startDate;
     const startYear = parseInt(startDateInput.substr(0,4), 10);
@@ -314,57 +330,24 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
-    const eventObj = new EventNew(startDateTime, endDateTime, eventName);
-    const eventNode = time.newNode(eventObj, projectName);
-    const timeTree = ref(db, "/users/" + uniqueId + '/timeTree/')
+    const uniqueId = uuidv4();
 
-    get(timeTree)
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            const root = time.toNode(snapshot.val().eventNode);
-            // if (time.intervalQuery(root, eventNode)) {
-            // time tree
-            // console.log(root);
-            // console.log(eventNode);
-            // console.log(time.addNode(root, eventNode));
-            update(ref(db, "/users/" + uniqueId + '/timeTree/eventNode'), time.addNode(root, eventNode));
-
-            // project tree
-            update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
-                name: eventName,
-                startDateTime: startDateTime,
-                endDateTime: endDateTime,
-            });
-
-            // window.location.href = '/eventCreated';
-
-            // } else {
-            //     alert('Event Clashing');
-            // }
-        } else {
-            // time tree
-            update(timeTree, { eventNode });
-
-            // project tree
-            update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/events/" + eventName), {
-                name: eventName,
-                startDateTime: startDateTime,
-                endDateTime: endDateTime,
-            });
-
-            // window.location.href = '/eventCreated';
-        }
-    })
-    .catch((error) => {
-        // Handle the error
-        console.error('Error retrieving data:', error);
+    update(ref(db, "/events/" + uniqueId), {
+        name: eventName,
+        user: userId,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime,
+        projectId : projectId,
+        eventId : uniqueId
     });
 
+    window.location.href='/eventCreated';
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.uid;
 
     const startDateInput = startDate;
     const startYear = parseInt(startDateInput.substr(0,4), 10);
@@ -387,18 +370,21 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime = time.moment(endYear, endMonth, endDay, endHour, endMin);
 
-    update(ref(db, "/users/" + uniqueId + "/blockouts/" + blockoutName), {
+    const uniqueId = uuidv4();
+
+    update(ref(db, "/blockout/" + userId + "/" + uniqueId), {
         name: blockoutName,
         startDateTime: startDateTime,
         endDateTime: endDateTime,
-    })
+    });
 
     window.location.href='/blockoutCreated';
 }  
 
 export const removeEvent = () => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const uniqueId = user.uid;
     const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
     + localStorage.getItem('projectName') + '/events/'
     + localStorage.getItem('eventName'));
@@ -449,7 +435,8 @@ export const removeEvent = () => {
 
 export const removeProject = () => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const uniqueId = user.uid;
     const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
     + localStorage.getItem('projectName'));
 
@@ -466,7 +453,8 @@ export const removeProject = () => {
 
 export function updateProfile(username, notificationDuration, telegramHandle) {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const user = JSON.parse(localStorage.getItem('user'));
+    const uniqueId = user.uid;
     const profile = ref(db, "/users/" + uniqueId);
     update(profile, {
         username : username,

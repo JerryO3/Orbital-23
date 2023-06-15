@@ -14,7 +14,7 @@ function NewEvent() {
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
 
-  const thisProject = localStorage.getItem('projectName');
+  const thisProject = localStorage.getItem('projectId');
 
   const [available, setAvailable] = useState(true);
 
@@ -28,29 +28,31 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    checkAvailability();
+    fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
   };
 
-  function checkAvailability() {
-    const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    const usersRef = ref(db, "/users/" + uniqueId + "/projects/" + thisProject + "/events/");
+  // function checkAvailability() {
+  //   const db = getDatabase();
+  //   const uniqueId = authpkg.getAuth(app).currentUser.uid;
+  //   const usersRef = ref(db, "/users/" + uniqueId + "/projects/" + thisProject + "/events/");
 
-    onValue(usersRef, (snapshot) => {
-      const events = snapshot.val();
-      if (events !== null) {
-        const isTaken = Object.values(events).some(event => event.name === name);
-        if (isTaken) {
-          setAvailable(!isTaken);
-        } else {
-          fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
-        }
-      } else {
-        fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
-      }
-    });
-  }
+  //   onValue(usersRef, (snapshot) => {
+  //     const events = snapshot.val();
+  //     if (events !== null) {
+  //       const isTaken = Object.values(events).some(event => event.name === name);
+  //       if (isTaken) {
+  //         setAvailable(!isTaken);
+  //       } else {
+  //         fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
+  //       }
+  //     } else {
+  //       fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
+  //     }
+  //   });
+  // }
 
+  console.log(thisProject);
+  console.log(1)
   return (
       <div className="container">
         <div className="logo">

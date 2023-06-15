@@ -9,7 +9,7 @@ import * as fn from '../backend/functions'
 
 function Dashboard() {
   const storedUser = localStorage.getItem('user');
-  const username = fn.getUsername();
+  const username = fn.getField('username');
   console.log(username);
 
   if (!storedUser) {

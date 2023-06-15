@@ -8,15 +8,18 @@ function UpdateProject() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    // Fetch the projects data when the component mounts
-    fn.readProjectsData()
-      .then((items) => {
-        setProjects(items);
-      })
-      .catch((error) => {
-        console.error("Error retrieving projects:", error);
-      });
-  }, []);
+    const fetchData = async () => {
+      try {
+        const promise = fn.queryByField("projects", "userId", fn.getUserId());
+        const result = await promise;
+        setProjects(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  });
 
   return (
     <div className="container">
@@ -31,7 +34,8 @@ function UpdateProject() {
             <form className="form" onSubmit={(e) => e.preventDefault()}>
               {projects.map((project) => (
                 <Link to='/updateEvent'>
-                  <button key={project.id} onClick={() => localStorage.setItem('projectName', project.name)}>
+                  <button key={project.id} onClick={() => {localStorage.setItem('projectId', project.projectId);
+                localStorage.setItem('projectName', project.name);}}>
                     {project.name}
                   </button>
                 </Link>
