@@ -10,27 +10,27 @@ import * as fn from '../backend/functions';
 
 function NewProject() { 
   const [name, setName] = useState("");
-  const [available, setAvailable] = useState(true);
+  // const [available, setAvailable] = useState(true);
 
-  function checkAvailability() {
-    const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    const usersRef = ref(db, "/users/" + uniqueId + "/projects/");
+  // function checkAvailability() {
+  //   const db = getDatabase();
+  //   const uniqueId = authpkg.getAuth(app).currentUser.uid;
+  //   const usersRef = ref(db, "/projects/");
   
-    onValue(usersRef, (snapshot) => {
-      const projects = snapshot.val();
-      if (projects !== null) {
-        const isTaken = Object.values(projects).some(project => project.name === name);
-        if (isTaken) {
-          setAvailable(!isTaken);
-        } else {
-          fn.newProject(name);
-        }
-      } else {
-        fn.newProject(name);
-      }
-    });
-  }
+  //   onValue(usersRef, (snapshot) => {
+  //     const projects = snapshot.val();
+  //     if (projects !== null) {
+  //       const isTaken = Object.values(projects).some(project => project.name === name);
+  //       if (isTaken) {
+  //         setAvailable(!isTaken);
+  //       } else {
+  //         fn.newProject(name);
+  //       }
+  //     } else {
+  //       fn.newProject(name);
+  //     }
+  //   });
+  // }
 
     return  (
     <div className="container">
@@ -52,10 +52,10 @@ function NewProject() {
               }
             } />
           
-            {!available && <p className="warning">This name is already taken. Please choose a different one.</p>}
+            {/* {!available && <p className="warning">This name is already taken. Please choose a different one.</p>} */}
           <button
             type="submit"
-            onClick = {() => {checkAvailability();}}>
+            onClick = {() => {fn.newProject(name);}}>
             Create
           </button>
         </form>

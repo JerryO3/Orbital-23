@@ -1,8 +1,10 @@
 import { app } from './Firebase';
-import { getDatabase, ref, set, remove, get, update, onValue } from "firebase/database";
+import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
+
+const { v4: uuidv4 } = require('uuid');
 
 export var loggedIn = !(authpkg.getAuth(app).currentUser === null);
 
@@ -16,6 +18,16 @@ class EventNew {
 
 export const printOne = () => {
     console.log(1);
+}
+
+
+function filterByUser(db, userID) {
+    const dataRef = ref(db, "project")
+    
+    const filteredDataQuery = query(dataRef, orderByChild("parentKey/childKey").equalTo(userID));
+
+    console.log(filteredDataQuery)
+    return filteredDataQuery;
 }
 
 export const writeData = (data) => {
@@ -33,31 +45,38 @@ export const writeData = (data) => {
 const initializeData = (userEmail, userName) => {
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     const db = getDatabase();
-    update(ref(db, "/users/" + uniqueId + "/profile"), {
+    update(ref(db, "/users/" + uniqueId), {
         email : userEmail,
         username : userName
     })
     window.location.href = "/submit";
 }
 
-export const readProjectsData = () => {
+export const objArr = (dbRef, query) => {
     return new Promise((resolve, reject) => {
-        const db = getDatabase();
-        const uniqueId = authpkg.getAuth(app).currentUser.uid;
-        const itemsRef = ref(db, "/users/" + uniqueId + "/projects/");
-    
-        onValue(itemsRef, (snapshot) => {
-          const projects = snapshot.val();
-          if (projects) {
+        onValue(dbRef, (snapshot) => {
+        const projects = snapshot.val();
+        // const projects = snapshot._node.children_.root_.value.children_.root_.left.key;
+        
+        console.log(projects);
+          if (projects == query) {
             const items = Object.values(projects);
             resolve(items);
           } else {
             resolve([]);
           }
         }, (error) => {
-          reject(error);
+            reject(error);
         });
-      });
+    });
+}
+
+export const readProjectsData = () => {
+    const db = getDatabase();
+    const uniqueId = authpkg.getAuth(app).currentUser.uid;
+    const itemsRef = ref(db, "/projects");
+
+    return objArr(itemsRef, uniqueId);
 }
 
 export const readEventsData = () => {
@@ -125,7 +144,7 @@ export function getUsername() {
     const user = JSON.parse(localStorage.getItem('user'));
     const db = getDatabase();
     const uniqueId = user.uid;
-    const usernameRef = ref(db, "/users/" + uniqueId + "/profile/username");
+    const usernameRef = ref(db, "/users/" + uniqueId + "/username");
     var username;
 
     onValue(usernameRef, (snapshot) => {
@@ -234,10 +253,31 @@ export async function sendPasswordResetEmail(email) {
 
 export const newProject = (projectName) => {
     const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName), {
-        name : projectName,
+    const uniqueId = uuidv4();
+    update(ref(db, "/projects/" + uniqueId), {
+        name : projectName, 
     })
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    const userId = user.uid;
+    const telegramRef = ref(db, "/users/" + userId);
+
+    onValue(telegramRef, (snapshot) => {
+        if (snapshot.exists()) {
+        const telegramHandle = snapshot.val().telegramHandle;
+        console.log(telegramHandle); 
+        // Do something with the username value
+        update(ref(db, "/projects/" + uniqueId + "/" + userId), {
+            telegramHandle :  telegramHandle
+        })
+        } else {
+        console.log("Telegram Handle field does not exist in the database.");
+        }
+    },
+    (error) => {
+        console.error("Error retrieving Telegram Handle:", error);
+    });
+    
     window.location.href='/projectCreated';
 }
 
@@ -282,9 +322,11 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
     .then((snapshot) => {
         if (snapshot.exists()) {
             const root = time.toNode(snapshot.val().eventNode);
-            console.log(root);
             // if (time.intervalQuery(root, eventNode)) {
             // time tree
+            // console.log(root);
+            // console.log(eventNode);
+            // console.log(time.addNode(root, eventNode));
             update(ref(db, "/users/" + uniqueId + '/timeTree/eventNode'), time.addNode(root, eventNode));
 
             // project tree
@@ -294,7 +336,7 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
                 endDateTime: endDateTime,
             });
 
-            window.location.href = '/eventCreated';
+            // window.location.href = '/eventCreated';
 
             // } else {
             //     alert('Event Clashing');
@@ -310,7 +352,7 @@ export const newEventByStartEnd = (projectName, eventName, startDate, startTime,
                 endDateTime: endDateTime,
             });
 
-            window.location.href = '/eventCreated';
+            // window.location.href = '/eventCreated';
         }
     })
     .catch((error) => {
@@ -422,15 +464,14 @@ export const removeProject = () => {
     window.location.href='/projectCreated'
 }
 
-export function updateProfile(username, profilePhoto, darkTheme, notification, notificationDuration) {
+export function updateProfile(username, notificationDuration, telegramHandle) {
     const db = getDatabase();
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    const profile = ref(db, "/users/" + uniqueId + "/profile");
+    const profile = ref(db, "/users/" + uniqueId);
     update(profile, {
         username : username,
-        darkTheme : darkTheme,
-        notification : notification,
-        notificationDuration : notificationDuration
+        notificationDuration : notificationDuration,
+        telegramHandle : telegramHandle
     })
 
     // const storage = getStorage();

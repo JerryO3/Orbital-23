@@ -4,28 +4,29 @@ import logo from '../assets/logo.png';
 import * as fn from '../backend/functions'
 
 function Settings() {
-  const [darkMode, setDarkMode] = useState(false);
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  // const [darkMode, setDarkMode] = useState(false);
+  // const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [notificationDuration, setNotificationDuration] = useState(0);
   const [displayName, setDisplayName] = useState(fn.getUsername());
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const fileInputRef = useRef(null);
+  const [telegramHandle, setTelegramHandle] = useState("@")
+  // const [profilePhoto, setProfilePhoto] = useState(null);
+  // const fileInputRef = useRef(null);
 
-  const handleProfilePhotoChange = (e) => {
-    const file = e.target.files[0];
-    setProfilePhoto(file);
-  };
+  // const handleProfilePhotoChange = (e) => {
+  //   const file = e.target.files[0];
+  //   setProfilePhoto(file);
+  // };
 
-  const handleProfileImageClick = () => {
-    fileInputRef.current.click();
-  };
+  // const handleProfileImageClick = () => {
+  //   fileInputRef.current.click();
+  // };
 
-  const handleDarkModeToggle = () => {
-    setDarkMode(!darkMode);
-  };
+  // const handleDarkModeToggle = () => {
+  //   setDarkMode(!darkMode);
+  // };
 
-  const handleNotificationToggle = () => {
-    setNotificationEnabled(!notificationEnabled);
+  const handleTelegramHandleChange = (e) => {
+    setTelegramHandle(e.target.value);
   };
 
   const handleNotificationDurationChange = (e) => {
@@ -70,6 +71,20 @@ function Settings() {
         </div>
 
         <div>
+          <label>
+          Notification Duration:
+                <input type="number" value={notificationDuration} onChange={handleNotificationDurationChange} />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Telegram Handle:
+            <input type="text" value={telegramHandle} onChange={handleTelegramHandleChange} />
+          </label>
+        </div>
+
+        {/* <div>
           <label className='toggle'>
             Dark Mode:
             <button className={`toggle-button ${darkMode ? 'active' : ''}`} onClick={handleDarkModeToggle}>
@@ -94,14 +109,10 @@ function Settings() {
               </label>
             </div>
           )}
-        </div>
-        
-        <div>
-          <button type="submit">Telegram</button>
-        </div>
+        </div> */}
 
         <button type='submit' onClick={() => 
-        {fn.updateProfile(displayName, profilePhoto, darkMode, notificationEnabled, notificationDuration);
+        {fn.updateProfile(displayName, notificationDuration, telegramHandle);
         console.log('Settings saved!');}}>Save Changes</button>
       </form>
     </div>

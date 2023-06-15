@@ -95,9 +95,9 @@ const clearProperties = (node) => {
 }
 
 const equal = (node1, node2) => {
-    console.log(node1.start.equals(node2.start));
-    console.log(node2.end.equals(node1.end));
-    console.log(node1.event === node2.event);
+    // console.log(node1.start.equals(node2.start));
+    // console.log(node2.end.equals(node1.end));
+    // console.log(node1.event === node2.event);
     return node1.start.equals(node2.start)
         && node1.end.equals(node2.end)
         && node1.event == node2.event;
@@ -114,7 +114,7 @@ export function addNodeWithClashes(node1, node2) { // adds Nodes even with clash
             if (currNode === node2) { // checks if they are identical
                 break;
             } else if (currNode.start === node2.start && currNode.end === node2.end) { // checks if they have same timings then merge
-                console.log(node2);
+                // console.log(node2);
                 currNode.event = [
                     node1.event,
                     node2.event
@@ -145,14 +145,14 @@ export function addNodeWithClashes(node1, node2) { // adds Nodes even with clash
 }
 
 export function addNode(node1, node2) { // adds Nodes if they do not clash
-    console.log(node1);
+    // console.log(node1);
     node1 = toNode(node1);
-    console.log(node1);
+    // console.log(node1);
     if (!intervalQuery(node1, node2)) { // checks for clashes
-        console.log(node2);
+        // console.log(node2);
     } else 
     if (node2) {
-        console.log(node1);
+        // console.log(node1);
         var currNode = node1;
         while (currNode) {
             if (currNode === node2) { // catches infinite loop; shouldnt happen because of clash check
@@ -183,7 +183,7 @@ export function addNode(node1, node2) { // adds Nodes if they do not clash
         updateMax(node2,node2.maxEnd); // update all the maxes from leaf to root
         removeParents(node2);
     }
-    console.log(node1);
+    // console.log(node1);
     return JSON.stringify(node1);
 }
 
@@ -301,7 +301,7 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
     var parent;
     var currNode = rootNode;
     while (currNode && !key.equals(currNode.start)) {
-        console.log(currNode);
+        // console.log(currNode);
         parent = currNode;
         if (key < currNode.start) {
             if (currNode.left) {currNode.left.parent = currNode;}
@@ -318,9 +318,9 @@ function keySearch(rootNode, key) { // returns predecessor or successor or query
 
 function getSuccessor(rootNode, query) {
     // var query = queryNode.start;
-    console.log(rootNode);
+    // console.log(rootNode);
     var successor = keySearch(rootNode,query); // turns successor into raw json
-    console.log(successor);
+    // console.log(successor);
     // if (successor == queryNode) {
     //     // means that the query node exists in the tree
     //     // should be caught by timeQuery during interval query
@@ -340,12 +340,12 @@ function getSuccessor(rootNode, query) {
 }
 
 export function intervalQuery(rootNode, queryNode) { // checks if there are clashes
-    console.log(timeQuery(rootNode, queryNode.start));
-    console.log(timeQuery(rootNode, queryNode.end));
+    // console.log(timeQuery(rootNode, queryNode.start));
+    // console.log(timeQuery(rootNode, queryNode.end));
     if (timeQuery(rootNode, queryNode.start) && timeQuery(rootNode, queryNode.end)) {
         var successor = getSuccessor(rootNode, queryNode.start);
-        console.log(successor);
-        console.log(queryNode.end)
+        // console.log(successor);
+        // console.log(queryNode.end)
         if (!successor) {
             return true;
         }
@@ -372,23 +372,23 @@ export function deleteNode(rootNode, queryNode) {
     DFSforParent(rootNode);
     var nearestNode = keySearch(rootNode, queryNode.start);
     // console.log(nearestNode);
-    console.log(equal(nearestNode, queryNode));
+    // console.log(equal(nearestNode, queryNode));
     if (equal(nearestNode, queryNode)) {
-        console.log(0);
+        // console.log(0);
         if (nearestNode.left && nearestNode.right) {
-            console.log(1)
+            // console.log(1)
             var successor = searchMinWithParent(nearestNode.right); // with parent
             if (successor == nearestNode.right) {
-                console.log(10)
+                // console.log(10)
                 successor.parent.right = null;
             } else {
-                console.log(11)
+                // console.log(11)
                 successor.parent.left = null;
             }
             removeParents(successor);
             // nearestNode has 2 children
             if (nearestNode.parent) {
-                console.log(2)
+                // console.log(2)
                 if (nearestNode.parent.right == nearestNode) {
                     // if nearestNode is a right child
                     nearestNode.parent.right = successor;
@@ -397,7 +397,7 @@ export function deleteNode(rootNode, queryNode) {
                     nearestNode.parent.left = successor;
                 }
             } else {
-                console.log(3)
+                // console.log(3)
                 // nearestNode is the root
                 rootNode = successor;
             }
@@ -406,7 +406,7 @@ export function deleteNode(rootNode, queryNode) {
             updateHeights(successor);
             updateMax(successor);
         } else if (nearestNode.left) {
-            console.log('a')
+            // console.log('a')
             // nearestNode has only 1 left child
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -424,7 +424,7 @@ export function deleteNode(rootNode, queryNode) {
             }
             updateMax(nearestNode.left);
         } else if (nearestNode.right) {
-            console.log('a')
+            // console.log('a')
             // nearestNode has only 1 right child
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -442,7 +442,7 @@ export function deleteNode(rootNode, queryNode) {
             }
             updateMax(nearestNode.right);
         } else {
-            console.log('a')
+            // console.log('a')
             // nearestNode is a leaf
             if (nearestNode.parent) {
                 if (nearestNode.parent.right  == nearestNode) {
@@ -463,7 +463,7 @@ export function deleteNode(rootNode, queryNode) {
         clearProperties(nearestNode);
     }
     DFStoRemoveParent(rootNode);
-    console.log(DFSCount(rootNode));
+    // console.log(DFSCount(rootNode));
     return rootNode;
 }
 
@@ -492,7 +492,7 @@ function DFS(rootNode) {
         nodeArr.push(currNode);
         currNode = stack.pop();
     }
-    console.log(nodeArr);
+    // console.log(nodeArr);
     return nodeArr;
 }
 
@@ -577,7 +577,7 @@ export function balanceTree(rootNode) {
             rotateLeft(child);
         } 
         rotateRight(rootNode);
-        console.log(1)
+        // console.log(1)
     } else if ((rootNode.right && !rootNode.left && rootNode.right.height >= 1) ||
                (rootNode.left && rootNode.right && rootNode.left.height - rootNode.right.height < -1)) {
         child = rootNode.right;
@@ -586,6 +586,6 @@ export function balanceTree(rootNode) {
             rotateRight(child);
         } 
         rotateLeft(rootNode);
-        console.log(2);
+        // console.log(2);
     }
 }
