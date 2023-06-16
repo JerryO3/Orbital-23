@@ -46,7 +46,8 @@ function UpdateEvent() {
               {events.map((event) => (
                 <Link to='/changeEvent'>
                   <button key={event.id} onClick={() =>
-                  localStorage.setItem('eventName', event.name)}>
+                  {localStorage.setItem('eventName', event.name);
+                  localStorage.setItem('eventId', event.itemId)}}>
                     {event.name}
                   </button>
                 </Link>

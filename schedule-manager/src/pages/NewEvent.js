@@ -28,7 +28,11 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
+    setAvailable(fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime));
+
+    if(available) {
+      window.location.href='/eventCreated';
+    }
   };
 
   // function checkAvailability() {
@@ -99,7 +103,7 @@ function NewEvent() {
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)} />
   
-            {!available && <p className="warning">This name is already taken. Please choose a different one.</p>}
+            {!available && <p className="warning">This clashes with a pre-existing event. Please choose a different timing.</p>}
 
             <button
                 type="submit"
