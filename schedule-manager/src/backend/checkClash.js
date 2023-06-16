@@ -40,7 +40,7 @@ function unpackFromStartEnd(jsonObject) {
     for (var key in jsonObject) {
         intervalArr.push([lux.DateTime.fromMillis(jsonObject[key].startDateTime), lux.DateTime.fromMillis(jsonObject[key].endDateTime), key, jsonObject[key]])
     }
-    return intervalArr.map(x => new IntervalEvent(lux.Interval.fromDateTimes(x[0],x[1]), x[2], x[3]))
+    return intervalArr.map(x => new IntervalEvent(lux.Interval.fromDateTimes(x[0],x[1]), x[2], x[3]));
 }
 
 function binarySearch(arr, interval) {
@@ -95,6 +95,3 @@ export async function checkClash(promise, startDateTime, endDateTime) {
     var interval = lux.Interval.fromDateTimes(startDateTime,endDateTime);
     return binarySearch(unpackFromStartEnd(jsonObject), interval);
 }
-
-
-
