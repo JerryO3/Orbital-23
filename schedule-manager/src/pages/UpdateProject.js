@@ -12,7 +12,7 @@ function UpdateProject() {
     const fetchData = async () => {
       try {
         const userId = await fn.getUserId()
-        const member = await col.memberQuery(userId, "projects");
+        const member = await col.memberQuery(userId, "projects/");
         setProjects(member);
         console.log(projects);
       } catch (error) {
