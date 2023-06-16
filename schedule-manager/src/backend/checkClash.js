@@ -1,12 +1,12 @@
 import * as lux from "luxon";
 import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild } from "firebase/database";
 
-function getData(ref) {
-    var returnVal;
-    const sortedEvents = query(ref, orderByChild('start'));
-    onValue(sortedEvents, (snapshot) => {returnVal = snapshot.val()});
-    return returnVal;
-}
+// function getData(ref) {
+//     var returnVal;
+//     const sortedEvents = query(ref, orderByChild('start'));
+//     onValue(sortedEvents, (snapshot) => {returnVal = snapshot.val()});
+//     return returnVal;
+// }
 
 class IntervalEvent {
     interval;
@@ -38,14 +38,15 @@ function unpackFromStartEnd(jsonObject) {
     }
     const intervalArr = [];
     for (var key in jsonObject) {
-        intervalArr.push(lux.DateTime.fromMillis(jsonObject[key][start]), lux.DateTime.fromMillis(jsonObject[key][end]), key, jsonObject[key])
+        intervalArr.push(lux.DateTime.fromMillis(jsonObject[key].startDateTime), lux.DateTime.fromMillis(jsonObject[key].endDateTime), key, jsonObject[key])
     }
     return intervalArr.map(x => IntervalEvent(lux.Interval.fromDateTimes(x[0],x[1]), x[2], x[3]))
 }
 
-// 
-
 function binarySearch(arr, interval) {
+    if (arr.length === 0) {
+        return new ClashWindow(false);
+    }
     var leftAdj;
     var rightAdj;
     var low = 0;
@@ -73,10 +74,19 @@ function binarySearch(arr, interval) {
     }
 
     if (interval.end < rightAdj[0].start) {
-        return new ClashWindow(false, leftAdj[0].end, rightAdj[0].start);
+        var windowStart;
+        var windowEnd;
+        if (leftAdj) {windowStart = leftAdj[0].end};
+        if (rightAdj) {windowEnd = rightAdj[0].end};
+        return new ClashWindow(false, windowStart, windowEnd);
     }
 
     return new ClashWindow(true);
+}
+
+export function checkClash(jsonObject, startDateTime, endDateTime) {
+    var interval = lux.Interval.fromDateTimes(startDateTime,endDateTime);
+    return binarySearch(unpackFromStartEnd(jsonObject), interval);
 }
 
 
