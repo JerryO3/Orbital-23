@@ -53,7 +53,7 @@ function binarySearch(arr, interval) {
     const key = interval.start
     var high = arr.length - 1;
     while (low < high) {
-        mid = low + Math.floor((high-low)/2);
+        var mid = low + Math.floor((high-low)/2);
         if (arr[mid][0].contains(key)) {
             return new ClashWindow(true);
         } else if (arr[mid][0].isAfter(key)) {
