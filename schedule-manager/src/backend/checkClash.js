@@ -44,6 +44,7 @@ function unpackFromStartEnd(jsonObject) {
 }
 
 function binarySearch(arr, interval) {
+    const placeHolder = lux.DateTime.now().minus({hours : 1});
     if (arr.length === 0) {
         return new ClashWindow(false);
     }
@@ -55,7 +56,7 @@ function binarySearch(arr, interval) {
     while (low < high) {
         var mid = low + Math.floor((high-low)/2);
         if (arr[mid].interval.contains(key)) {
-            return new ClashWindow(true);
+            return new ClashWindow(true, placeHolder, placeHolder);
         } else if (arr[mid].interval.isAfter(key)) {
             low = mid + 1;
             rightAdj = arr[mid];
@@ -66,7 +67,7 @@ function binarySearch(arr, interval) {
     }
 
     if (arr[low].interval.contains(key)) {
-        return new ClashWindow(true);
+        return new ClashWindow(true, placeHolder, placeHolder);
     } else if (arr[low].interval.isAfter(key)) {
         rightAdj = arr[low];
     } else {
@@ -87,7 +88,7 @@ function binarySearch(arr, interval) {
         return new ClashWindow(false, windowStart, windowEnd);
     }
 
-    return new ClashWindow(true);
+    return new ClashWindow(true, placeHolder, placeHolder);
 }
 
 export async function checkClash(promise, startDateTime, endDateTime) {
