@@ -13,6 +13,7 @@ function UpdateProject() {
         const promise = fn.queryByField("projects", "userId", fn.getUserId());
         const result = await promise;
         setProjects(result);
+        console.log(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -34,7 +35,7 @@ function UpdateProject() {
             <form className="form" onSubmit={(e) => e.preventDefault()}>
               {projects.map((project) => (
                 <Link to='/updateEvent'>
-                  <button key={project.id} onClick={() => {localStorage.setItem('projectId', project.projectId);
+                  <button key={project.id} onClick={() => {localStorage.setItem('projectId', project.itemId);
                 localStorage.setItem('projectName', project.name);}}>
                     {project.name}
                   </button>

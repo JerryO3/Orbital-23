@@ -6,7 +6,9 @@ import * as fn from '../backend/functions'
 function Settings() {
   // const [darkMode, setDarkMode] = useState(false);
   // const [notificationEnabled, setNotificationEnabled] = useState(false);
-  const [notificationDuration, setNotificationDuration] = useState(0);
+  const [notificationDuration, setNotificationDuration] = useState(fn.getField('notificationDuration') === null 
+                                                        ? 0 
+                                                        : fn.getField('notificationDuration'));
   const [displayName, setDisplayName] = useState(fn.getField("username"));
   const [telegramHandle, setTelegramHandle] = useState(fn.getField('telegramHandle') === null 
                                                         ? "@" 

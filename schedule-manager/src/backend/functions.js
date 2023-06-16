@@ -3,6 +3,7 @@ import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChil
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
+import * as cc from './checkClash'
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -56,20 +57,20 @@ const initializeData = (userEmail, userName) => {
 
 export const queryByField = (dbRef, field, queryId) => {
     const db = getDatabase();
-    const eventsRef = ref(db, dbRef);
-    const eventsQuery = query(eventsRef, orderByChild(field), equalTo(queryId));
-    return get(eventsQuery).then((snapshot) => {
-        // console.log(snapshot.exists());
+    const itemsRef = ref(db, dbRef);
+    const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
+    return get(itemsQuery).then((snapshot) => {
+        console.log(snapshot.exists());
         // console.log(1);
 
         if (snapshot.exists()) {
-          const events = [];
+          const items = [];
           snapshot.forEach((childSnapshot) => {
-            const eventId = childSnapshot.key;
-            const eventData = childSnapshot.val();
-            events.push({ eventId, ...eventData });
+            const itemId = childSnapshot.key;
+            const itemData = childSnapshot.val();
+            items.push({ itemId, ...itemData });
           });
-          return events;
+          return items;
         } else {
           return [];
         }
@@ -289,7 +290,6 @@ export const newProject = (projectName) => {
     const userId = user.uid;
     update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
-        projectId : uniqueId,
         userId : userId
     })
     
@@ -332,16 +332,20 @@ export const newEventByStartEnd = (projectId, eventName, startDate, startTime, e
 
     const uniqueId = uuidv4();
 
-    update(ref(db, "/events/" + uniqueId), {
-        name: eventName,
-        user: userId,
-        startDateTime: startDateTime,
-        endDateTime: endDateTime,
-        projectId : projectId,
-        eventId : uniqueId
-    });
+    const eventArr = queryByField("events", "userId", userId);
 
-    window.location.href='/eventCreated';
+    if (!cc.checkClash(eventArr, startDateTime, endDateTime).clash) {
+        update(ref(db, "/events/" + uniqueId), {
+            name: eventName,
+            user: userId,
+            startDateTime: startDateTime.toMillis(),
+            endDateTime: endDateTime.toMillis(),
+            projectId : projectId,
+        });
+        return true
+    } else {
+        return false;
+    }
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -388,38 +392,6 @@ export const removeEvent = () => {
     const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
     + localStorage.getItem('projectName') + '/events/'
     + localStorage.getItem('eventName'));
-    const timeTree = ref(db, "/users/" + uniqueId + '/timeTree/eventNode')
-
-    //time tree
-    var event;
-
-    onValue(itemRef, (snapshot) => {
-        if (snapshot.exists()) {
-        event = snapshot.val();
-        console.log(event); 
-        } else {
-        console.log("Username field does not exist in the database.");
-        }
-    },
-    (error) => {
-        console.error("Error retrieving username:", error);
-    });
-
-    get(timeTree)
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            console.log(1)
-            const eventRef = new EventNew(time.fromString(event.startDateTime), time.fromString(event.endDateTime), event.name);
-            const tree = snapshot.val();
-            const queryNode = time.newNode(eventRef);
-            const newTree = time.deleteNode(tree, queryNode);
-            update(ref(db, "/users/" + uniqueId + '/timeTree/eventNode'), newTree);
-        }
-    })
-    .catch((error) => {
-        // Handle the error
-        console.error('Error retrieving data:', error);
-    });
     
     //project tree
     remove(itemRef)
