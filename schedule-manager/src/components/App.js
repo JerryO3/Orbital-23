@@ -81,6 +81,8 @@ function App() {
         <Route path='/projectCreated' element={<p.ProjectCreated />} />
         <Route path='/updateProject' element={<p.UpdateProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />
+        <Route path='/addUser' element={<p.AddUser />} />
+        <Route path='/userAdded' element={<p.UserAdded />} />
       </Routes>
     </Router>
   );

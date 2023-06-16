@@ -10,10 +10,10 @@ function UpdateProject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const promise = fn.queryByValue("projects", "userId", fn.getUserId());
-        const result = await promise;
-        setProjects(result);
-        console.log(result);
+        const self = await fn.queryByValue("projects", "userId", fn.getUserId());
+        const member = await fn.queryByValue("projects", "members/" + fn.getUserId(), true);
+        setProjects([...self, ...member]);
+        console.log(projects);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

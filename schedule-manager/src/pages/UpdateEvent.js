@@ -59,6 +59,12 @@ function UpdateEvent() {
                   </button>
               </Link>
 
+              <Link to='/addUser'>
+                  <button>
+                    Add Members
+                  </button>
+                </Link>
+
               <Link to='/updateProject'>
                   <button>
                     Return to Projects
@@ -82,6 +88,12 @@ function UpdateEvent() {
                 <Link to='/newEvent'>
                   <button>
                     Create New Event
+                  </button>
+                </Link>
+
+                <Link to='/addUser'>
+                  <button>
+                    Add Members
                   </button>
                 </Link>
 
