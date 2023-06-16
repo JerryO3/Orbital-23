@@ -38,9 +38,9 @@ function unpackFromStartEnd(jsonObject) {
     }
     const intervalArr = [];
     for (var key in jsonObject) {
-        intervalArr.push(lux.DateTime.fromMillis(jsonObject[key].startDateTime), lux.DateTime.fromMillis(jsonObject[key].endDateTime), key, jsonObject[key])
+        intervalArr.push([lux.DateTime.fromMillis(jsonObject[key].startDateTime), lux.DateTime.fromMillis(jsonObject[key].endDateTime), key, jsonObject[key]])
     }
-    return intervalArr.map(x => IntervalEvent(lux.Interval.fromDateTimes(x[0],x[1]), x[2], x[3]))
+    return intervalArr.map(x => new IntervalEvent(lux.Interval.fromDateTimes(x[0],x[1]), x[2], x[3]))
 }
 
 function binarySearch(arr, interval) {
@@ -53,8 +53,8 @@ function binarySearch(arr, interval) {
     const key = interval.start
     var high = arr.length - 1;
     while (low < high) {
-        mid = low + Math.floor((high-low)/2);
-        if (arr[mid][0].contains(key)) {
+        var mid = low + Math.floor((high-low)/2);
+        if (arr[mid].interval.contains(key)) {
             return new ClashWindow(true);
         } else if (arr[mid][0].isAfter(key)) {
             low = mid + 1;
