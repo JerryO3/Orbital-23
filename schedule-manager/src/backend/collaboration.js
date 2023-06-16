@@ -19,11 +19,18 @@ export async function addUser(telegramHandle) {
             [userId] : true
         })
 
-        update(ref(db, "/membership/" + userId), {
-            [thisProjectId] : true
-        })
+        updateMembership([userId], thisProjectId);
 
         window.location.href = "/userAdded"
+    }
+}
+
+export function updateMembership(membersArr, itemId) {
+    const db = getDatabase();
+    for (var memberId in membersArr) {
+        update(ref(db, "/membership/" + memberId), {
+            [itemId] : true
+        })
     }
 }
 
@@ -60,7 +67,7 @@ export async function memberQuery(userId, field) {
         const item = itemSnapshot.val();
         items.push({itemId, ...item});
         }
-    }
+        }
     }
 
     return items;
