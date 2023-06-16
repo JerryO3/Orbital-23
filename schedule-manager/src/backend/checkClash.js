@@ -56,7 +56,7 @@ function binarySearch(arr, interval) {
         var mid = low + Math.floor((high-low)/2);
         if (arr[mid].interval.contains(key)) {
             return new ClashWindow(true);
-        } else if (arr[mid][0].isAfter(key)) {
+        } else if (arr[mid].interval.isAfter(key)) {
             low = mid + 1;
             rightAdj = arr[mid];
         } else {
@@ -65,19 +65,19 @@ function binarySearch(arr, interval) {
         }
     }
 
-    if (arr[low][0].contains(key)) {
+    if (arr[low].interval.contains(key)) {
         return new ClashWindow(true);
-    } else if (arr[low][0].isAfter(key)) {
+    } else if (arr[low].interval.isAfter(key)) {
         rightAdj = arr[low];
     } else {
         leftAdj = arr[low];
     }
 
-    if (interval.end < rightAdj[0].start) {
+    if (interval.end < rightAdj.interval.start) {
         var windowStart;
         var windowEnd;
-        if (leftAdj) {windowStart = leftAdj[0].end};
-        if (rightAdj) {windowEnd = rightAdj[0].end};
+        if (leftAdj) {windowStart = leftAdj.interval.end};
+        if (rightAdj) {windowEnd = rightAdj.interval.end};
         return new ClashWindow(false, windowStart, windowEnd);
     }
 
