@@ -60,7 +60,7 @@ export const queryByField = (dbRef, field, queryId) => {
     const itemsRef = ref(db, dbRef);
     const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
     return get(itemsQuery).then((snapshot) => {
-        console.log(snapshot.exists());
+        // console.log(snapshot.exists());
         // console.log(1);
 
         if (snapshot.exists()) {
@@ -304,7 +304,7 @@ export const newEventByDuration = (projectName, eventName, startDate, startTime,
     })
 }
 
-export const newEventByStartEnd = (projectId, eventName, startDate, startTime, endDate, endTime) => {
+export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -332,9 +332,12 @@ export const newEventByStartEnd = (projectId, eventName, startDate, startTime, e
 
     const uniqueId = uuidv4();
 
-    const eventArr = queryByField("events", "userId", userId);
+    const eventArr = queryByField("events", "user", userId);
 
-    if (!cc.checkClash(eventArr, startDateTime, endDateTime).clash) {
+    const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
+    
+    if (!clash.clash) {
+        console.log(uniqueId);
         update(ref(db, "/events/" + uniqueId), {
             name: eventName,
             user: userId,
