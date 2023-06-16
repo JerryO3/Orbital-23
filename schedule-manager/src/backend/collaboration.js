@@ -14,8 +14,8 @@ export async function addUser(telegramHandle) {
     else {
         const db = getDatabase();
         const thisProjectId = localStorage.getItem("projectId");
-        update(ref(db, "/projects/" +  thisProjectId + "/members"), {
-            [userId] : true
+        update(ref(db, "/membership/" + userId), {
+            [thisProjectId] : true
         })
 
         window.location.href = "/userAdded"
@@ -30,4 +30,36 @@ async function getUserId(telegramHandle){
     else {
         return null;
     }
+}
+
+export async function memberQuery() {
+    const db = getDatabase();
+    const userId = fn.getUserId();
+    console.log(userId);
+
+    // Query member's projects
+    const memberProjectsRef = ref(db, "membership/" + userId);
+    const memberProjectsSnapshot = await get(memberProjectsRef);
+
+    console.log(memberProjectsSnapshot);
+
+    // Array to store the project details
+    const projects = [];
+
+    if (memberProjectsSnapshot.exists()) {
+    const projectIds = Object.keys(memberProjectsSnapshot.val());
+    
+    // Fetch project details for each project ID
+    for (const projectId of projectIds) {
+        const projectRef = ref(db, "projects/" + projectId);
+        const projectSnapshot = await get(projectRef);
+        
+        if (projectSnapshot.exists()) {
+        const project = projectSnapshot.val();
+        projects.push(project);
+        }
+    }
+    }
+
+    return projects;
 }

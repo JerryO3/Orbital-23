@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
+import * as col from '../backend/collaboration';
 
 function UpdateProject() { 
   const [projects, setProjects] = useState([]);
@@ -11,7 +12,7 @@ function UpdateProject() {
     const fetchData = async () => {
       try {
         const self = await fn.queryByValue("projects", "userId", fn.getUserId());
-        const member = await fn.queryByValue("projects", "members/" + fn.getUserId(), true);
+        const member = await col.memberQuery();
         setProjects([...self, ...member]);
         console.log(projects);
       } catch (error) {
