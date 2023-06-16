@@ -74,14 +74,16 @@ function binarySearch(arr, interval) {
     }
 
     if (!rightAdj) {
-        return new ClashWindow(false, windowStart, windowEnd);
+        var windowStart;
+        if (leftAdj) {windowStart = leftAdj.interval.end};
+        return new ClashWindow(false, windowStart, null);
     }
 
     if (rightAdj && interval.end < rightAdj.interval.start) {
         var windowStart;
         var windowEnd;
         if (leftAdj) {windowStart = leftAdj.interval.end};
-        if (rightAdj) {windowEnd = rightAdj.interval.end};
+        if (rightAdj) {windowEnd = rightAdj.interval.start};
         return new ClashWindow(false, windowStart, windowEnd);
     }
 
