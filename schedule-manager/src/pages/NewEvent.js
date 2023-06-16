@@ -18,7 +18,7 @@ function NewEvent() {
 
   const [available, setAvailable] = useState(true);
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e){
     e.preventDefault();
 
     // Validate the form fields
@@ -28,9 +28,11 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    setAvailable(fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime));
+    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
 
-    if(available) {
+    setAvailable(result);
+
+    if(result) {
       window.location.href='/eventCreated';
     }
   };
@@ -55,8 +57,6 @@ function NewEvent() {
   //   });
   // }
 
-  console.log(thisProject);
-  console.log(1)
   return (
       <div className="container">
         <div className="logo">
