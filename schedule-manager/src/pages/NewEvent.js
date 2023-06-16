@@ -9,13 +9,16 @@ import * as col from '../backend/collaboration';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
 function NewEvent() { 
+  const user = JSON.parse(localStorage.getItem('user'));
+  const userId = user.uid;
+
   const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [members, setMembers] = useState([]);
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([userId]);
 
   const thisProject = localStorage.getItem('projectId');
 
