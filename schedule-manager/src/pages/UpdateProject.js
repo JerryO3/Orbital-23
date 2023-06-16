@@ -10,7 +10,7 @@ function UpdateProject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const promise = fn.queryByField("projects", "userId", fn.getUserId());
+        const promise = fn.queryByValue("projects", "userId", fn.getUserId());
         const result = await promise;
         setProjects(result);
         console.log(result);

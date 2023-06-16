@@ -13,7 +13,7 @@ function UpdateEvent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const promise = fn.queryByField("events", "projectId", thisProjectId);
+        const promise = fn.queryByValue("events", "projectId", thisProjectId);
         const result = await promise;
         setEvents(result);
       } catch (error) {

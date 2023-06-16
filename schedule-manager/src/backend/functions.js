@@ -55,7 +55,7 @@ const initializeData = (userEmail, userName) => {
     window.location.href = "/submit";
 }
 
-export const queryByField = (dbRef, field, queryId) => {
+export const queryByValue = (dbRef, field, queryId) => {
     const db = getDatabase();
     const itemsRef = ref(db, dbRef);
     const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
@@ -332,7 +332,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
 
     const uniqueId = uuidv4();
 
-    const eventArr = queryByField("events", "user", userId);
+    const eventArr = queryByValue("events", "user", userId);
 
     const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
     
