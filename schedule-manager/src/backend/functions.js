@@ -309,7 +309,7 @@ export const newEventByDuration = (projectName, eventName, startDate, startTime,
     })
 }
 
-export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime) {
+export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, members) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -343,7 +343,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     
     if (!clash.clash) {
         console.log(uniqueId);
-        update(ref(db, "/events/" + uniqueId), {
+        update(ref(db, "/events/" + uniqueId), {// update membership and events using map!
             name: eventName,
             user: userId,
             startDateTime: startDateTime.toMillis(),
@@ -441,6 +441,30 @@ export const removeProject = () => {
     onValue(que, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
     removeProjectHelper(projectId);
     window.location.href='/projectCreated'
+}
+
+export const teamCheckClash = async (projectId, startDateTime, endDateTime, memberArr=undefined) => {
+    const db = getDatabase();
+    const reference = ref(db, "projects/" + projectId + "/members"); // if no member array then check all project members
+    memberArr = memberArr 
+              ? memberArr 
+              : onValue(reference, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x => helper(x)) : null)
+    memberArr.map(x => helper(x));
+    async function helper(userId) {
+        const handle = await getHandle(userId);
+        const eventArr = queryByValue("events", "user", userId); // get events by membership
+        const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
+        const obj = {};
+        obj[handle] = clash;
+        return obj;
+    }
+}
+
+export const getHandle = async (uid) => {
+    const db = getDatabase();
+    var returnVal;
+    onValue(ref(db, "users/" + uid + "/telegramHandle"), (snapshot) => {returnVal = snapshot.val()});
+    return returnVal;
 }
 
 export function updateProfile(username, notificationDuration, telegramHandle) {
