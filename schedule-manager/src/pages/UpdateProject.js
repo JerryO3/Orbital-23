@@ -11,7 +11,8 @@ function UpdateProject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const member = await col.memberQuery();
+        const userId = await fn.getUserId()
+        const member = await col.memberQuery(userId, "projects");
         setProjects(member);
         console.log(projects);
       } catch (error) {
