@@ -37,10 +37,8 @@ async function getUserId(telegramHandle){
     }
 }
 
-export async function memberQuery(field) {
+export async function memberQuery(userId, field) {
     const db = getDatabase();
-    const userId = fn.getUserId();
-    console.log(userId);
 
     // Query member's projects
     const memberProjectsRef = ref(db, "membership/" + userId);
