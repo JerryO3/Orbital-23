@@ -390,13 +390,7 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
 
 export const removeEvent = () => {
     const db = getDatabase();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const uniqueId = user.uid;
-    const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
-    + localStorage.getItem('projectName') + '/events/'
-    + localStorage.getItem('eventName'));
-    
-    //project tree
+    const itemRef = ref(db, '/events/' + localStorage.getItem('eventId'));
     remove(itemRef)
     .then(() => {
         console.log("Item deleted successfully");
@@ -408,21 +402,39 @@ export const removeEvent = () => {
     window.location.href='/eventCreated'
 }
 
-export const removeProject = () => {
+const removeEventHelper = (eventId) => {
     const db = getDatabase();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const uniqueId = user.uid;
-    const itemRef = ref(db, "/users/" + uniqueId + "/projects/" 
-    + localStorage.getItem('projectName'));
-
+    const itemRef = ref(db, '/events/' + eventId);
     remove(itemRef)
     .then(() => {
-        console.log("Item deleted successfully");
+        console.log("Event deleted successfully");
     })
     .catch((error) => {
-        console.error("Error deleting item:", error);
+        console.error("Error deleting event:", error);
     });
+}
 
+const removeProjectHelper = (projectId) => {
+    const db = getDatabase();
+    const itemRef = ref(db, '/projects/' + projectId);
+    remove(itemRef)
+    .then(() => {
+        console.log("Project deleted successfully");
+    })
+    .catch((error) => {
+        console.error("Error deleting project:", error);
+    });
+}
+
+export const removeProject = () => {
+    const db = getDatabase();
+    const projectId = localStorage.getItem('projectId');
+    const reference = ref(db, "events");
+    // console.log(reference);
+    const que = query(reference, orderByChild("projectId"), equalTo(projectId));
+    // console.log(que);
+    onValue(que, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
+    removeProjectHelper(projectId);
     window.location.href='/projectCreated'
 }
 
