@@ -288,9 +288,14 @@ export const newProject = (projectName) => {
     const uniqueId = uuidv4();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
+    
     update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
         userId : userId
+    })
+
+    update(ref(db, "/membership/" + userId), {
+        [uniqueId] : true
     })
     
     window.location.href='/projectCreated';
