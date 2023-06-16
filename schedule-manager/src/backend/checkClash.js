@@ -73,7 +73,11 @@ function binarySearch(arr, interval) {
         leftAdj = arr[low];
     }
 
-    if (interval.end < rightAdj.interval.start) {
+    if (!rightAdj) {
+        return new ClashWindow(false, windowStart, windowEnd);
+    }
+
+    if (rightAdj && interval.end < rightAdj.interval.start) {
         var windowStart;
         var windowEnd;
         if (leftAdj) {windowStart = leftAdj.interval.end};
