@@ -2,7 +2,7 @@ import { app } from './Firebase';
 import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo, child } from "firebase/database";
 import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
-import { once } from 'events';
+import { once, on} from 'events';
 import * as cc from './checkClash'
 import * as fn from './functions'
 
@@ -14,6 +14,11 @@ export async function addUser(telegramHandle) {
     else {
         const db = getDatabase();
         const thisProjectId = localStorage.getItem("projectId");
+
+        update(ref(db, "/projects/" + thisProjectId + "/members"), {
+            [userId] : true
+        })
+
         update(ref(db, "/membership/" + userId), {
             [thisProjectId] : true
         })
@@ -32,7 +37,7 @@ async function getUserId(telegramHandle){
     }
 }
 
-export async function memberQuery() {
+export async function memberQuery(field) {
     const db = getDatabase();
     const userId = fn.getUserId();
     console.log(userId);
@@ -41,25 +46,54 @@ export async function memberQuery() {
     const memberProjectsRef = ref(db, "membership/" + userId);
     const memberProjectsSnapshot = await get(memberProjectsRef);
 
-    console.log(memberProjectsSnapshot);
-
     // Array to store the project details
-    const projects = [];
+    const items = [];
 
     if (memberProjectsSnapshot.exists()) {
-    const projectIds = Object.keys(memberProjectsSnapshot.val());
+    const itemIds = Object.keys(memberItemsSnapshot.val());
     
     // Fetch project details for each project ID
-    for (const projectId of projectIds) {
-        const projectRef = ref(db, "projects/" + projectId);
-        const projectSnapshot = await get(projectRef);
+    for (const itemId of itemIds) {
+        const itemRef = ref(db, [field] + itemId);
+        const itemSnapshot = await get(itemRef);
         
-        if (projectSnapshot.exists()) {
-        const project = projectSnapshot.val();
-        projects.push(project);
+        if (itemSnapshot.exists()) {
+        const itemId = itemSnapshot.key;
+        const item = itemSnapshot.val();
+        items.push({itemId, ...item});
         }
     }
     }
 
-    return projects;
+    return items;
+}
+
+export async function getMembers() {
+    const db = getDatabase();
+    const projectId = localStorage.getItem("projectId");
+
+    // Create a reference to the project's members node
+    const projectMembersRef = ref(db, "projects/" + projectId + "/members");
+    const projectMembersSnapshot = await get(projectMembersRef);
+
+    // Array to store the member details
+    const members = [];
+
+    if (projectMembersSnapshot.exists()) {
+    const memberIds = Object.keys(projectMembersSnapshot.val());
+
+    // Fetch member details for each member ID
+    for (const memberId of memberIds) {
+        const memberRef = ref(db, "users/" + memberId);
+        const memberSnapshot = await get(memberRef);
+
+        if (memberSnapshot.exists()) {
+        const itemId = memberSnapshot.key;
+        const member = memberSnapshot.val();
+        members.push({itemId, ...member});
+        }
+    }
+    }
+
+    return members;
 }

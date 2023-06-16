@@ -1,10 +1,11 @@
 import React from "react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as authpkg from "firebase/auth";
 import { app } from '../backend/Firebase';
 import { getDatabase, ref, set, onValue } from "firebase/database";
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
+import * as col from '../backend/collaboration';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
 function NewEvent() { 
@@ -13,6 +14,8 @@ function NewEvent() {
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [members, setMembers] = useState([]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
 
   const thisProject = localStorage.getItem('projectId');
 
@@ -28,7 +31,7 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
+    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime, members);
 
     setAvailable(result);
 
@@ -37,25 +40,29 @@ function NewEvent() {
     }
   };
 
-  // function checkAvailability() {
-  //   const db = getDatabase();
-  //   const uniqueId = authpkg.getAuth(app).currentUser.uid;
-  //   const usersRef = ref(db, "/users/" + uniqueId + "/projects/" + thisProject + "/events/");
+  const toggleMemberSelection = (memberId) => {
+    if (selectedMembers.includes(memberId)) {
+      // If the member is already selected, remove it from the selected members
+      setSelectedMembers(selectedMembers.filter((id) => id !== memberId));
+    } else {
+      // If the member is not selected, add it to the selected members
+      setSelectedMembers([...selectedMembers, memberId]);
+    }
+  };
 
-  //   onValue(usersRef, (snapshot) => {
-  //     const events = snapshot.val();
-  //     if (events !== null) {
-  //       const isTaken = Object.values(events).some(event => event.name === name);
-  //       if (isTaken) {
-  //         setAvailable(!isTaken);
-  //       } else {
-  //         fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
-  //       }
-  //     } else {
-  //       fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime);
-  //     }
-  //   });
-  // }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await col.getMembers();
+        setMembers(result);
+        // console.log(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  });
 
   return (
       <div className="container">
@@ -66,6 +73,64 @@ function NewEvent() {
           Create a new event.
         </h1>
         <div className="loginBox">
+        {members.length > 0 ? (
+          <form className="form" onSubmit={(e) => e.preventDefault()}>
+  
+            <input
+              type="name"
+              placeholder="Event Name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)} />
+  
+            <input
+              type="date"
+              placeholder="Start Date"
+              name="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)} />
+  
+            <input
+              type="time"
+              placeholder="Start Time"
+              name="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)} />
+  
+            <input
+              type="date"
+              placeholder="End Date"
+              name="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)} />
+  
+            <input
+              type="time"
+              placeholder="End Time"
+              name="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)} />
+            
+            {members.map((member) => (
+                  <button
+                  key={member.id}
+                  className={`toggle ${selectedMembers.includes(member.itemId) ? 'selected' : ''}`}
+                  onClick={() => toggleMemberSelection(member.itemId)}
+                >
+                  {member.telegramHandle}
+                </button>
+              ))}
+  
+            {!available && <p className="warning">This clashes with a pre-existing event. Please choose a different timing.</p>}
+
+            <button
+                type="submit"
+                onClick={() => handleSubmit}
+              >
+              Create
+            </button>
+          </form>
+        ) : (
           <form className="form" onSubmit={handleSubmit}>
   
             <input
@@ -102,15 +167,15 @@ function NewEvent() {
               name="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)} />
-  
-            {!available && <p className="warning">This clashes with a pre-existing event. Please choose a different timing.</p>}
-
+            
             <button
                 type="submit"
+                onClick={() => handleSubmit}
               >
               Create
             </button>
-          </form>
+            </form>
+        )}
         </div>
       </div>
     );

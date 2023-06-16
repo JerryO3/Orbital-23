@@ -73,3 +73,16 @@
 .form button:hover {
   background-color: #3EC4C8;
 }
+
+.form .toggle {
+  /* Styles for the unselected state */
+  cursor: pointer;
+  background-color: #ccc;
+
+}
+
+.toggle.selected {
+  /* Styles for the selected state */
+  background-color: #32AAAE;
+  ;
+}

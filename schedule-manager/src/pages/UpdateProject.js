@@ -11,9 +11,8 @@ function UpdateProject() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const self = await fn.queryByValue("projects", "userId", fn.getUserId());
         const member = await col.memberQuery();
-        setProjects([...self, ...member]);
+        setProjects(member);
         console.log(projects);
       } catch (error) {
         console.error('Error fetching data:', error);
