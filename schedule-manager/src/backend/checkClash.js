@@ -84,7 +84,8 @@ function binarySearch(arr, interval) {
     return new ClashWindow(true);
 }
 
-export function checkClash(jsonObject, startDateTime, endDateTime) {
+export async function checkClash(promise, startDateTime, endDateTime) {
+    var jsonObject = await promise;
     var interval = lux.Interval.fromDateTimes(startDateTime,endDateTime);
     return binarySearch(unpackFromStartEnd(jsonObject), interval);
 }
