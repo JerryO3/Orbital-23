@@ -47,29 +47,38 @@ function binarySearch(arr, interval) {
     if (arr.length === 0) {
         return new ClashWindow(false);
     }
+    arr.sort((a,b) => a.interval.start - b.interval.start);
+    // console.log(interval.start);
+    // console.log(arr.flatMap(x => [x.interval.s, x.interval.e]))
+    // console.log(arr.
+    //     flatMap(x => [x.interval.contains(interval.start),
+    //                   x.interval.contains(interval.end)]));
     var leftAdj;
     var rightAdj;
     var low = 0;
     const key = interval.start
     var high = arr.length - 1;
     while (low < high) {
+        // console.log([low,high])
         var mid = low + Math.floor((high-low)/2);
         if (arr[mid].interval.contains(key)) {
             return new ClashWindow(true, 0, 0);
         } else if (arr[mid].interval.isAfter(key)) {
-            low = mid + 1;
+            high = mid;
             rightAdj = arr[mid];
         } else {
-            high = mid;
+            low = mid + 1;
             leftAdj = arr[mid];
         }
     }
-
+    // console.log(low)
     if (arr[low].interval.contains(key)) {
         return new ClashWindow(true, 0, 0);
     } else if (arr[low].interval.isAfter(key)) {
+        
         rightAdj = arr[low];
     } else {
+
         leftAdj = arr[low];
     }
 
