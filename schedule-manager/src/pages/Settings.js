@@ -3,16 +3,17 @@ import './Settings.css';
 import logo from '../assets/logo.png';
 import * as fn from '../backend/functions'
 
-function Settings() {
+function Settings() { // to fix using the new getField
   // const [darkMode, setDarkMode] = useState(false);
   // const [notificationEnabled, setNotificationEnabled] = useState(false);
-  const [notificationDuration, setNotificationDuration] = useState(fn.getField('notificationDuration') === null 
-                                                        ? 0 
-                                                        : fn.getField('notificationDuration'));
-  const [displayName, setDisplayName] = useState(fn.getField("username"));
-  const [telegramHandle, setTelegramHandle] = useState(fn.getField('telegramHandle') === null 
-                                                        ? "@" 
-                                                        : fn.getField('telegramHandle'))
+  const [notificationDuration, setNotificationDuration] = useState(0);
+  fn.getField('notificationDuration').then(x => x === null ? setNotificationDuration(0) : setNotificationDuration(x))
+
+  const [displayName, setDisplayName] = useState("");
+  fn.getField("username").then(x => setDisplayName(x));
+
+  const [telegramHandle, setTelegramHandle] = useState("@");
+  fn.getField('telegramHandle').then(x => x === null ? null : setTelegramHandle(x));
   // const [profilePhoto, setProfilePhoto] = useState(null);
   // const fileInputRef = useRef(null);
 

@@ -9,8 +9,8 @@ import * as fn from '../backend/functions'
 
 function Dashboard() {
   const storedUser = localStorage.getItem('user');
-  const username = fn.getField('username');
-  console.log(username);
+  const promise = fn.getField('username').then(x => setUserName(x));
+  const [userName, setUserName] = useState("")
 
   if (!storedUser) {
       // User is not logged in, redirect to the desired page
@@ -23,7 +23,7 @@ function Dashboard() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-          Welcome Back '{username}'
+          Welcome Back '{userName}'
       </h1>
       <div className="loginBox">
         <form className="form" onSubmit={(e) => e.preventDefault()}>

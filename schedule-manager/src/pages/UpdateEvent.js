@@ -75,7 +75,7 @@ function UpdateEvent() {
                 type="submit"
                 onClick={
                   () => {
-                          fn.removeProject();
+                        fn.removeProject().then(() => window.location.href='/projectCreated');
                         }
                   }
               >
@@ -107,7 +107,7 @@ function UpdateEvent() {
                 type="submit"
                 onClick={
                   () => {
-                          fn.removeProject();
+                          fn.removeProject().then(() => window.location.href='/projectCreated');
                         }
                   }
                 >

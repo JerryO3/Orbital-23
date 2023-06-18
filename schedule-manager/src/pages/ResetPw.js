@@ -16,7 +16,7 @@ const ResetPw = () => {
         
         onValue(usersRef, (snapshot) => {
           const users = snapshot.val();
-          Object.values(users).some(user => user.profile.email === email)
+          Object.values(users).some(user => user.email === email)
           ?  fn.sendPasswordResetEmail(email)
           :  setValidEmail(false);
         });
