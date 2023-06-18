@@ -1,4 +1,5 @@
 import React from "react";
+import { app } from '../backend/Firebase';
 import { useState } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
@@ -8,6 +9,8 @@ import * as time from '../backend/time';
 import * as lux from 'luxon';
 import { update } from "firebase/database";
 import * as tc from '../backend/testcases';
+import * as collab from '../backend/collaboration';
+import * as authpkg from "firebase/auth";
 
 
 const timesFrom = [
@@ -80,11 +83,11 @@ function BackendTest() {
                     )} 
             buttonText="Delete Node" />
         <ClickDebug func={
-            () => console.log(time.nodesFromNowTill(tree,105))} 
-            buttonText="Get DFS Array" />
-            <ClickDebug func={
-            () => console.log('help tap me up')} 
-            buttonText="check ur phone plssss" />
+            () => console.log(collab.getMembers())} 
+            buttonText="Get Members" />
+        <ClickDebug func={
+            () => console.log(JSON.parse(localStorage.getItem('user')))} 
+            buttonText="Member Query" />
         </>  
         
     );

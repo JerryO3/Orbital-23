@@ -128,7 +128,7 @@ function NewEvent() {
 
             <button
                 type="submit"
-                onClick={() => handleSubmit}
+                onClick={(e) => handleSubmit(e)}
               >
               Create
             </button>
@@ -173,7 +173,7 @@ function NewEvent() {
             
             <button
                 type="submit"
-                onClick={() => handleSubmit}
+                onClick={(e) => handleSubmit(e)}
               >
               Create
             </button>

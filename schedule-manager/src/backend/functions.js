@@ -4,6 +4,7 @@ import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
 import * as cc from './checkClash'
+import { getMembers, memberQuery } from './collaboration';
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -144,8 +145,6 @@ export async function login(email, password) {
     const user = authpkg.getAuth(app).currentUser;
     localStorage.setItem('user', JSON.stringify(user));
 }
-
-
 
 export async function loginWithCreds(credential) {
     const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
@@ -309,7 +308,9 @@ export const newEventByDuration = (projectName, eventName, startDate, startTime,
     })
 }
 
-export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, members) {
+// const profile = await queryByValue('users', 'telegramHandle', '@Jin_Yuan'); // to delete
+
+export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, member) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -337,23 +338,76 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
 
     const uniqueId = uuidv4();
 
-    const eventArr = queryByValue("events", "user", userId);
+    // const test = await members
+    // .map(y => [y, memberQuery(y.itemId, 'events/')
+    //     .then(x => cc.checkClash(x, startDateTime, endDateTime))])
+    // .map(x => {x[1].then(y => {clashArr.push(y.clash); console.log(clashArr);}); return x;})
+    // .map(x => clashArr.reduce((a,b) => a && b) ? updater(x[0].itemId) : null)
+    ;
 
-    const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
-    
-    if (!clash.clash) {
-        console.log(uniqueId);
-        update(ref(db, "/events/" + uniqueId), {// update membership and events using map!
+    // const promise = new Promise((resolve) => resolve(members));
+    // const clashArr = [];
+    // promise
+    // .then(x => x.map(y => memberQuery(y.itemId, 'events/').then(x => cc.checkClash(x, startDateTime, endDateTime).then(x => [y,x]))))
+
+    // .then(x => x.map(y => y.then(z => console.log(z[1].clash))));
+    // console.log(member);
+    // member.push(profile[0]);
+    // console.log(member);
+    const memberPromises = member
+    .map(y => memberQuery(y.itemId, 'events/')
+        .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
+            .then(x => [y,x]))) // converts clashWindow and profile into a single promise
+    console.log(memberPromises);
+
+    if (member.length === 1) {
+        memberPromises[0].then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects!
+    } else {
+    const memberAvail = memberPromises
+    .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
+    // ^ reduces array of promises into a promise that returns an array
+    .then(x => x.reduce((a,b) => Array.isArray(a) ? !a[1].clash && !b[1].clash : a && !b[1].clash) // checks all members if clear
+        ? x.map(y => {console.log(y[0].itemId); updater(y[0].itemId);}) // applies updater using map 
+        : x.filter(y => y[1].clash) // filters out clashing people to be printed out
+        )
+    .then(x => console.log(x)) // prints out clashing people
+    ;
+    }  
+
+    function updater(uid) {
+        update(ref(db, "/events/" + uniqueId), {// helps to update while within promise wrapper
             name: eventName,
             user: userId,
             startDateTime: startDateTime.toMillis(),
             endDateTime: endDateTime.toMillis(),
             projectId : projectId,
         });
-        return true
-    } else {
-        return false;
+        update(ref(db, "/membership/" + uid), {
+            [uniqueId] : true
+        });
+        return true;
     }
+
+
+    // const eventArr = queryByValue("events", "user", userId);
+
+    // const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
+    
+    // if (!clash.clash) {
+    //     console.log(uniqueId);
+
+        // update(ref(db, "/events/" + uniqueId), {// update membership and events using map!
+        //     name: eventName,
+        //     user: userId,
+        //     startDateTime: startDateTime.toMillis(),
+        //     endDateTime: endDateTime.toMillis(),
+        //     projectId : projectId,
+        // });
+
+    //     return true
+    // } else {
+    //     return false;
+    // }
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -443,22 +497,22 @@ export const removeProject = () => {
     window.location.href='/projectCreated'
 }
 
-export const teamCheckClash = async (projectId, startDateTime, endDateTime, memberArr=undefined) => {
-    const db = getDatabase();
-    const reference = ref(db, "projects/" + projectId + "/members"); // if no member array then check all project members
-    memberArr = memberArr 
-              ? memberArr 
-              : onValue(reference, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x => helper(x)) : null)
-    memberArr.map(x => helper(x));
-    async function helper(userId) {
-        const handle = await getHandle(userId);
-        const eventArr = queryByValue("events", "user", userId); // get events by membership
-        const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
-        const obj = {};
-        obj[handle] = clash;
-        return obj;
-    }
-}
+// export const teamCheckClash = async (projectId, startDateTime, endDateTime, memberArr=undefined) => {
+//     const db = getDatabase();
+//     const reference = ref(db, "projects/" + projectId + "/members"); // if no member array then check all project members
+//     memberArr = memberArr 
+//               ? memberArr 
+//               : onValue(reference, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x => helper(x)) : null)
+//     memberArr.map(x => helper(x));
+//     async function helper(userId) {
+//         const handle = await getHandle(userId);
+//         const eventArr = queryByValue("events", "user", userId); // get events by membership
+//         const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
+//         const obj = {};
+//         obj[handle] = clash;
+//         return obj;
+//     }
+// }
 
 export const getHandle = async (uid) => {
     const db = getDatabase();
