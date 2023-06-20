@@ -34,6 +34,13 @@ export function updateMembership(membersArr, itemId) {
     }
 }
 
+export function removeItem(membersArr, itemId) {
+    const db = getDatabase();
+    for (var memberId in membersArr) {
+        remove(ref(db, "/membership/" + memberId + "/" + itemId));
+    }
+}
+
 async function getUserId(telegramHandle){
     const arr = await fn.queryByValue("users", "telegramHandle", telegramHandle)
     if (arr.length > 0) {
