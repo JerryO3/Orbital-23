@@ -89,7 +89,7 @@ function ChangeEvent() {
                 type="submit"
                 onClick={
                   () => {
-                          fn.removeEvent();
+                          fn.removeEvent().then(() => window.location.href='/eventCreated');
                         }
                   }
               >

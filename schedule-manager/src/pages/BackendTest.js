@@ -83,11 +83,11 @@ function BackendTest() {
                     )} 
             buttonText="Delete Node" />
         <ClickDebug func={
-            () => console.log(collab.getMembers())} 
-            buttonText="Get Members" />
+            () => console.log(fn.getField('username'))} 
+            buttonText="Get Field" />
         <ClickDebug func={
-            () => console.log(JSON.parse(localStorage.getItem('user')))} 
-            buttonText="Member Query" />
+            () => console.log(fn.readProjectsData())} 
+            buttonText="Read Projects Data" />
         </>  
         
     );

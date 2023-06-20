@@ -55,7 +55,7 @@ function NewProject() {
             {/* {!available && <p className="warning">This name is already taken. Please choose a different one.</p>} */}
           <button
             type="submit"
-            onClick = {() => {fn.newProject(name);}}>
+            onClick = {() => {fn.newProject(name).then(() => window.location.href='/projectCreated');}}>
             Create
           </button>
         </form>

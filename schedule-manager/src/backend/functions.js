@@ -34,36 +34,32 @@ export const getUserId = () => {
 //     return filteredDataQuery;
 // }
 
-export const writeData = (data) => {
-    if (loggedIn) {
-        const uniqueId = authpkg.getAuth(app).currentUser.uid;
-        const db = getDatabase();
-        set(ref(db, "/users/" + uniqueId), {
-            Data : data
-        });
-    } else {
-        console.log("Not Logged In");
-    }
-}
+// export const writeData = (data) => {
+//     if (loggedIn) {
+//         const uniqueId = authpkg.getAuth(app).currentUser.uid;
+//         const db = getDatabase();
+//         set(ref(db, "/users/" + uniqueId), {
+//             Data : data
+//         });
+//     } else {
+//         console.log("Not Logged In");
+//     }
+// }
 
-const initializeData = (userEmail, userName) => {
+const initializeData = async (userEmail, userName) => { // now returns a promise<void> allowing it to be blocking
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
     const db = getDatabase();
-    update(ref(db, "/users/" + uniqueId), {
+    return update(ref(db, "/users/" + uniqueId), {
         email : userEmail,
         username : userName
     })
-    window.location.href = "/submit";
 }
 
-export const queryByValue = (dbRef, field, queryId) => {
+export const queryByValue = (dbRef, field, queryId) => { // returns a promise containing an array
     const db = getDatabase();
     const itemsRef = ref(db, dbRef);
     const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
     return get(itemsQuery).then((snapshot) => {
-        // console.log(snapshot.exists());
-        // console.log(1);
-
         if (snapshot.exists()) {
           const items = [];
           snapshot.forEach((childSnapshot) => {
@@ -78,12 +74,7 @@ export const queryByValue = (dbRef, field, queryId) => {
     });
 }
 
-export const readProjectsData = () => {
-    const db = getDatabase();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const uniqueId = user.uid;
-    const dbRef = ref(db, "/projects/" + uniqueId)
-
+export const readProjectsData = () => { // returns a promise containing an array
     return new Promise((resolve, reject) => {
         const db = getDatabase();
         const uniqueId = authpkg.getAuth(app).currentUser.uid;
@@ -103,19 +94,11 @@ export const readProjectsData = () => {
       });
 }
 
-export const readEventsData = () => {
-    const db = getDatabase();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const uniqueId = user.uid;
-    const dbRef = ref(db, "/events/" + uniqueId)
-
-    // return objArr(dbRef);
-
+export const readEventsData = () => { // returns a promise containing an array
     return new Promise((resolve, reject) => {
         const db = getDatabase();
         const uniqueId = authpkg.getAuth(app).currentUser.uid;
         const itemsRef = ref(db, "/users/" + uniqueId + "/projects/" + localStorage.getItem('projectName') + '/events/');
-    
         onValue(itemsRef, (snapshot) => {
           const events = snapshot.val();
           if (events) {
@@ -130,35 +113,30 @@ export const readEventsData = () => {
       });
 }
 
-export const registerWithEmailandPw = (username, email, password) => {
+export const registerWithEmailandPw = (username, email, password) => { // changed initializeData to be blocking
     authpkg.createUserWithEmailAndPassword(authpkg.getAuth(app), email, password)
-    .then(() => initializeData(email, username))
+    .then(() => initializeData(email, username)
+        .then(() => window.location.href = "/submit"))
     .catch((error) => {console.log(error)});
 }
 
-export async function login(email, password) {
+export async function login(email, password) { // fixed bug regarding redirecting due to local storage
     const creds = await authpkg.signInWithEmailAndPassword(authpkg.getAuth(app), email, password)
-    .then(() => window.location.href = '/dashboard')
+    .then(x => {
+        const user = authpkg.getAuth(app).currentUser;
+        localStorage.setItem('user', JSON.stringify(user));
+        window.location.href = '/dashboard'; })
     .catch((error) => {console.log(error)});
-    // console.log(creds.user !== null);
-
-    const user = authpkg.getAuth(app).currentUser;
-    localStorage.setItem('user', JSON.stringify(user));
 }
 
-export async function loginWithCreds(credential) {
-    const creds = await authpkg.signInWithCredential(authpkg.getAuth(app), credential)
+export async function loginWithCreds(credential) { // fixed bug that causes emails to not be written to the db due to async
+    const creds = authpkg.signInWithCredential(authpkg.getAuth(app), credential)
     .then(() => authpkg.getAuth(app).onAuthStateChanged((user) => {
-          const email = user.email;
-          const username = user.displayName;
-          initializeData(email, username);
+        localStorage.setItem('user', JSON.stringify(user));
+        initializeData(user.email, user.displayName)
+        .then(()=> window.location.href = '/dashboard')
     }))
-    .then(() => window.location.href = '/dashboard')
     .catch((error) => {console.log(error)});
-    // console.log(creds.user !== null);
-    
-    const user = authpkg.getAuth(app).currentUser;
-    localStorage.setItem('user', JSON.stringify(user));
 }
 
 export async function logout() {
@@ -169,28 +147,16 @@ export async function logout() {
     localStorage.removeItem('user');
 }
 
-export function getField(field) {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const db = getDatabase();
-    const uniqueId = user.uid;
-    const fieldRef = ref(db, "/users/" + uniqueId + "/" + [field]);
-    var item;
-
-    onValue(fieldRef, (snapshot) => {
-        if (snapshot.exists()) {
-        item = snapshot.val();
-        // console.log(item); 
-        // Do something with the username value
-        } else {
-        item = null;
-        // console.log("Username field does not exist in the database.");
-        }
-    },
-    (error) => {
-        console.error("Error retrieving username:", error);
-    });
-
-    return item;
+export function getField(field) { // now returns a promise, allowing the username to load asynchronously
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const db = getDatabase();
+        const uniqueId = user.uid;
+        const fieldRef = ref(db, "/users/" + uniqueId + "/" + [field]);
+        return get(fieldRef).then(snapshot => snapshot.val());
+    } catch {
+        return new Promise((resolve) => resolve(""));
+    }
 }
 
 export const debugAuth = () => {
@@ -204,7 +170,7 @@ const deconflictSignInMethods = () => {
     return password;
 }
 
-export async function loginWGoogle() {
+export async function loginWGoogle() { // need to test, not sure if works
     try {
         const provider = new authpkg.GoogleAuthProvider();
         provider.addScope('profile');
@@ -234,38 +200,38 @@ export async function loginWGoogle() {
     }
 }
 
-export const resetPw = () => {
+export const resetPw = () => { // have not implemented
     let password = prompt("new password");
     authpkg.updatePassword(authpkg.getAuth(app).currentUser, password);
 }
 
-export const updateEmailAdd = (email) => {
-    let password = prompt("new email");
+export const updateEmailAdd = () => { // have not implemented
+    let email = prompt("new email");
     authpkg.updateEmail(authpkg.getAuth(app).currentUser, email);
 }
 
-export const loadData = () => {
-    if (loggedIn) {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const uniqueId = user.uid;
-        const dbRef = ref(getDatabase(), "/users/" + uniqueId);
-        get(dbRef).then((snapshot) => {
-            if (snapshot.exists()) {
-            console.log(snapshot.val());
-            } else {
-            console.log("no records found")
-            }
-        })
-        .then(() => {})
-        .catch((error) => {
-            console.log(error)
-        });
-    } else {
-        console.log("Not Logged In");
-    }
-}
+// export const loadData = () => {
+//     if (loggedIn) {
+//         const user = JSON.parse(localStorage.getItem('user'));
+//         const uniqueId = user.uid;
+//         const dbRef = ref(getDatabase(), "/users/" + uniqueId);
+//         get(dbRef).then((snapshot) => {
+//             if (snapshot.exists()) {
+//             console.log(snapshot.val());
+//             } else {
+//             console.log("no records found")
+//             }
+//         })
+//         .then(() => {})
+//         .catch((error) => {
+//             console.log(error)
+//         });
+//     } else {
+//         console.log("Not Logged In");
+//     }
+// }
 
-export async function sendPasswordResetEmail(email) {
+export async function sendPasswordResetEmail(email) { // terminal function, no need to return
     const auth = authpkg.getAuth(app);
     const temp = await authpkg
       .sendPasswordResetEmail(auth, email)
@@ -282,33 +248,29 @@ export async function sendPasswordResetEmail(email) {
       });
   };
 
-export const newProject = (projectName) => {
+export const newProject = async (projectName) => { // now returns a promise void, pushed redirect side effect to newproject
     const db = getDatabase();
     const uniqueId = uuidv4();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
     
-    update(ref(db, "/projects/" + uniqueId), {
+    return update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
         userId : userId
-    })
-
-    update(ref(db, "/membership/" + userId), {
+    }).then(() => update(ref(db, "/membership/" + userId), {
         [uniqueId] : true
-    })
-    
-    window.location.href='/projectCreated';
+    }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
+        [userId] : true
+    })))
 }
 
-export const newEventByDuration = (projectName, eventName, startDate, startTime, durationDays, durationHours, durationNearestFiveMin) => {
-    const db = getDatabase();
-    const uniqueId = authpkg.getAuth(app).currentUser.uid;
-    update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
+// export const newEventByDuration = (projectName, eventName, startDate, startTime, durationDays, durationHours, durationNearestFiveMin) => {
+//     const db = getDatabase();
+//     const uniqueId = authpkg.getAuth(app).currentUser.uid;
+//     update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
 
-    })
-}
-
-// const profile = await queryByValue('users', 'telegramHandle', '@Jin_Yuan'); // to delete
+//     })
+// }
 
 export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, member) {
     const db = getDatabase();
@@ -337,23 +299,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
     const uniqueId = uuidv4();
-
-    // const test = await members
-    // .map(y => [y, memberQuery(y.itemId, 'events/')
-    //     .then(x => cc.checkClash(x, startDateTime, endDateTime))])
-    // .map(x => {x[1].then(y => {clashArr.push(y.clash); console.log(clashArr);}); return x;})
-    // .map(x => clashArr.reduce((a,b) => a && b) ? updater(x[0].itemId) : null)
-    ;
-
-    // const promise = new Promise((resolve) => resolve(members));
-    // const clashArr = [];
-    // promise
-    // .then(x => x.map(y => memberQuery(y.itemId, 'events/').then(x => cc.checkClash(x, startDateTime, endDateTime).then(x => [y,x]))))
-
-    // .then(x => x.map(y => y.then(z => console.log(z[1].clash))));
-    // console.log(member);
-    // member.push(profile[0]);
-    // console.log(member);
+    console.log(member)
     const memberPromises = member
     .map(y => memberQuery(y.itemId, 'events/')
         .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
@@ -447,24 +393,22 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
     window.location.href='/blockoutCreated';
 }  
 
-export const removeEvent = () => {
+export const removeEvent = async () => { // now returns a promise, shifting side effect to change event page
     const db = getDatabase();
     const itemRef = ref(db, '/events/' + localStorage.getItem('eventId'));
-    remove(itemRef)
+    return remove(itemRef)
     .then(() => {
         console.log("Item deleted successfully");
     })
     .catch((error) => {
         console.error("Error deleting item:", error);
     });
-
-    window.location.href='/eventCreated'
 }
 
-const removeEventHelper = (eventId) => {
+const removeEventHelper = async (eventId) => { // now returns promise, !need to change project structure so that can remove membership
     const db = getDatabase();
     const itemRef = ref(db, '/events/' + eventId);
-    remove(itemRef)
+    return remove(itemRef)
     .then(() => {
         console.log("Event deleted successfully");
     })
@@ -473,10 +417,10 @@ const removeEventHelper = (eventId) => {
     });
 }
 
-const removeProjectHelper = (projectId) => {
+const removeProjectHelper = async (projectId) => { // now returns promise, !need to change project structure so that can remove membership
     const db = getDatabase();
     const itemRef = ref(db, '/projects/' + projectId);
-    remove(itemRef)
+    return remove(itemRef)
     .then(() => {
         console.log("Project deleted successfully");
     })
@@ -485,56 +429,39 @@ const removeProjectHelper = (projectId) => {
     });
 }
 
-export const removeProject = () => {
+export const removeProject = async () => { // now returns a promise, shifting side effect to update event page
     const db = getDatabase();
     const projectId = localStorage.getItem('projectId');
     const reference = ref(db, "events");
-    // console.log(reference);
     const que = query(reference, orderByChild("projectId"), equalTo(projectId));
-    // console.log(que);
-    onValue(que, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
-    removeProjectHelper(projectId);
-    window.location.href='/projectCreated'
+    return get(que)
+    .then(snapshot => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
+    .then(() => removeProjectHelper(projectId));
+    // onValue(que, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
+    // removeProjectHelper(projectId);
+    // window.location.href='/projectCreated'
 }
 
-// export const teamCheckClash = async (projectId, startDateTime, endDateTime, memberArr=undefined) => {
-//     const db = getDatabase();
-//     const reference = ref(db, "projects/" + projectId + "/members"); // if no member array then check all project members
-//     memberArr = memberArr 
-//               ? memberArr 
-//               : onValue(reference, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x => helper(x)) : null)
-//     memberArr.map(x => helper(x));
-//     async function helper(userId) {
-//         const handle = await getHandle(userId);
-//         const eventArr = queryByValue("events", "user", userId); // get events by membership
-//         const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
-//         const obj = {};
-//         obj[handle] = clash;
-//         return obj;
-//     }
-// }
-
-export const getHandle = async (uid) => {
+export const getHandle = async (uid) => { // now returns a promise containing the handle
     const db = getDatabase();
-    var returnVal;
-    onValue(ref(db, "users/" + uid + "/telegramHandle"), (snapshot) => {returnVal = snapshot.val()});
-    return returnVal;
+    // var returnVal;
+    // onValue(ref(db, "users/" + uid + "/telegramHandle"), (snapshot) => {returnVal = snapshot.val()});
+    // return returnVal;
+    return get(ref(db, "users/" + uid + "/telegramHandle")).then(snapshot => snapshot.val());
 }
 
-export function updateProfile(username, notificationDuration, telegramHandle) {
+export async function updateProfile(username, notificationDuration, telegramHandle) { // now returns a promise<void>, no real issue
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const uniqueId = user.uid;
     const profile = ref(db, "/users/" + uniqueId);
-    update(profile, {
+    return update(profile, {
         username : username,
         notificationDuration : notificationDuration,
         telegramHandle : telegramHandle
-    })
+    }).then(() =>  alert('Profile Updated!'))
 
     // const storage = getStorage();
     // const storageRef = ref(storage, 'profile-photos/' + profilePhoto);
     // uploadBytesResumable(storageRef, profilePhoto)
-    
-    alert('Profile Updated!')
 }

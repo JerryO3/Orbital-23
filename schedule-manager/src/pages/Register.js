@@ -37,11 +37,11 @@ function Register() {
   function checkAvailability(fieldName, value, setAvailability) {
     const db = getDatabase();
     const usersRef = ref(db, 'users');
-  
+    
     onValue(usersRef, (snapshot) => {
       const users = snapshot.val();
       if (users !== null) {
-        const isTaken = Object.values(users).some(user => user.profile[fieldName] === value);
+        const isTaken = Object.values(users).some(user => user[fieldName] === value);
         setAvailability(!isTaken);
       }
     });
