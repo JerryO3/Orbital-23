@@ -8,7 +8,7 @@ import ClickDebug from "../deprecated/ClickDebug";
 import * as time from '../backend/time';
 import * as lux from 'luxon';
 import {getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo, child } from "firebase/database";
-import * as tc from '../backend/testcases';
+import * as tc from '../backend/Components.test';
 import * as collab from '../backend/collaboration';
 import * as authpkg from "firebase/auth";
 

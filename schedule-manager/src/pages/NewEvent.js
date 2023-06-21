@@ -34,7 +34,8 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime, members);
+    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime, members)
+    .then(() => window.location.href='/eventCreated');
 
     setAvailable(result);
 

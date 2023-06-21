@@ -28,7 +28,7 @@ function Login() {
         Please Login to continue.
       </h1>
       <div className="loginBox">
-        <form className="form" onSubmit={(e) => e.preventDefault()}>
+        <form data-testid="emailForm" className="form" onSubmit={(e) => e.preventDefault()}>
           <input
             type="email"
             placeholder="Email"

@@ -63,6 +63,7 @@ function App() {
       </nav>
 
       <Routes>
+        <NavBar/>
         <Route path="/" element={<p.Home />} />
         <Route path="/login" element={<p.Login />} />
         <Route path="/register" element={<p.Register />} />
