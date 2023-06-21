@@ -60,7 +60,7 @@ function Dashboard() {
 
   const EventComponent = ({ event }) => (
     <div>
-      <strong>{event.title}</strong>
+      <strong>{event.name}</strong>
     </div>
   );
 
