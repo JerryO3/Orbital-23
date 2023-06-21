@@ -35,10 +35,10 @@ export function updateMembership(membersArr, itemId) {
 }
 
 export function removeItem(membersArr, itemId) {
+    console.log(membersArr)
+    console.log(itemId)
     const db = getDatabase();
-    for (var memberId in membersArr) {
-        remove(ref(db, "/membership/" + memberId + "/" + itemId));
-    }
+    membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
 }
 
 async function getUserId(telegramHandle){

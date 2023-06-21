@@ -7,7 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import ClickDebug from "../deprecated/ClickDebug";
 import * as time from '../backend/time';
 import * as lux from 'luxon';
-import { update } from "firebase/database";
+import {getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo, child } from "firebase/database";
 import * as tc from '../backend/testcases';
 import * as collab from '../backend/collaboration';
 import * as authpkg from "firebase/auth";
@@ -83,13 +83,13 @@ function BackendTest() {
                     )} 
             buttonText="Delete Node" />
         <ClickDebug func={
-            () => console.log(fn.getField('username'))} 
+            () => console.log(localStorage.getItem('projectId'))} 
             buttonText="Get Field" />
         <ClickDebug func={
-            () => console.log(fn.readProjectsData())} 
+            () => fn.removeProjectHelper(localStorage.getItem('projectId'))
+        } 
             buttonText="Read Projects Data" />
         </>  
-        
     );
 }
 

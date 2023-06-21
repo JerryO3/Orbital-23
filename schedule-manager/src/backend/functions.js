@@ -4,7 +4,7 @@ import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
 import * as cc from './checkClash'
-import { getMembers, memberQuery } from './collaboration';
+import { removeItem, getMembers, memberQuery } from './collaboration';
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -395,8 +395,13 @@ export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDat
 
 export const removeEvent = async () => { // now returns a promise, shifting side effect to change event page
     const db = getDatabase();
-    const itemRef = ref(db, '/events/' + localStorage.getItem('eventId'));
+    const eventId = localStorage.getItem('eventId');
+    const projectId = localStorage.getItem('projectId');
+    const itemRef = ref(db, '/events/' + eventId);
+    const membersRef = ref(db, "projects/" + projectId + "/members");
     return remove(itemRef)
+    .then(() => get(membersRef)
+        .then(snapshot => removeItem(Object.keys(snapshot.val()), eventId)))
     .then(() => {
         console.log("Item deleted successfully");
     })
@@ -407,8 +412,12 @@ export const removeEvent = async () => { // now returns a promise, shifting side
 
 const removeEventHelper = async (eventId) => { // now returns promise, !need to change project structure so that can remove membership
     const db = getDatabase();
+    const projectId = localStorage.getItem('projectId');
     const itemRef = ref(db, '/events/' + eventId);
+    const membersRef = ref(db, "projects/" + projectId + "/members");
     return remove(itemRef)
+    .then(() => get(membersRef)
+        .then(snapshot => removeItem(Object.keys(snapshot.val()), eventId)))
     .then(() => {
         console.log("Event deleted successfully");
     })
@@ -417,10 +426,13 @@ const removeEventHelper = async (eventId) => { // now returns promise, !need to 
     });
 }
 
-const removeProjectHelper = async (projectId) => { // now returns promise, !need to change project structure so that can remove membership
+export const removeProjectHelper = async (projectId) => { // now returns promise, !need to change project structure so that can remove membership
     const db = getDatabase();
     const itemRef = ref(db, '/projects/' + projectId);
-    return remove(itemRef)
+    const membersRef = ref(db, "projects/" + projectId + "/members");
+    return get(membersRef)
+    .then(snapshot => removeItem(Object.keys(snapshot.val()), projectId))
+    .then(() => remove(itemRef))
     .then(() => {
         console.log("Project deleted successfully");
     })
