@@ -58,14 +58,14 @@ function Dashboard() {
     );
   };
 
+  const EventComponent = ({ event }) => (
+    <div>
+      <strong>{event.title}</strong>
+    </div>
+  );
+
   return (
-    <div className="container">
-      <div className="logo">
-          <img src={logo} alt="Schedule Manager" />
-      </div>
-      <h1 className="welcomeMessage">
-            Welcome Back '{userName}'
-      </h1>
+    <div className="containerDashboard">
       <div className="dashboardContent">
         <div className="calendarcontainer">
           <Calendar
@@ -75,12 +75,20 @@ function Dashboard() {
             defaultView="week"
             components={{
               eventWrapper: eventWrapperComponent,
+              event: EventComponent
             }}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
+            style={{ height: 690 }}
           />
         </div>
+        <div className="pageRight">
+        <div className="logo">
+          <img src={logo} alt="Schedule Manager" />
+        </div>
+        <h1 className="welcomeMessage">
+              Welcome Back '{userName}'
+        </h1>
         <div className="buttonsContainer">
           <div className="loginBox">
             <form className="form" onSubmit={(e) => e.preventDefault()}>
@@ -101,6 +109,7 @@ function Dashboard() {
               </Link>
             </form>
           </div>
+        </div>
         </div>
       </div>
     </div>
