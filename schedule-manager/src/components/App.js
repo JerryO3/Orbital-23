@@ -15,7 +15,7 @@ function App() {
         <ul className='ul'>
           <ul className='leftItems'>
           <button class="split" type="home">
-            <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
+            <Link to="/"><img src={logo} alt="Schedule Manager" className='navBarLogo'/></Link>
           </button>
           <text class="split">Schedule Manager</text>
           </ul>
