@@ -257,7 +257,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     if (member.length === 1) {
         memberPromises[0].then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects!
     } else {
-    const memberAvail = memberPromises
+    return memberPromises
     .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
     // ^ reduces array of promises into a promise that returns an array
     .then(x => x.reduce((a,b) => Array.isArray(a) ? !a[1].clash && !b[1].clash : a && !b[1].clash) // checks all members if clear
