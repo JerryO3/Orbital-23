@@ -18,33 +18,10 @@ class EventNew {
     }
 }
 
-export const printOne = () => {
-    console.log(1);
-}
-
 export const getUserId = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     return user.uid;
 }
-
-// function filterByUser(db, userId) {
-//     const dataRef = ref(db, "project")
-//     // console.log(userId);
-//     const filteredDataQuery = query(dataRef, orderByChild("userID"), equalTo(userId, "userID"));
-//     return filteredDataQuery;
-// }
-
-// export const writeData = (data) => {
-//     if (loggedIn) {
-//         const uniqueId = authpkg.getAuth(app).currentUser.uid;
-//         const db = getDatabase();
-//         set(ref(db, "/users/" + uniqueId), {
-//             Data : data
-//         });
-//     } else {
-//         console.log("Not Logged In");
-//     }
-// }
 
 const initializeData = async (userEmail, userName) => { // now returns a promise<void> allowing it to be blocking
     const uniqueId = authpkg.getAuth(app).currentUser.uid;
@@ -210,27 +187,6 @@ export const updateEmailAdd = () => { // have not implemented
     authpkg.updateEmail(authpkg.getAuth(app).currentUser, email);
 }
 
-// export const loadData = () => {
-//     if (loggedIn) {
-//         const user = JSON.parse(localStorage.getItem('user'));
-//         const uniqueId = user.uid;
-//         const dbRef = ref(getDatabase(), "/users/" + uniqueId);
-//         get(dbRef).then((snapshot) => {
-//             if (snapshot.exists()) {
-//             console.log(snapshot.val());
-//             } else {
-//             console.log("no records found")
-//             }
-//         })
-//         .then(() => {})
-//         .catch((error) => {
-//             console.log(error)
-//         });
-//     } else {
-//         console.log("Not Logged In");
-//     }
-// }
-
 export async function sendPasswordResetEmail(email) { // terminal function, no need to return
     const auth = authpkg.getAuth(app);
     const temp = await authpkg
@@ -263,14 +219,6 @@ export const newProject = async (projectName) => { // now returns a promise void
         [userId] : true
     })))
 }
-
-// export const newEventByDuration = (projectName, eventName, startDate, startTime, durationDays, durationHours, durationNearestFiveMin) => {
-//     const db = getDatabase();
-//     const uniqueId = authpkg.getAuth(app).currentUser.uid;
-//     update(ref(db, "/users/" + uniqueId + "/projects/" + projectName + "/" + eventName), {
-
-//     })
-// }
 
 export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, member) {
     const db = getDatabase();
@@ -334,26 +282,6 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
         return true;
     }
 
-
-    // const eventArr = queryByValue("events", "user", userId);
-
-    // const clash = await cc.checkClash(eventArr, startDateTime, endDateTime)
-    
-    // if (!clash.clash) {
-    //     console.log(uniqueId);
-
-        // update(ref(db, "/events/" + uniqueId), {// update membership and events using map!
-        //     name: eventName,
-        //     user: userId,
-        //     startDateTime: startDateTime.toMillis(),
-        //     endDateTime: endDateTime.toMillis(),
-        //     projectId : projectId,
-        // });
-
-    //     return true
-    // } else {
-    //     return false;
-    // }
 }
 
 export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
@@ -449,16 +377,10 @@ export const removeProject = async () => { // now returns a promise, shifting si
     return get(que)
     .then(snapshot => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
     .then(() => removeProjectHelper(projectId));
-    // onValue(que, (snapshot) => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeEventHelper(x)) : null)
-    // removeProjectHelper(projectId);
-    // window.location.href='/projectCreated'
 }
 
 export const getHandle = async (uid) => { // now returns a promise containing the handle
     const db = getDatabase();
-    // var returnVal;
-    // onValue(ref(db, "users/" + uid + "/telegramHandle"), (snapshot) => {returnVal = snapshot.val()});
-    // return returnVal;
     return get(ref(db, "users/" + uid + "/telegramHandle")).then(snapshot => snapshot.val());
 }
 

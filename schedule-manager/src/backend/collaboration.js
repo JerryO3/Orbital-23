@@ -35,8 +35,6 @@ export function updateMembership(membersArr, itemId) {
 }
 
 export function removeItem(membersArr, itemId) {
-    console.log(membersArr)
-    console.log(itemId)
     const db = getDatabase();
     membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
 }
