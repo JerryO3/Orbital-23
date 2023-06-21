@@ -18,7 +18,7 @@ function NewEvent() {
   const [endDate, setEndDate] = useState("");
   const [endTime, setEndTime] = useState("");
   const [members, setMembers] = useState([]);
-  const [selectedMembers, setSelectedMembers] = useState([userId]);
+  const [selectedMembers, setSelectedMembers] = useState([]);
 
   const thisProject = localStorage.getItem('projectId');
 
