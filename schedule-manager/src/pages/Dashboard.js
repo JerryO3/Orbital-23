@@ -72,7 +72,7 @@ function Dashboard() {
             localizer={localizer}
             events={events}
             views={['month', 'week', 'day']}
-            defaultView="month"
+            defaultView="week"
             components={{
               eventWrapper: eventWrapperComponent,
             }}
