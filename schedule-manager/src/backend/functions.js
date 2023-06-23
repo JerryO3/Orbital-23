@@ -246,6 +246,11 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
+    if (startDateTime > endDateTime) {
+        alert('Start Date/Time cannot be after End Date/Time')
+        return;
+    }
+
     const uniqueId = uuidv4();
     console.log(member)
     const memberPromises = member

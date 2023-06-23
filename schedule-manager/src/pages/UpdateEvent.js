@@ -2,126 +2,104 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
+import * as lux from "luxon";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
 function UpdateEvent() { 
-  const [events, setEvents] = useState([]);
-  const thisProjectId = localStorage.getItem('projectId');
-  const thisProjectName = localStorage.getItem('projectName');
-  
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const promise = fn.queryByValue("events", "projectId", thisProjectId);
-        const result = await promise;
-        setEvents(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const thisEvent = localStorage.getItem('eventName');
+  const thisProject = localStorage.getItem('projectName');
 
-    fetchData();
-  }, [thisProjectId]);
-  //   setEvents(fn.queryByField("events", "projectId", thisProjectId));
-  // })
+  const [startDate, setStartDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endTime, setEndTime] = useState(""); 
 
-  // localStorage.removeItem('projectName')
-  console.log(events);
+  // if (projectName === null || eventName === null) { 
+  //     window.location.href = '/updateProject'
+  //   } else {
 
-  if (thisProjectName === null) { 
-    window.location.href = '/updateProject'
-  } else {
+  const handleSubmit = () => {
+    // Validate the form fields
+    if (startDate.trim() === '' || startTime.trim() === '' 
+    || endDate.trim() === '' || endTime.trim() === '' ) {
+      alert('Please fill in all fields.');
+      return; // Stop the submission
+    }
+
+    fn.newEventByStartEnd(thisProject, thisEvent, startDate, startTime, endDate, endTime);
+  };
+
     return (
-    <div className="container">
-      <div className="logo">
-          <img src={logo} alt="Schedule Manager" />
-      </div>
-      <h1 className="welcomeMessage">
-        Choose an existing event for project '{thisProjectName}'.
-      </h1>
-      <div className="loginBox">
-          {events.length > 0 ? (
-            <form className="form" onSubmit={(e) => e.preventDefault()}>
-              {events.map((event) => (
-                <Link to='/changeEvent'>
-                  <button key={event.id} onClick={() =>
-                  {localStorage.setItem('eventName', event.name);
-                  localStorage.setItem('eventId', event.itemId)}}>
-                    {event.name}
-                  </button>
-                </Link>
-              ))}
-
-              <Link to='/newEvent'>
-                  <button>
-                    Create New Event
-                  </button>
-              </Link>
-
-              <Link to='/addUser'>
-                  <button>
-                    Add Members
-                  </button>
-                </Link>
-
-              <Link to='/updateProject'>
-                  <button>
-                    Return to Projects
-                  </button>
-                </Link>
-              
-              <button
+      <div className="container">
+        <div className="logo">
+            <img src={logo} alt="Schedule Manager" />
+        </div>
+        <h1 className="welcomeMessage">
+          Update Event '{thisEvent}'.
+        </h1>
+        <div className="loginBox">
+          <form className="form" onSubmit={(e) =>e.preventDefault()}>
+  
+            <input
+              type="name"
+              placeholder="Event Name"
+              name="name"
+              value={thisEvent} />
+  
+            <input
+              type="date"
+              placeholder="Start Date"
+              name="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)} />
+  
+            <input
+              type="time"
+              placeholder="Start Time"
+              name="time"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)} />
+  
+            <input
+              type="date"
+              placeholder="End Date"
+              name="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)} />
+  
+            <input
+              type="time"
+              placeholder="End Time"
+              name="time"
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)} />
+  
+            <button
                 type="submit"
                 onClick={
                   () => {
-                        fn.removeProject()
-                        .then(() => window.location.href='/projectCreated');
+                          handleSubmit();
                         }
                   }
               >
-                Delete Project
-              </button>
-            </form>
-            ) : (
-              <form className="form" onSubmit={(e) => e.preventDefault()}>
-                <p className='warning'>No Events Found</p>
-                <Link to='/newEvent'>
-                  <button>
-                    Create New Event
-                  </button>
-                </Link>
+              Update Event
+            </button>
 
-                <Link to='/addUser'>
-                  <button>
-                    Add Members
-                  </button>
-                </Link>
-
-                <Link to='/updateProject'>
-                  <button>
-                    Return to Projects
-                  </button>
-                </Link>
-                
-                <button
+            <button
                 type="submit"
                 onClick={
                   () => {
-                          fn.removeProject()
-                          .then(() => window.location.href='/projectCreated');
+                          fn.removeEvent().then(() => window.location.href='/eventCreated');
                         }
                   }
-                >
-                  Delete Project
-                </button>
-                </form>
-                
-             )}
+              >
+              Delete Event
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-  );
-  }
+    );
+  // } 
 }
 
 export default UpdateEvent;
