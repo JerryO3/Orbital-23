@@ -7,61 +7,8 @@ import BackendTest from '../pages/BackendTest';
 
 
 function App() {
-  const storedUser = localStorage.getItem('user');
-
   return (
     <Router>
-      <nav className='navigationBar'>
-        <ul className='ul'>
-          <ul className='leftItems'>
-          <button class="split" type="home">
-            <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
-          </button>
-          <text class="split">Schedule Manager</text>
-          </ul>
-          </ul>
-          <ul className='rightItems'>
-            {!storedUser ?
-            (<ul className='rightItems'>
-              <Link to="/login">
-                <button>
-                Login
-                </button>
-              </Link>
-              
-              <Link to="/register">
-                <button>
-                  Register
-                </button>
-              </Link>
-            </ul>
-            )
-            : 
-            (<ul className='rightItems'>
-              <Link to="/dashboard">
-                <button>
-                  Home
-                </button>
-              </Link>
-
-              <Link to='/settings'>
-              <button>
-                Settings
-              </button>
-              </Link>
-
-              <button
-                type="logout"
-                onClick={() => {fn.logout()}}
-              >
-                Logout
-              </button>
-            </ul>
-            )
-            }
-            </ul>
-      </nav>
-
       <Routes>
         <NavBar/>
         <Route path="/" element={<p.Home />} />
@@ -87,6 +34,62 @@ function App() {
       </Routes>
     </Router>
   );
+}
+
+function NavBar() {
+  const storedUser = localStorage.getItem('user');
+  return (
+    <nav className='navigationBar'>
+    <ul className='ul'>
+      <ul className='leftItems'>
+      <button class="split" type="home">
+        <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
+      </button>
+      <text class="split">Schedule Manager</text>
+      </ul>
+      </ul>
+      <ul className='rightItems'>
+        {!storedUser ?
+        (<ul className='rightItems'>
+          <Link to="/login">
+            <button>
+            Login
+            </button>
+          </Link>
+          
+          <Link to="/register">
+            <button>
+              Register
+            </button>
+          </Link>
+        </ul>
+        )
+        : 
+        (<ul className='rightItems'>
+          <Link to="/dashboard">
+            <button>
+              Home
+            </button>
+          </Link>
+
+          <Link to='/settings'>
+          <button>
+            Settings
+          </button>
+          </Link>
+
+          <button
+            type="logout"
+            onClick={() => {fn.logout()}}
+          >
+            Logout
+          </button>
+        </ul>
+        )
+        }
+        </ul>
+  </nav>
+  )
 }
 
 export default App;
