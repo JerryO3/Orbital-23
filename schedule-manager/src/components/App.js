@@ -76,10 +76,10 @@ function App() {
         <Route path='/newProject' element={<p.NewProject />} />
         <Route path='/newEvent' element={<p.NewEvent />} />
         <Route path='/eventCreated' element={<p.EventCreated />} />
-        <Route path='/updateEvent' element={<p.UpdateEvent />} />
-        <Route path='/changeEvent' element={<p.ChangeEvent />} />
-        <Route path='/projectCreated' element={<p.ProjectCreated />} />
         <Route path='/updateProject' element={<p.UpdateProject />} />
+        <Route path='/updateEvent' element={<p.UpdateEvent />} />
+        <Route path='/projectCreated' element={<p.ProjectCreated />} />
+        <Route path='/viewProject' element={<p.ViewProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />
         <Route path='/addUser' element={<p.AddUser />} />
         <Route path='/userAdded' element={<p.UserAdded />} />

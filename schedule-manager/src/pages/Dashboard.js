@@ -92,19 +92,14 @@ function Dashboard() {
         <div className="buttonsContainer">
           <div className="loginBox">
             <form className="form" onSubmit={(e) => e.preventDefault()}>
-              <Link to='/newProject'>
+              <Link to='/viewProject'>
                 <button>
-                  Create New Project
-                </button>
-              </Link>
-              <Link to='/updateProject'>
-                <button>
-                  Update A Project
+                  View Your Projects
                 </button>
               </Link>
               <Link to='/blockout'>
                 <button>
-                  Set Blockout Period
+                  View Your Blockouts
                 </button>
               </Link>
             </form>
