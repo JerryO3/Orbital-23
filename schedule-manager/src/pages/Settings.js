@@ -4,16 +4,36 @@ import logo from '../assets/logo.png';
 import * as fn from '../backend/functions'
 
 function Settings() { // to fix using the new getField
+
   // const [darkMode, setDarkMode] = useState(false);
   // const [notificationEnabled, setNotificationEnabled] = useState(false);
-  const [notificationDuration, setNotificationDuration] = useState(0);
-  fn.getField('notificationDuration').then(x => x === null ? setNotificationDuration(0) : setNotificationDuration(x))
-
+  const [retrievedSettings, setRetrievedSettings] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  fn.getField("username").then(x => setDisplayName(x));
-
   const [telegramHandle, setTelegramHandle] = useState("@");
-  fn.getField('telegramHandle').then(x => x === null ? null : setTelegramHandle(x));
+  const [notificationDuration, setNotificationDuration] = useState(0);
+  fn.getField('notificationDuration')
+  .then(x => retrievedSettings 
+    ? null 
+    : x === null 
+      ? setNotificationDuration(0) 
+      : setNotificationDuration(x)
+  )
+  .then(() => fn.getField("username")
+    .then(x => retrievedSettings 
+      ? null 
+      : setDisplayName(x)
+    )
+  )
+  .then(() => fn.getField('telegramHandle')
+    .then(x => retrievedSettings 
+      ? null 
+      : x === null 
+        ? null
+        : setTelegramHandle(x)
+    )
+  )
+  .then(() => setRetrievedSettings(true));
+
   // const [profilePhoto, setProfilePhoto] = useState(null);
   // const fileInputRef = useRef(null);
 
@@ -71,21 +91,27 @@ function Settings() { // to fix using the new getField
         <div>
           <label>
             Display Name:
-            <input type="text" value={displayName} onChange={handleDisplayNameChange} />
+            <input type="text" value={displayName} 
+            onChange={handleDisplayNameChange} 
+            />
           </label>
         </div>
 
         <div>
           <label>
           Notification Duration:
-                <input type="number" value={notificationDuration} onChange={handleNotificationDurationChange} />
+                <input type="number" value={notificationDuration} 
+                onChange={handleNotificationDurationChange} 
+                />
           </label>
         </div>
 
         <div>
           <label>
             Telegram Handle:
-            <input type="text" value={telegramHandle} onChange={handleTelegramHandleChange} />
+            <input type="text" value={telegramHandle} 
+            onChange={handleTelegramHandleChange} 
+            />
           </label>
         </div>
 

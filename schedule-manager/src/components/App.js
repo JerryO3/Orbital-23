@@ -9,8 +9,8 @@ import BackendTest from '../pages/BackendTest';
 function App() {
   return (
     <Router>
+      <NavBar/>
       <Routes>
-        <NavBar/>
         <Route path="/" element={<p.Home />} />
         <Route path="/login" element={<p.Login />} />
         <Route path="/register" element={<p.Register />} />
@@ -42,7 +42,7 @@ function NavBar() {
     <nav className='navigationBar'>
     <ul className='ul'>
       <ul className='leftItems'>
-      <button class="split" type="home">
+      <button class="split" type="home" data-testid="homeLogo">
         <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
       </button>
       <text class="split">Schedule Manager</text>
@@ -52,13 +52,13 @@ function NavBar() {
         {!storedUser ?
         (<ul className='rightItems'>
           <Link to="/login">
-            <button>
+            <button data-testid="loginButton">
             Login
             </button>
           </Link>
           
           <Link to="/register">
-            <button>
+            <button data-testid="registerButton">
               Register
             </button>
           </Link>
