@@ -34,7 +34,7 @@ export function updateMembership(membersArr, itemId) {
     }
 }
 
-export function removeItem(membersArr, itemId) {
+export async function removeItem(membersArr, itemId) {
     const db = getDatabase();
     membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
 }
@@ -51,7 +51,7 @@ async function getUserId(telegramHandle){
 
 export async function memberQuery(userId, field) {
     const db = getDatabase();
-
+    
     // Query member's projects
     const memberItemsRef = ref(db, "membership/" + userId);
     const memberItemsSnapshot = await get(memberItemsRef);
@@ -61,7 +61,6 @@ export async function memberQuery(userId, field) {
 
     if (memberItemsSnapshot.exists()) {
     const itemIds = Object.keys(memberItemsSnapshot.val());
-    
     // Fetch project details for each project ID
     for (const itemId of itemIds) {
         const itemRef = ref(db, [field] + itemId);

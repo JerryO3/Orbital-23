@@ -4,7 +4,7 @@ import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 
-function BlockoutCreated() { 
+function PeriodCreated() { 
 
   return (
     <div className="container">
@@ -12,19 +12,19 @@ function BlockoutCreated() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-      Blockout Created Successfully!
+      Period Updated Successfully!
       </h1>
       <div className="loginBox">
         <form className="form">
-        <Link to='/blockout'>
+        <Link to='/newPeriod'>
           <button>
-            Create Another Blockout
+            Create Another Period
           </button>
         </Link>
 
         <Link to='/viewBlockout'>
           <button>
-            View Blockouts
+            View Blockout
           </button>
         </Link>
         
@@ -39,4 +39,4 @@ function BlockoutCreated() {
   );
 }
 
-export default BlockoutCreated;
+export default PeriodCreated;

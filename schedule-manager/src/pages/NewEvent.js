@@ -39,9 +39,9 @@ function NewEvent() {
 
     setAvailable(result);
 
-    if(result) {
-      window.location.href='/eventCreated';
-    }
+    // if(result) {
+    //   window.location.href='/eventCreated';
+    // }
   };
 
   const toggleMemberSelection = (memberId) => {

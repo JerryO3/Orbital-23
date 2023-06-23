@@ -30,7 +30,7 @@ function UpdateProject() {
   console.log(events);
 
   if (thisProjectName === null) { 
-    window.location.href = '/updateProject'
+    window.location.href = '/viewProject'
   } else {
     return (
     <div className="container">
@@ -98,7 +98,7 @@ function UpdateProject() {
                   </button>
                 </Link>
 
-                <Link to='/updateProject'>
+                <Link to='/viewProject'>
                   <button>
                     Return to Projects
                   </button>

@@ -36,6 +36,7 @@ export const queryByValue = (dbRef, field, queryId) => { // returns a promise co
     const db = getDatabase();
     const itemsRef = ref(db, dbRef);
     const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
+    // console.log(queryId)
     return get(itemsQuery).then((snapshot) => {
         if (snapshot.exists()) {
           const items = [];
@@ -220,7 +221,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     })))
 }
 
-export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, member) {
+export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, members) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -252,14 +253,17 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     }
 
     const uniqueId = uuidv4();
-    console.log(member)
-    const memberPromises = member
-    .map(y => memberQuery(y.itemId, 'events/')
+    console.log(members)
+    const memberPromises = members
+    .map(member => memberQuery(member.itemId, 'events/')
+        .then(events => memberQuery(member.itemId, 'periods/')
+            .then(periods => periods.concat(events)))
+        .then(x => console.log(x))
         .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
-            .then(x => [y,x]))) // converts clashWindow and profile into a single promise
+            .then(x => [member,x]))) // converts clashWindow and profile into a single promise
     console.log(memberPromises);
 
-    if (member.length === 1) {
+    if (members.length === 1) {
         memberPromises[0].then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects!
     } else {
     return memberPromises
