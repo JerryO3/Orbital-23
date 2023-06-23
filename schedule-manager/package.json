@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -39,5 +39,30 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.22.5",
+    "jest": "^27.5.1",
+    "jest-cli": "^29.5.0",
+    "jest-environment-jsdom": "^29.5.0"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-syntax-jsx"
+    ],
+    "presets": [
+      ["@babel/preset-react", {"runtime": "automatic"}],
+      "@babel/env"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transformIgnorePatterns": [
+      "/node_modules/(?!${esModules})"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/mocks/fileMocks.js",
+      "\\.(css|less)$": "<rootDir>/src/mocks/fileMocks.js"
+    }
   }
 }
