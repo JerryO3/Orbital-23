@@ -77,12 +77,12 @@ export async function memberQuery(userId, field) {
     return items;
 }
 
-export async function getMembers() {
+export async function getMembers(field, itemId) {
     const db = getDatabase();
-    const projectId = localStorage.getItem("projectId");
+    // const projectId = localStorage.getItem("projectId");
 
     // Create a reference to the project's members node
-    const projectMembersRef = ref(db, "projects/" + projectId + "/members");
+    const projectMembersRef = ref(db, field + itemId + "/members");
     const projectMembersSnapshot = await get(projectMembersRef);
 
     // Array to store the member details
@@ -103,6 +103,5 @@ export async function getMembers() {
         }
     }
     }
-
     return members;
 }

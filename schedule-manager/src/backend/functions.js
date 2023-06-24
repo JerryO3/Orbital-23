@@ -213,7 +213,6 @@ export const newProject = async (projectName) => { // now returns a promise void
     
     return update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
-        userId : userId
     }).then(() => update(ref(db, "/membership/" + userId), {
         [uniqueId] : true
     }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
@@ -280,10 +279,12 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     function updater(uid) {
         update(ref(db, "/events/" + uniqueId), {// helps to update while within promise wrapper
             name: eventName,
-            user: userId,
             startDateTime: startDateTime.toMillis(),
             endDateTime: endDateTime.toMillis(),
             projectId : projectId,
+        });
+        update(ref(db, "/events/" + uniqueId + '/members'), {
+            [uid] : true,
         });
         update(ref(db, "/membership/" + uid), {
             [uniqueId] : true
@@ -408,3 +409,31 @@ export async function updateProfile(username, notificationDuration, telegramHand
     // const storageRef = ref(storage, 'profile-photos/' + profilePhoto);
     // uploadBytesResumable(storageRef, profilePhoto)
 }
+
+export const getItem = async (dbRef, id) => {
+    const db = getDatabase();
+    const path = ref(db, dbRef + id)
+    const result = await get(path).then(snapshot => snapshot.exists ? snapshot.val() : null)
+    return result;
+}
+
+export function getDate(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+  
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    return formattedDate;
+}
+
+export function getTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+  
+    const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    return formattedTime;
+}
+  

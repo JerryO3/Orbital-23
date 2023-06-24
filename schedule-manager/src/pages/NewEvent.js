@@ -34,14 +34,19 @@ function NewEvent() {
       return; // Stop the submission
     }
 
+    if (members.length === 0) {
+      alert('There must be at least 1 member in this event.');
+      return; // Stop the submission
+    }
+
     const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime, members)
-    .then(() => window.location.href='/eventCreated');
+    // .then(() => window.location.href='/eventCreated');
 
     setAvailable(result);
 
-    // if(result) {
-    //   window.location.href='/eventCreated';
-    // }
+    if(result) {
+      window.location.href='/eventCreated';
+    }
   };
 
   const toggleMemberSelection = (memberId) => {

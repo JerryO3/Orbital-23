@@ -16,7 +16,7 @@ function ViewProject() {
         const userId = await fn.getUserId()
         const member = await col.memberQuery(userId, "projects/");
         setProjects(member);
-        console.log(projects);
+        // console.log(projects);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

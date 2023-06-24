@@ -87,6 +87,7 @@ function App() {
         <Route path='/newPeriod' element={<p.NewPeriod />} />
         <Route path='/updatePeriod' element={<p.UpdatePeriod />} />
         <Route path='/periodCreated' element={<p.PeriodCreated />} />
+        <Route path='/viewEvent' element={<p.ViewEvent />} />
         <Route path='/updateBlockout' element={<p.UpdateBlockout />} />
       </Routes>
     </Router>
