@@ -102,16 +102,16 @@ export async function login(email, password) { // fixed bug regarding redirectin
     .then(x => {
         const user = authpkg.getAuth(app).currentUser;
         localStorage.setItem('user', JSON.stringify(user));
-        window.location.href = '/dashboard'; })
+        window.location.href = '/dashboard'; }) 
     .catch((error) => {console.log(error)});
 }
 
-export async function loginWithCreds(credential) { // fixed bug that causes emails to not be written to the db due to async
+async function loginWithCreds(credential) { // fixed bug that causes emails to not be written to the db due to async
     const creds = authpkg.signInWithCredential(authpkg.getAuth(app), credential)
     .then(() => authpkg.getAuth(app).onAuthStateChanged((user) => {
         localStorage.setItem('user', JSON.stringify(user));
         initializeData(user.email, user.displayName)
-        .then(()=> window.location.href = '/dashboard')
+        .then(()=> window.location.href = '/dashboard') 
     }))
     .catch((error) => {console.log(error)});
 }
