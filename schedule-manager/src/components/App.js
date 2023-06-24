@@ -81,6 +81,12 @@ function App() {
         <Route path='/TestingPage' element={<BackendTest />} />
         <Route path='/addUser' element={<p.AddUser />} />
         <Route path='/userAdded' element={<p.UserAdded />} />
+        <Route path='/viewBlockout' element={<p.ViewBlockout />} />
+        <Route path='/newBlockout' element={<p.NewBlockout />} />
+        <Route path='/newPeriod' element={<p.NewPeriod />} />
+        <Route path='/updatePeriod' element={<p.UpdatePeriod />} />
+        <Route path='/periodCreated' element={<p.PeriodCreated />} />
+        <Route path='/updateBlockout' element={<p.UpdateBlockout />} />
       </Routes>
     </Router>
   );

@@ -26,7 +26,7 @@ function Dashboard() {
       try {
         const userId = await fn.getUserId()
         const member = await col.memberQuery(userId, "events/");
-        const allEvents = member  .map(x => {
+        const allEvents = member.map(x => {
           const start = new Date(x.startDateTime); 
           const end = new Date(x.endDateTime);
           const name = x.name;
@@ -97,7 +97,7 @@ function Dashboard() {
                   View Your Projects
                 </button>
               </Link>
-              <Link to='/blockout'>
+              <Link to='/viewBlockout'>
                 <button>
                   View Your Blockouts
                 </button>

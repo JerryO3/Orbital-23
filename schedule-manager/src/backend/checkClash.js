@@ -104,3 +104,7 @@ export async function checkClash(promise, startDateTime, endDateTime) {
     var interval = lux.Interval.fromDateTimes(startDateTime,endDateTime);
     return binarySearch(unpackFromStartEnd(jsonObject), interval);
 }
+
+export async function clashWindow(boo, windowStart = null, windowEnd = null) {
+    return new ClashWindow(boo, windowStart, windowEnd);
+}
