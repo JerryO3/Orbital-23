@@ -197,6 +197,8 @@ export const updateBlockoutPeriod = async (thisPeriodId, thisPeriod, startDate, 
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
+    const blockoutStart = await getItem("startDate")
+    const blockoutEnd = await getItem("endDate");
 
     const startDateInput = startDate;
     const startYear = parseInt(startDateInput.substr(0,4), 10);
@@ -219,11 +221,11 @@ export const updateBlockoutPeriod = async (thisPeriodId, thisPeriod, startDate, 
     const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
-    update(ref(db, "periods/" + thisPeriodId), {
-        name : thisPeriod,
-        startDateTime : startDateTime.toMillis(),
-        endDateTime : endDateTime.toMillis(),
-    })
+    if (startDate < blockoutStart || endDate > blockoutEnd) {
+        alert('Period cannot be outside Blockout window!');
+        const result = await cc.clashWindow(false);
+        return [result];
+    }
 
     const memberPromises = [userId]
     .map(member => col.memberQuery(member.itemId, 'events/')
@@ -234,14 +236,14 @@ export const updateBlockoutPeriod = async (thisPeriodId, thisPeriod, startDate, 
 
     return memberPromises[0].then(x => {
         if (!x[1].clash) {
-            updater(x[0].itemId)
+            updater()
             return [];
         } else {
             return x[1];
         }
     })
 
-    function updater(uid) {
+    function updater() {
         update(ref(db, "periods/" + thisPeriodId), {
             name : thisPeriod,
             startDateTime : startDateTime.toMillis(),

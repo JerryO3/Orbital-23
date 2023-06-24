@@ -43,11 +43,13 @@ function NewEvent() {
       return;
     }
 
-    const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, [])
-    .then(x => setAvailable(x[0].clash))
-    .then(() => {if (available) {
+    const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
+    const isClash = result[0].clash;
+    console.log(isClash);
+    setAvailable(isClash);
+    if (!isClash) {
       window.location.href='/periodCreated';
-    }});
+    }
   }
 
   return (

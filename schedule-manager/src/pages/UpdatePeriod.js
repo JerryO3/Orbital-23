@@ -11,6 +11,8 @@ function UpdatePeriod() {
   const thisPeriodId = localStorage.getItem('periodId')
   const thisProject = localStorage.getItem('blockoutName');
 
+  const [available, setAvailable] = useState(true);
+
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -29,7 +31,12 @@ function UpdatePeriod() {
     }
 
     const result = await bl.updateBlockoutPeriod(thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime)
-    .then(() => window.location.href='/periodCreated');
+    const isClash = result[0].clash;
+    console.log(isClash);
+    setAvailable(isClash);
+    if (!isClash) {
+      window.location.href='/periodCreated';
+    }
   };
 
     return (
@@ -77,6 +84,8 @@ function UpdatePeriod() {
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)} />
   
+  {!available && <p className="warning">This clashes with a pre-existing event/period. Please choose a different timing.</p>}
+
             <button
                 type="submit"
                 onClick={

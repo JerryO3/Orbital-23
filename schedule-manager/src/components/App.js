@@ -7,6 +7,7 @@ import BackendTest from '../pages/BackendTest';
 
 
 function App() {
+  const storedUser = localStorage.getItem('user');
   return (
     <Router>
       <nav className='navigationBar'>
@@ -92,61 +93,61 @@ function App() {
   );
 }
 
-function NavBar() {
-  const storedUser = localStorage.getItem('user');
-  return (
-    <nav className='navigationBar'>
-    <ul className='ul'>
-      <ul className='leftItems'>
-      <button class="split" type="home" data-testid="homeLogo">
-        <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
-      </button>
-      <text class="split">Schedule Manager</text>
-      </ul>
-      </ul>
-      <ul className='rightItems'>
-        {!storedUser ?
-        (<ul className='rightItems'>
-          <Link to="/login">
-            <button data-testid="loginButton">
-            Login
-            </button>
-          </Link>
+// function NavBar() {
+//   const storedUser = localStorage.getItem('user');
+//   return (
+//     <nav className='navigationBar'>
+//     <ul className='ul'>
+//       <ul className='leftItems'>
+//       <button class="split" type="home" data-testid="homeLogo">
+//         <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
+//       </button>
+//       <text class="split">Schedule Manager</text>
+//       </ul>
+//       </ul>
+//       <ul className='rightItems'>
+//         {!storedUser ?
+//         (<ul className='rightItems'>
+//           <Link to="/login">
+//             <button data-testid="loginButton">
+//             Login
+//             </button>
+//           </Link>
           
-          <Link to="/register">
-            <button data-testid="registerButton">
-              Register
-            </button>
-          </Link>
-        </ul>
-        )
-        : 
-        (<ul className='rightItems'>
-          <Link to="/dashboard">
-            <button>
-              Home
-            </button>
-          </Link>
+//           <Link to="/register">
+//             <button data-testid="registerButton">
+//               Register
+//             </button>
+//           </Link>
+//         </ul>
+//         )
+//         : 
+//         (<ul className='rightItems'>
+//           <Link to="/dashboard">
+//             <button>
+//               Home
+//             </button>
+//           </Link>
 
-          <Link to='/settings'>
-          <button>
-            Settings
-          </button>
-          </Link>
+//           <Link to='/settings'>
+//           <button>
+//             Settings
+//           </button>
+//           </Link>
 
-          <button
-            type="logout"
-            onClick={() => {fn.logout()}}
-          >
-            Logout
-          </button>
-        </ul>
-        )
-        }
-        </ul>
-  </nav>
-  )
-}
+//           <button
+//             type="logout"
+//             onClick={() => {fn.logout()}}
+//           >
+//             Logout
+//           </button>
+//         </ul>
+//         )
+//         }
+//         </ul>
+//   </nav>
+//   )
+// }
 
 export default App;
 
