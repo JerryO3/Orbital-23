@@ -60,9 +60,9 @@ function UpdateProject() {
                   </button>
               </Link>
 
-              <Link to='/addUser'>
+              <Link to='/manageMembers'>
                   <button>
-                    Add Members
+                    Manage Members
                   </button>
                 </Link>
 

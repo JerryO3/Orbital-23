@@ -4,7 +4,7 @@ import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
 import * as cc from './checkClash'
-import { removeItem, getMembers, memberQuery } from './collaboration';
+import { removeItem, getMembers, memberQuery, deleteUser} from './collaboration';
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -220,7 +220,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     })))
 }
 
-export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, members) {
+export async function newEventByStartEnd(projectId, eventId, eventName, startDate, startTime, endDate, endTime, members) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -251,7 +251,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
         return;
     }
 
-    const uniqueId = uuidv4();
+    const uniqueId = eventId === null ? uuidv4() : eventId;
     console.log(members)
     const memberPromises = members
     .map(member => memberQuery(member.itemId, 'events/')
@@ -436,4 +436,22 @@ export function getTime(timestamp) {
     const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
     return formattedTime;
 }
-  
+
+export async function removeFromEvent(userId, itemId) {
+    console.log(userId)
+    console.log(itemId)
+    deleteUser(userId, "events/", itemId);
+}
+
+export async function removeFromProject(userId, itemId) {
+    const db = getDatabase();
+    console.log(itemId);
+    for(var user of userId){
+        console.log(userId);
+        deleteUser(user, "projects/", itemId);
+        const reference = ref(db, "events");
+        const que = query(reference, orderByChild("projectId"), equalTo(itemId));
+        return get(que)
+        .then(snapshot => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeFromEvent(user, x)) : null)    
+    }
+}

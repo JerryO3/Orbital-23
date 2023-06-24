@@ -39,7 +39,7 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    const result = await fn.newEventByStartEnd(thisProject, name, startDate, startTime, endDate, endTime, members)
+    const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, members)
     // .then(() => window.location.href='/eventCreated');
 
     setAvailable(result);
@@ -62,7 +62,7 @@ function NewEvent() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await col.getMembers();
+        const result = await col.getMembers("projects/", thisProject);
         setMembers(result);
         // console.log(result);
       } catch (error) {

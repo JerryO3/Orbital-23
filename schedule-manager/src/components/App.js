@@ -80,7 +80,7 @@ function App() {
         <Route path='/projectCreated' element={<p.ProjectCreated />} />
         <Route path='/viewProject' element={<p.ViewProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />
-        <Route path='/addUser' element={<p.AddUser />} />
+        <Route path='/manageMembers' element={<p.ManageMembers />} />
         <Route path='/userAdded' element={<p.UserAdded />} />
         <Route path='/viewBlockout' element={<p.ViewBlockout />} />
         <Route path='/newBlockout' element={<p.NewBlockout />} />

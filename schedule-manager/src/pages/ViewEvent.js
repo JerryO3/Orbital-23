@@ -72,7 +72,12 @@ function ViewEvent() {
           Date: {startDate}, {startTime} to {endDate}, {endTime}
         </h1>
         <h1 className="welcomeMessage">
-          Members: {members}
+          Members:
+          <ul>
+            {members.map((member) => (
+              <li key={member.itemId}>{member}</li>
+            ))}
+          </ul>
         </h1>
           <form className="form" onSubmit={(e) =>e.preventDefault()}>
             <button

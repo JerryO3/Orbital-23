@@ -20,8 +20,6 @@ export async function addUser(telegramHandle) {
         })
 
         updateMembership([userId], thisProjectId);
-
-        window.location.href = "/userAdded"
     }
 }
 
@@ -104,4 +102,11 @@ export async function getMembers(field, itemId) {
     }
     }
     return members;
+}
+
+export const deleteUser = async (userId, field, itemId) => {
+    const db = getDatabase();
+    removeItem([userId], itemId);
+    remove(ref(db, field + itemId + "/members/" + userId))
+    // remove(child(path, userId));
 }

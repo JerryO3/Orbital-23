@@ -65,11 +65,26 @@ function UpdateEvent() {
         ? setMembers(x)
         : null))
   .then(col.getMembers("events/", thisEventId)
-      .then(x => eventData === null
-        ? x.map(item => item.itemId).then(x => setSelectedMembers(x))
-        : null))
+    .then((x) => {
+      if (eventData === null) {
+        const itemIds = x.map((item) => item.itemId);
+        setSelectedMembers(itemIds);
+      }
+    }))
   .then(() => fn.getItem('events/', thisEventId)
     .then(x => setEventData(x)))
+
+  // col.getMembers("projects/", projectId)
+  // .then(x => setMembers(x))
+  
+  // col.getMembers("events/", thisEventId)
+  // // .map(x => x.itemId)
+  // .then(x => x.map(item => item.itemId))
+
+  // // .then(x => console.log(x))
+  // .then(x => setSelectedMembers(x))
+
+
 
   if (projectId === null || thisEventId === null) { 
       window.location.href = '/updateProject'
@@ -88,7 +103,7 @@ function UpdateEvent() {
       return; // Stop the submission
     }
 
-    const result = await fn.newEventByStartEnd(projectId, thisEvent, startDate, startTime, endDate, endTime, members)
+    const result = await fn.newEventByStartEnd(projectId, thisEventId, thisEvent, startDate, startTime, endDate, endTime, members)
     // .then(() => window.location.href='/eventCreated');
 
     setAvailable(result);
