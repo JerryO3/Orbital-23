@@ -9,7 +9,57 @@ import BackendTest from '../pages/BackendTest';
 function App() {
   return (
     <Router>
-      <NavBar/>
+      <nav className='navigationBar'>
+        <ul className='ul'>
+          <ul className='leftItems'>
+          <button class="split" type="home">
+            <Link to="/"><img src={logo} alt="Schedule Manager" className='navBarLogo'/></Link>
+          </button>
+          <text class="split">Schedule Manager</text>
+          </ul>
+          </ul>
+          <ul className='rightItems'>
+            {!storedUser ?
+            (<ul className='rightItems'>
+              <Link to="/login">
+                <button>
+                Login
+                </button>
+              </Link>
+              
+              <Link to="/register">
+                <button>
+                  Register
+                </button>
+              </Link>
+            </ul>
+            )
+            : 
+            (<ul className='rightItems'>
+              <Link to="/dashboard">
+                <button>
+                  Home
+                </button>
+              </Link>
+
+              <Link to='/settings'>
+              <button>
+                Settings
+              </button>
+              </Link>
+
+              <button
+                type="logout"
+                onClick={() => {fn.logout()}}
+              >
+                Logout
+              </button>
+            </ul>
+            )
+            }
+            </ul>
+      </nav>
+
       <Routes>
         <Route path="/" element={<p.Home />} />
         <Route path="/login" element={<p.Login />} />
@@ -24,10 +74,10 @@ function App() {
         <Route path='/newProject' element={<p.NewProject />} />
         <Route path='/newEvent' element={<p.NewEvent />} />
         <Route path='/eventCreated' element={<p.EventCreated />} />
-        <Route path='/updateEvent' element={<p.UpdateEvent />} />
-        <Route path='/changeEvent' element={<p.ChangeEvent />} />
-        <Route path='/projectCreated' element={<p.ProjectCreated />} />
         <Route path='/updateProject' element={<p.UpdateProject />} />
+        <Route path='/updateEvent' element={<p.UpdateEvent />} />
+        <Route path='/projectCreated' element={<p.ProjectCreated />} />
+        <Route path='/viewProject' element={<p.ViewProject />} />
         <Route path='/TestingPage' element={<BackendTest />} />
         <Route path='/addUser' element={<p.AddUser />} />
         <Route path='/userAdded' element={<p.UserAdded />} />

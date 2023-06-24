@@ -95,7 +95,6 @@ function Register() {
             onClick = {() => setUsernameAttempt(true)}
             onChange={(e) => {
               setUsername(e.target.value);
-              checkAvailability("username", e.target.value, setUsernameAvailable);
               setUsernameLength(e.target.value.length)
               }
             } />

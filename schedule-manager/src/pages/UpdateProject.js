@@ -3,65 +3,125 @@ import { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import * as fn from "../backend/functions";
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
-import * as col from '../backend/collaboration';
 
 function UpdateProject() { 
-  const [projects, setProjects] = useState([]);
-
+  const [events, setEvents] = useState([]);
+  const thisProjectId = localStorage.getItem('projectId');
+  const thisProjectName = localStorage.getItem('projectName');
+  
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = await fn.getUserId()
-        const member = await col.memberQuery(userId, "projects/");
-        setProjects(member);
-        console.log(projects);
+        const promise = fn.queryByValue("events", "projectId", thisProjectId);
+        const result = await promise;
+        setEvents(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  });
+  }, [thisProjectId]);
+  //   setEvents(fn.queryByField("events", "projectId", thisProjectId));
+  // })
 
-  return (
+  // localStorage.removeItem('projectName')
+  console.log(events);
+
+  if (thisProjectName === null) { 
+    window.location.href = '/updateProject'
+  } else {
+    return (
     <div className="container">
       <div className="logo">
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Choose an existing project.
+        Choose an existing event for project '{thisProjectName}'.
       </h1>
       <div className="loginBox">
-          {projects.length > 0 ? (
+          {events.length > 0 ? (
             <form className="form" onSubmit={(e) => e.preventDefault()}>
-              {projects.map((project) => (
+              {events.map((event) => (
                 <Link to='/updateEvent'>
-                  <button key={project.id} onClick={() => {localStorage.setItem('projectId', project.itemId);
-                localStorage.setItem('projectName', project.name);}}>
-                    {project.name}
+                  <button key={event.id} onClick={() =>
+                  {localStorage.setItem('eventName', event.name);
+                  localStorage.setItem('eventId', event.itemId)}}>
+                    {event.name}
                   </button>
                 </Link>
               ))}
-              <Link to='/newProject'>
+
+              <Link to='/newEvent'>
                   <button>
-                    Create New Project
+                    Create New Event
+                  </button>
+              </Link>
+
+              <Link to='/addUser'>
+                  <button>
+                    Add Members
                   </button>
                 </Link>
+
+              <Link to='/viewProject'>
+                  <button>
+                    Return to Projects
+                  </button>
+                </Link>
+              
+              <button
+                type="submit"
+                onClick={
+                  () => {
+                        fn.removeProject()
+                        .then(() => window.location.href='/projectCreated');
+                        }
+                  }
+              >
+                Delete Project
+              </button>
             </form>
             ) : (
               <form className="form" onSubmit={(e) => e.preventDefault()}>
-                <p className='warning'>No Projects Found</p>
-                <Link to='/newProject'>
+                <p className='warning'>No Events Found</p>
+                <Link to='/newEvent'>
                   <button>
-                    Create New Project
+                    Create New Event
                   </button>
                 </Link>
+
+                <Link to='/addUser'>
+                  <button>
+                    Add Members
+                  </button>
+                </Link>
+
+                <Link to='/updateProject'>
+                  <button>
+                    Return to Projects
+                  </button>
+                </Link>
+                
+                <button
+                type="submit"
+                onClick={
+                  () => {
+                          fn.removeProject()
+                          .then(() => window.location.href='/projectCreated');
+                        }
+                  }
+                >
+                  Delete Project
+                </button>
                 </form>
                 
              )}
       </div>
     </div>
   );
+  }
 }
 
 export default UpdateProject;
