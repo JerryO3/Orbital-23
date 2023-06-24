@@ -30,6 +30,14 @@ function UpdatePeriod() {
       return; // Stop the submission
     }
 
+    if (startDate > endDate) {
+      alert('Start Date cannot be after End Date.');
+      return; // Stop the submission
+    } else if (startTime > endTime) {
+      alert('Start Time cannot be after End Time.');
+      return; // Stop the submission
+    }
+
     const result = await bl.updateBlockoutPeriod(thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime)
     const isClash = result[0].clash;
     console.log(isClash);
