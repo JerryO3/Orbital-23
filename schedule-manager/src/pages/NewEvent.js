@@ -74,6 +74,9 @@ function NewEvent() {
     fetchData();
   });
 
+  if (thisProject === null) {
+    window.location.href = '/viewProjects'
+  } else {
   return (
       <div className="container">
         <div className="logo">
@@ -189,7 +192,7 @@ function NewEvent() {
         </div>
       </div>
     );
-  // } 
+  } 
 }
 
 export default NewEvent;

@@ -222,7 +222,7 @@ export const newProject = async (projectName) => { // now returns a promise void
 }
 
 export async function newEventByStartEnd(projectId, eventId, eventName, startDate, startTime, endDate, endTime, members) {
-    console.log(members)
+    // console.log(members)
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -362,6 +362,10 @@ export const removeEvent = async () => { // now returns a promise, shifting side
     .then(() => {
         console.log("Item deleted successfully");
     })
+    .then(() => {
+        localStorage.removeItem("eventId");
+        localStorage.removeItem("eventName");
+    })
     .catch((error) => {
         console.error("Error deleting item:", error);
     });
@@ -378,6 +382,10 @@ const removeEventHelper = async (eventId) => { // now returns promise, !need to 
     .then(() => {
         console.log("Event deleted successfully");
     })
+    .then(() => {
+        localStorage.removeItem("eventId");
+        localStorage.removeItem("eventName");
+    })
     .catch((error) => {
         console.error("Error deleting event:", error);
     });
@@ -392,6 +400,10 @@ export const removeProjectHelper = async (projectId) => { // now returns promise
     .then(() => remove(itemRef))
     .then(() => {
         console.log("Project deleted successfully");
+    })
+    .then(() => {
+        localStorage.removeItem("projectId");
+        localStorage.removeItem("projectName");
     })
     .catch((error) => {
         console.error("Error deleting project:", error);
