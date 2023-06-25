@@ -20,8 +20,6 @@ export async function addUser(telegramHandle) {
         })
 
         updateMembership([userId], thisProjectId);
-
-        window.location.href = "/userAdded"
     }
 }
 
@@ -34,7 +32,7 @@ export function updateMembership(membersArr, itemId) {
     }
 }
 
-export function removeItem(membersArr, itemId) {
+export async function removeItem(membersArr, itemId) {
     const db = getDatabase();
     membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
 }
@@ -51,7 +49,7 @@ async function getUserId(telegramHandle){
 
 export async function memberQuery(userId, field) {
     const db = getDatabase();
-
+    
     // Query member's projects
     const memberItemsRef = ref(db, "membership/" + userId);
     const memberItemsSnapshot = await get(memberItemsRef);
@@ -64,9 +62,11 @@ export async function memberQuery(userId, field) {
     
     // Fetch project details for each project ID
     for (const itemId of itemIds) {
+        // console.log(itemId)
         const itemRef = ref(db, [field] + itemId);
         const itemSnapshot = await get(itemRef);
-        
+        // console.log(itemSnapshot.exists())
+
         if (itemSnapshot.exists()) {
         const itemId = itemSnapshot.key;
         const item = itemSnapshot.val();
@@ -74,16 +74,15 @@ export async function memberQuery(userId, field) {
         }
         }
     }
-
     return items;
 }
 
-export async function getMembers() {
+export async function getMembers(field, itemId) {
     const db = getDatabase();
-    const projectId = localStorage.getItem("projectId");
+    // const projectId = localStorage.getItem("projectId");
 
     // Create a reference to the project's members node
-    const projectMembersRef = ref(db, "projects/" + projectId + "/members");
+    const projectMembersRef = ref(db, field + itemId + "/members");
     const projectMembersSnapshot = await get(projectMembersRef);
 
     // Array to store the member details
@@ -104,6 +103,12 @@ export async function getMembers() {
         }
     }
     }
-
     return members;
+}
+
+export const deleteUser = async (userId, field, itemId) => {
+    const db = getDatabase();
+    removeItem([userId], itemId);
+    remove(ref(db, field + itemId + "/members/" + userId))
+    // remove(child(path, userId));
 }

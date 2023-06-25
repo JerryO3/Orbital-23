@@ -7,17 +7,15 @@ import * as col from '../backend/collaboration';
 import { ref, getDatabase, onValue} from 'firebase/database'
 
 
-function ViewProject() { 
-  const [projects, setProjects] = useState([]);
-  // console.log(projects);
+function ViewBlockout() { 
+  const [blockouts, setBlockouts] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const userId = await fn.getUserId()
-        const member = await col.memberQuery(userId, "projects/");
-        setProjects(member);
-        console.log(member);
+        const member = await col.memberQuery(userId, "blockouts/");
+        setBlockouts(member);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -32,31 +30,31 @@ function ViewProject() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-        Choose an existing project.
+        Choose an existing blockout.
       </h1>
       <div className="loginBox">
-          {projects.length > 0 ? (
+          {blockouts.length > 0 ? (
             <form className="form" onSubmit={(e) => e.preventDefault()}>
-              {projects.map((project) => (
-                <Link to='/updateProject'>
-                  <button key={project.id} onClick={() => {localStorage.setItem('projectId', project.itemId);
-                localStorage.setItem('projectName', project.name);}}>
-                    {project.name}
+              {blockouts.map((blockout) => (
+                <Link to='/updateBlockout'>
+                  <button key={blockout.id} onClick={() => {localStorage.setItem('blockoutId', blockout.itemId);
+                localStorage.setItem('blockoutName', blockout.name);}}>
+                    {blockout.name}
                   </button>
                 </Link>
               ))}
-              <Link to='/newProject'>
+              <Link to='/newBlockout'>
                   <button>
-                    Create New Project
+                    Create New Blockout
                   </button>
                 </Link>
             </form>
             ) : (
               <form className="form" onSubmit={(e) => e.preventDefault()}>
-                <p className='warning'>No Projects Found</p>
-                <Link to='/newProject'>
+                <p className='warning'>No Blockouts Found</p>
+                <Link to='/newBlockout'>
                   <button>
-                    Create New Project
+                    Create New Blockout
                   </button>
                 </Link>
                 </form>
@@ -67,4 +65,4 @@ function ViewProject() {
   );
 }
 
-export default ViewProject;
+export default ViewBlockout;

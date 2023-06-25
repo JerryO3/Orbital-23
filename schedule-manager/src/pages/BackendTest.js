@@ -11,6 +11,7 @@ import {getDatabase, ref, set, remove, get, update, onValue, query, orderByChild
 import * as tc from '../backend/Components.test';
 import * as collab from '../backend/collaboration';
 import * as authpkg from "firebase/auth";
+import * as bl from '../backend/blockoutFunctions'
 
 
 const timesFrom = [
@@ -89,7 +90,11 @@ function BackendTest() {
             () => fn.removeProjectHelper(localStorage.getItem('projectId'))
         } 
             buttonText="Read Projects Data" />
-        </>  
+        <ClickDebug func={
+            () => bl.removed()
+        } 
+            buttonText="Read Projects Data" />
+        </>          
     );
 }
 

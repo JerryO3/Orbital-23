@@ -21,6 +21,12 @@ function BlockoutCreated() {
             Create Another Blockout
           </button>
         </Link>
+
+        <Link to='/viewBlockout'>
+          <button>
+            View Blockouts
+          </button>
+        </Link>
         
         <Link to='/dashboard'>
           <button>
