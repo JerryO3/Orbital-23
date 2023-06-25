@@ -39,8 +39,8 @@ function NewEvent() {
       return; // Stop the submission
     }
 
-    const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, members)
-    .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
+    const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, selectedMembers)
+    // .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
     // .then(() => window.location.href='/eventCreated');
 
     // setAvailable(result);
