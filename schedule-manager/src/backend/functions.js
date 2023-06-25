@@ -222,6 +222,7 @@ export const newProject = async (projectName) => { // now returns a promise void
 }
 
 export async function newEventByStartEnd(projectId, eventId, eventName, startDate, startTime, endDate, endTime, members) {
+    console.log(members)
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -256,8 +257,8 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
 
     // console.log(members)
     const memberPromises = members.map(async member => {
-        const events = await memberQuery(member.itemId, 'events/').then(items => items.filter(item => item.itemId !== eventId));
-        const periods = await memberQuery(member.itemId, 'periods/').then(items => items.filter(item => item.itemId !== eventId));
+        const events = await memberQuery(member, 'events/').then(items => items.filter(item => item.itemId !== eventId));
+        const periods = await memberQuery(member, 'periods/').then(items => items.filter(item => item.itemId !== eventId));
         const allItems = periods.concat(events);
         const clashCheckResult = await cc.checkClash(allItems, startDateTime, endDateTime);
         return [member, clashCheckResult];
@@ -274,8 +275,9 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
     // // console.log(memberPromises);
 
     if (members.length === 1) {
+        // console.log(memberPromises[0]);
         return memberPromises[0]
-        .then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects! 
+        .then(x => !x[1].clash ? updater(x[0]) : false) // works for single-user projects! 
         .then(x => {
             // console.log(x); 
             return x;});
@@ -285,7 +287,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
     .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
     // ^ reduces array of promises into a promise that returns an array
     .then(x => x.reduce((a,b) => Array.isArray(a) ? !a[1].clash && !b[1].clash : a && !b[1].clash) // checks all members if clear
-        ? x.map(y => {console.log(y[0].itemId); updater(y[0].itemId);}) // applies updater using map 
+        ? x.map(y => {console.log(y[0]); updater(y[0]);}) // applies updater using map 
         : x.filter(y => y[1].clash) // filters out clashing people to be printed out
         )
     .then(x => {console.log(x); return x}) // prints out clashing people
@@ -293,6 +295,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
     }  
 
     function updater(uid) {
+        console.log(uid)
         update(ref(db, "/events/" + uniqueId), {// helps to update while within promise wrapper
             name: eventName,
             startDateTime: startDateTime.toMillis(),

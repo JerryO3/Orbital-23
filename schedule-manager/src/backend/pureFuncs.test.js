@@ -12,7 +12,7 @@ import { analytics } from './Firebase';
 // // there is a need to test for edge-case inputs.
 
 // /* 
-// queryByValue(dbRef, field, queryId)
+// queryByValue(dbRef, field, queryId) DEPRECATED
 
 // returns: promise containing array of db data with a 
 // child field equivalent to the specified field and
@@ -35,71 +35,71 @@ const a =
 const b = JSON.stringify(a);
 localStorage.setItem('user', b)
 
-test('queryByValue', async () => {
-    const a = await fn.queryByValue('projects','userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2").then(x => expect(x).toStrictEqual(
-        [
-            {
-              itemId: '336a33fe-2aa5-4963-a6aa-4ed4b4adf5b9',
-              name: 'project1',
-              userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-            },
-            {
-              itemId: '88cc97ea-30bb-40b5-abd5-b66c95ebfd8f',
-              members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-              name: '54321',
-              userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-            },
-            {
-              itemId: 'd766e26e-0fd4-4275-825b-268219315550',
-              members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-              name: '1234',
-              userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-            },
-            {
-              itemId: 'e5805c8b-8727-4def-a16c-8c121c194095',
-              members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-              name: 'Test1323',
-              userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-            },
-            {
-              itemId: 'fc82b69d-3ed1-4aa8-baac-c23f36737167',
-              members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-              name: '1234',
-              userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-            }
-          ]
-    ))
-});
+// test('queryByValue', async () => {
+//     const a = await fn.queryByValue('projects','userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2").then(x => expect(x).toStrictEqual(
+//         [
+//             {
+//               itemId: '336a33fe-2aa5-4963-a6aa-4ed4b4adf5b9',
+//               name: 'project1',
+//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
+//             },
+//             {
+//               itemId: '88cc97ea-30bb-40b5-abd5-b66c95ebfd8f',
+//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
+//               name: '54321',
+//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
+//             },
+//             {
+//               itemId: 'd766e26e-0fd4-4275-825b-268219315550',
+//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
+//               name: '1234',
+//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
+//             },
+//             {
+//               itemId: 'e5805c8b-8727-4def-a16c-8c121c194095',
+//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
+//               name: 'Test1323',
+//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
+//             },
+//             {
+//               itemId: 'fc82b69d-3ed1-4aa8-baac-c23f36737167',
+//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
+//               name: '1234',
+//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
+//             }
+//           ]
+//     ))
+// });
 
-test('queryByValueEC1', async () => { // to fix behaviour
-    const a = await fn.queryByValue('','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC1', async () => { // to fix behaviour
+//     const a = await fn.queryByValue('','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+//     .then(x => expect(x).toBe())
+// });
 
-test('queryByValueEC2', async () => { // to fix behaviour
-    const a = await fn.queryByValue('nonexistentRef','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC2', async () => { // to fix behaviour
+//     const a = await fn.queryByValue('nonexistentRef','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+//     .then(x => expect(x).toBe())
+// });
 
-test('queryByValueEC3', async () => { // to fix behaviour
-    const a = await fn.queryByValue('projects','nonexistentField',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC3', async () => { // to fix behaviour
+//     const a = await fn.queryByValue('projects','nonexistentField',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+//     .then(x => expect(x).toBe())
+// });
 
-test('queryByValueEC4', async () => { // to fix behaviour
-    const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC4', async () => { // to fix behaviour
+//     const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+//     .then(x => expect(x).toBe())
+// });
 
-test('queryByValueEC5', async () => { // to fix behaviour
-    const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC5', async () => { // to fix behaviour
+//     const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+//     .then(x => expect(x).toBe())
+// });
 
-test('queryByValueEC6', async () => { // to fix behaviour
-    const a = await fn.queryByValue('events','startDateTime',"project1")
-    .then(x => expect(x).toBe())
-});
+// test('queryByValueEC6', async () => { // to fix behaviour
+//     const a = await fn.queryByValue('events','startDateTime',"project1")
+//     .then(x => expect(x).toBe())
+// });
 
 /*
 getField(field)
@@ -293,3 +293,24 @@ test('updateProfileEC2', async () => {
     .then(() => fn.getField("notificationDuration").then(x => expect(x).toBe(7)))
     .then(() => fn.getField("telegramHandle").then(x => expect(x).toBe("")))
 });
+
+test('removeEvent', async () => {
+    const setupProj = await fn.newProject("newProjTest").then(x => localStorage.setItem('projectId', x));
+    const a = await collab.getMembers("projects/", localStorage.getItem('projectId'))
+        .then(x => fn.newEventByStartEnd(
+        localStorage.getItem('projectId'),
+        'RandomUid1',
+        'newEvent',
+        '2023/08/10',
+        '10:30',
+        '2023/08/10',
+        '11:30',
+        x)
+        )
+    .then(x => expect(x).toBe(true))
+    .then(() => localStorage.setItem('eventId', 'RandomUid1'))
+
+    const b = await fn.removeEvent()
+    .then(x => expect(x).toBe(null))
+    .finally(() => {fn.removeEvent(); fn.removeProject()})
+})

@@ -23,7 +23,7 @@ function NewEvent() {
   const thisProject = localStorage.getItem('projectId');
 
   const [available, setAvailable] = useState(true);
-
+  // console.log(members[0]);
   async function handleSubmit(e){
     e.preventDefault();
 
@@ -40,7 +40,7 @@ function NewEvent() {
     }
 
     const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, selectedMembers)
-    // .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
+    .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
     // .then(() => window.location.href='/eventCreated');
 
     // setAvailable(result);
@@ -127,7 +127,7 @@ function NewEvent() {
                   className={`toggle ${selectedMembers.includes(member.itemId) ? 'selected' : ''}`}
                   onClick={() => toggleMemberSelection(member.itemId)}
                 >
-                  {member.telegramHandle}
+                  {member.username}
                 </button>
               ))}
   
