@@ -150,7 +150,12 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
             if (checked && futureEnd < blockoutEnd) {
                 return newBlockoutPeriod(thisBlockout, name, futureStart, startTime, futureEnd, endTime, checked, cycle, clash);
             } else {
-                return clash;
+                if (clash.length <= 0) {
+                    console.log(1)
+                    return [...clash, x[1]];
+                } else {
+                    return clash;
+                }
             }
         } else {
             if (checked && futureEnd < blockoutEnd) {
@@ -235,9 +240,10 @@ export const updateBlockoutPeriod = async (thisBlockout, thisPeriodId, thisPerio
             .then(x => [member,x]))) // converts clashWindow and profile into a single promise
 
     return memberPromises[0].then(x => {
+        console.log(x[1])
         if (!x[1].clash) {
             updater()
-            return [];
+            return x[1];
         } else {
             return x[1];
         }
@@ -249,6 +255,7 @@ export const updateBlockoutPeriod = async (thisBlockout, thisPeriodId, thisPerio
             startDateTime : startDateTime.toMillis(),
             endDateTime : endDateTime.toMillis(),
             blockoutId : thisBlockout,
+            userId  :  userId,
         })
     }
 }

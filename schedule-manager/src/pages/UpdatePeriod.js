@@ -15,6 +15,7 @@ function UpdatePeriod() {
   const [available, setAvailable] = useState(true);
   const [periodData, setPeriodData] = useState(null);
 
+  const [name, setName] = useState("");
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -22,8 +23,12 @@ function UpdatePeriod() {
 
   fn.getItem('periods/', thisPeriodId)
   .then(x => periodData === null
-    ? setStartDate(fn.getDate(x.startDateTime))
+    ? setName(x.name)
     : null)
+  .then(() => fn.getItem('periods/', thisPeriodId)
+    .then(x => periodData === null
+      ? setStartDate(fn.getDate(x.startDateTime))
+      : null))
   .then(() => fn.getItem('periods/', thisPeriodId)
     .then(x => periodData === null
       ? setStartTime(fn.getTime(x.startDateTime))
@@ -38,6 +43,8 @@ function UpdatePeriod() {
       : null))
   .then(() => fn.getItem('periods/', thisPeriodId)
     .then(x => setPeriodData(x)))
+
+  // console.log(periodData);
 
   const handleSubmit = async () => {
     // Validate the form fields
@@ -55,12 +62,12 @@ function UpdatePeriod() {
       return; // Stop the submission
     }
 
-    const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime)
-    const isClash = result[0].clash;
+    const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, name, startDate, startTime, endDate, endTime)
+    const isClash = result.clash;
     console.log(isClash);
     setAvailable(isClash);
-    if (!isClash) {
-      window.location.href='/periodCreated';
+    if (isClash) {
+      // window.location.href='/periodCreated';
     }
   };
 
@@ -73,13 +80,15 @@ function UpdatePeriod() {
           Update Period '{thisPeriod}'.
         </h1>
         <div className="loginBox">
-          <form className="form" onSubmit={(e) =>e.prperiodDefault()}>
+          <form className="form" onSubmit={(e) =>e.preventDefault()}>
   
             <input
               type="name"
               placeholder="Period Name"
               name="name"
-              value={thisPeriod} />
+              value={name}
+              onChange={(e) => setName(e.target.value)} />
+
   
             <input
               type="date"
