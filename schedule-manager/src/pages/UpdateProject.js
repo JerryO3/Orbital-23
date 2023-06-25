@@ -16,6 +16,7 @@ function UpdateProject() {
         const promise = fn.queryByValue("events", "projectId", thisProjectId);
         const result = await promise;
         setEvents(result);
+        // console.log(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -44,7 +45,7 @@ function UpdateProject() {
           {events.length > 0 ? (
             <form className="form" onSubmit={(e) => e.preventDefault()}>
               {events.map((event) => (
-                <Link to='/updateEvent'>
+                <Link to='/viewEvent'>
                   <button key={event.id} onClick={() =>
                   {localStorage.setItem('eventName', event.name);
                   localStorage.setItem('eventId', event.itemId)}}>
@@ -59,9 +60,9 @@ function UpdateProject() {
                   </button>
               </Link>
 
-              <Link to='/addUser'>
+              <Link to='/manageMembers'>
                   <button>
-                    Add Members
+                    Manage Members
                   </button>
                 </Link>
 

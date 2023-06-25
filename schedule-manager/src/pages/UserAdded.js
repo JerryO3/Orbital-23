@@ -12,13 +12,19 @@ function UserAdded() {
           <img src={logo} alt="Schedule Manager" />
       </div>
       <h1 className="welcomeMessage">
-      Member Added Successfully!
+      Members Updated Successfully!
       </h1>
       <div className="loginBox">
         <form className="form">
-        <Link to='/addUser'>
+        <Link to='/manageMembers'>
           <button>
-            Add Another Member
+            Manage Member
+          </button>
+        </Link>
+
+        <Link to='/updateProject'>
+          <button>
+            Back to Project
           </button>
         </Link>
         

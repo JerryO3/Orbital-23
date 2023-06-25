@@ -4,7 +4,7 @@ import * as authpkg from "firebase/auth";
 import * as time from "./time.js";
 import { once } from 'events';
 import * as cc from './checkClash'
-import { removeItem, getMembers, memberQuery } from './collaboration';
+import { removeItem, getMembers, memberQuery, deleteUser} from './collaboration';
 
 const { v4: uuidv4 } = require('uuid');
 
@@ -213,7 +213,6 @@ export const newProject = async (projectName) => { // now returns a promise void
     
     return update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
-        userId : userId
     }).then(() => update(ref(db, "/membership/" + userId), {
         [uniqueId] : true
     }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
@@ -221,7 +220,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     })))
 }
 
-export async function newEventByStartEnd(projectId, eventName, startDate, startTime, endDate, endTime, members) {
+export async function newEventByStartEnd(projectId, eventId, eventName, startDate, startTime, endDate, endTime, members) {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -252,7 +251,7 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
         return;
     }
 
-    const uniqueId = uuidv4();
+    const uniqueId = eventId === null ? uuidv4() : eventId;
     console.log(members)
     const memberPromises = members
     .map(member => memberQuery(member.itemId, 'events/')
@@ -280,10 +279,12 @@ export async function newEventByStartEnd(projectId, eventName, startDate, startT
     function updater(uid) {
         update(ref(db, "/events/" + uniqueId), {// helps to update while within promise wrapper
             name: eventName,
-            user: userId,
             startDateTime: startDateTime.toMillis(),
             endDateTime: endDateTime.toMillis(),
             projectId : projectId,
+        });
+        update(ref(db, "/events/" + uniqueId + '/members'), {
+            [uid] : true,
         });
         update(ref(db, "/membership/" + uid), {
             [uniqueId] : true
@@ -407,4 +408,50 @@ export async function updateProfile(username, notificationDuration, telegramHand
     // const storage = getStorage();
     // const storageRef = ref(storage, 'profile-photos/' + profilePhoto);
     // uploadBytesResumable(storageRef, profilePhoto)
+}
+
+export const getItem = async (dbRef, id) => {
+    const db = getDatabase();
+    const path = ref(db, dbRef + id)
+    const result = await get(path).then(snapshot => snapshot.exists ? snapshot.val() : null)
+    return result;
+}
+
+export function getDate(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+  
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+    return formattedDate;
+}
+
+export function getTime(timestamp) {
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+  
+    const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    return formattedTime;
+}
+
+export async function removeFromEvent(userId, itemId) {
+    console.log(userId)
+    console.log(itemId)
+    deleteUser(userId, "events/", itemId);
+}
+
+export async function removeFromProject(userId, itemId) {
+    const db = getDatabase();
+    console.log(itemId);
+    for(var user of userId){
+        console.log(userId);
+        deleteUser(user, "projects/", itemId);
+        const reference = ref(db, "events");
+        const que = query(reference, orderByChild("projectId"), equalTo(itemId));
+        return get(que)
+        .then(snapshot => snapshot.exists() ? Object.keys(snapshot.val()).map(x =>removeFromEvent(user, x)) : null)    
+    }
 }

@@ -9,6 +9,7 @@ import { ref, getDatabase, onValue} from 'firebase/database'
 
 function ViewProject() { 
   const [projects, setProjects] = useState([]);
+  // console.log(projects);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +17,7 @@ function ViewProject() {
         const userId = await fn.getUserId()
         const member = await col.memberQuery(userId, "projects/");
         setProjects(member);
-        console.log(projects);
+        console.log(member);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

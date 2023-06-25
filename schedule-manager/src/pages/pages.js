@@ -1,4 +1,4 @@
-export {default as AddUser} from './AddUser';
+export {default as ManageMembers} from './ManageMembers';
 export {default as Blockout} from './Blockout';
 export {default as BlockoutCreated} from './BlockoutCreated';
 export {default as Dashboard} from './Dashboard';
@@ -22,4 +22,5 @@ export {default as PeriodCreated} from './PeriodCreated';
 export {default as UpdateProject} from './UpdateProject';
 export {default as UpdateEvent} from './UpdateEvent';
 export {default as UserAdded} from './UserAdded';
+export {default as ViewEvent} from './ViewEvent';
 export {default as UpdatePeriod} from './UpdatePeriod';

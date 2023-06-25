@@ -24,7 +24,7 @@ function EventCreated() {
 
         <Link to='/updateProject'>
           <button>
-            Update An Event
+            Update Project
           </button>
         </Link>
         

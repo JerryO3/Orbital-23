@@ -102,18 +102,19 @@ function UpdatePeriod() {
                         }
                   }
               >
-              Update Event
+              Update Period
             </button>
 
             <button
                 type="submit"
                 onClick={
                   () => {
-                          bl.removePeriod();
+                          bl.removePeriod()
+                          .then(() => window.location.href='/periodCreated');
                         }
                   }
               >
-              Delete Event
+              Delete Period
             </button>
           </form>
         </div>
