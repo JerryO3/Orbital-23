@@ -11,19 +11,23 @@ https://www.canva.com/design/DAFkKiufM-s/qXZWgLX5xqwkaHhPGSWzwQ/edit?utm_content
 Core Features (Implemented)
 1. Login (w/ backend and input protection)
 2. Register (w/ backend and input protection)
-3. Reset Password (Partially Implemented: Yet to implement email authentication backend)
-
+3. Reset Password (w/ email authentication backend)
+4. Project View
+5. Actions
+- Create Event
+- Set Blockout Timing
+6. Implement App Logic
+- Clashes
+- Blockout
+  
 Core Features (To be Implemented)
-1. Project View
-2. Actions
+1. Actions
 - Create Event
 - Set Blockout Timing
 - Set Manual Reminders
 - Configure Settings
 - Go to tele group
-3. Implement App Logic
-- Clashes
-- Blockout
+2. Implement App Logic
 - Tele Bot
 
 User Stories
@@ -65,6 +69,7 @@ Selecting a period via the calendar will quickly redirect the user to the update
 
 
 Backend:
+
 For our database, we used the firebase realtime database with the following structure:
 - users
   - memberId1
