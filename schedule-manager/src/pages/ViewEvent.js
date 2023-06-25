@@ -9,7 +9,10 @@ import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 function ViewEvent() { 
   const thisEvent = localStorage.getItem('eventName');
   const thisEventId = localStorage.getItem('eventId');
+  const thisProjectId = localStorage.getItem('projectId')
   const thisProject = localStorage.getItem('projectName');
+
+  // console.log(thisEventId)
 
   const [startDate, setStartDate] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -46,17 +49,6 @@ function ViewEvent() {
   // if (projectName === null || eventName === null) { 
   //     window.location.href = '/updateProject'
   //   } else {
-
-  const handleSubmit = () => {
-    // Validate the form fields
-    if (startDate.trim() === '' || startTime.trim() === '' 
-    || endDate.trim() === '' || endTime.trim() === '' ) {
-      alert('Please fill in all fields.');
-      return; // Stop the submission
-    }
-
-    fn.newEventByStartEnd(thisProject, thisEvent, startDate, startTime, endDate, endTime);
-  };
 
     return (
       <div className="container">

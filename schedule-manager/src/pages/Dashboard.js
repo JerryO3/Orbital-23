@@ -31,11 +31,11 @@ function Dashboard() {
           const end = new Date(x.endDateTime);
           const name = x.name;
           const projectId = x.projectId
-          const eventId = x.eventId
+          const eventId = x.itemId
           return { name , start, end, projectId, eventId };
         })
         setEvents(allEvents)
-        console.log(events);
+        // console.log(events);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -45,9 +45,10 @@ function Dashboard() {
   });
 
   const handleEventClick = (event) => {
+    // console.log(event);
     localStorage.setItem('projectId', event.projectId);
     localStorage.setItem('eventId', event.eventId);
-    window.location.href = "./changeEvent"
+    window.location.href = "./viewEvent"
   };
 
   const eventWrapperComponent = ({ event, children }) => {
