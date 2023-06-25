@@ -6,7 +6,7 @@ import * as fn from '../backend/functions';
 import logo from '../assets/logo.png';
 
 function ManageMembers() {
-  const [name, setName] = useState("@");
+  const [email, setEmail] = useState("");
   const [members, setMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
 
@@ -27,7 +27,7 @@ function ManageMembers() {
   };
 
   const handleAddMember = async () => {
-    await col.addUser(name)
+    await col.addUser(email)
     .then(window.location.href = "/userAdded");
   };
 
@@ -70,17 +70,17 @@ function ManageMembers() {
                     checked={selectedMembers.includes(member.itemId)}
                     onChange={() => handleMemberSelection(member.itemId)}
                   />
-                  {member.telegramHandle}
+                  {member.username}
                 </li>
               ))}
             </ul>
           </h1>
           <input
-            type="name"
-            placeholder="Telegram Handle"
-            name="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            type="email"
+            placeholder="Email Address"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <button type="button" onClick={handleAddMember}>
             Add Member

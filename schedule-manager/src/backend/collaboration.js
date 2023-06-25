@@ -6,8 +6,8 @@ import { once, on} from 'events';
 import * as cc from './checkClash'
 import * as fn from './functions'
 
-export async function addUser(telegramHandle) {
-    const userId = await getUserId(telegramHandle);
+export async function addUser(email) {
+    const userId = await getUserId(email);
     if (userId === null) {
         alert('Telegram Handle does not exist');
     }
@@ -37,8 +37,8 @@ export async function removeItem(membersArr, itemId) {
     membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
 }
 
-async function getUserId(telegramHandle){
-    const arr = await fn.queryByValue("users", "telegramHandle", telegramHandle)
+async function getUserId(email){
+    const arr = await fn.queryByValue("users", "email", email)
     if (arr.length > 0) {
         return arr[0].itemId;
     }
