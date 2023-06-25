@@ -33,7 +33,7 @@ function ManageMembers() {
 
   const handleRemoveMember = async () => {
     await fn.removeFromProject(selectedMembers, thisProject)
-    // .then(window.location.href = "/userAdded");
+    .then(window.location.href = "/userAdded");
   };
 
   useEffect(() => {
