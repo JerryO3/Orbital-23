@@ -59,11 +59,14 @@ export async function memberQuery(userId, field) {
 
     if (memberItemsSnapshot.exists()) {
     const itemIds = Object.keys(memberItemsSnapshot.val());
+    
     // Fetch project details for each project ID
     for (const itemId of itemIds) {
+        // console.log(itemId)
         const itemRef = ref(db, [field] + itemId);
         const itemSnapshot = await get(itemRef);
-        
+        // console.log(itemSnapshot.exists())
+
         if (itemSnapshot.exists()) {
         const itemId = itemSnapshot.key;
         const item = itemSnapshot.val();
@@ -71,7 +74,6 @@ export async function memberQuery(userId, field) {
         }
         }
     }
-
     return items;
 }
 

@@ -14,7 +14,8 @@ function Dashboard() {
   const storedUser = localStorage.getItem('user');
   const promise = fn.getField('username').then(x => setUserName(x));
   const [userName, setUserName] = useState("")
-  const [events, setEvents] = useState([])
+  const [items, setItems] = useState([])
+  // const [periods, setPeriods] = useState([]);
 
   if (!storedUser) {
       // User is not logged in, redirect to the desired page
@@ -25,6 +26,7 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         const userId = await fn.getUserId()
+
         const member = await col.memberQuery(userId, "events/");
         const allEvents = member.map(x => {
           const start = new Date(x.startDateTime); 
@@ -32,10 +34,23 @@ function Dashboard() {
           const name = x.name;
           const projectId = x.projectId
           const eventId = x.itemId
-          return { name , start, end, projectId, eventId };
+          const type = "event"
+          return { name , start, end, projectId, eventId, type };
         })
-        setEvents(allEvents)
-        // console.log(events);
+
+        const memberPeriod = await col.memberQuery(userId, "periods/")
+        // console.log(memberPeriod)
+        const allPeriods = memberPeriod.map(x => {
+          const start = new Date(x.startDateTime); 
+          const end = new Date(x.endDateTime);
+          const name = x.name;
+          const blockoutId = x.blockoutId
+          const periodId = x.itemId
+          const type = "period"
+          return { name , start, end, blockoutId, periodId, type };
+        })
+        setItems([...allEvents, ...allPeriods])
+        // console.log(periods);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -45,10 +60,17 @@ function Dashboard() {
   });
 
   const handleEventClick = (event) => {
-    // console.log(event);
-    localStorage.setItem('projectId', event.projectId);
-    localStorage.setItem('eventId', event.eventId);
-    window.location.href = "./viewEvent"
+    if (event.type === "event") {
+      // console.log(event);
+      localStorage.setItem('projectId', event.projectId);
+      localStorage.setItem('eventId', event.eventId);
+      window.location.href = "./viewEvent"
+    } else {
+      // console.log(event);
+      localStorage.setItem('blockoutId', event.blockoutId);
+      localStorage.setItem('periodId', event.periodId);
+      window.location.href = "./updatePeriod"
+      }
   };
 
   const eventWrapperComponent = ({ event, children }) => {
@@ -71,7 +93,7 @@ function Dashboard() {
         <div className="calendarcontainer">
           <Calendar
             localizer={localizer}
-            events={events}
+            events={items}
             views={['month', 'week', 'day']}
             defaultView="week"
             components={{

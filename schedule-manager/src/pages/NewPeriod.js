@@ -52,6 +52,7 @@ function NewEvent() {
     }
 
     const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
+    console.log(result)
     const isClash = result[0].clash;
     console.log(isClash);
     setAvailable(isClash);

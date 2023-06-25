@@ -146,7 +146,7 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
 
     return memberPromises[0].then(x => {
         if (!x[1].clash) {
-            updater(x[0].itemId)
+            updater()
             if (checked && futureEnd < blockoutEnd) {
                 return newBlockoutPeriod(thisBlockout, name, futureStart, startTime, futureEnd, endTime, checked, cycle, clash);
             } else {
@@ -161,7 +161,7 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
         }
     })
 
-    function updater(uid) {
+    function updater() {
         update(ref(db, "/periods/" + uniqueId), {
             name : name,
             userId : userId,
@@ -169,7 +169,7 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
             endDateTime : endDateTime.toMillis(),
             blockoutId : thisBlockout,
         });
-        update(ref(db, "/membership/" + uid), {
+        update(ref(db, "/membership/" + userId), {
             [uniqueId] : true
         });
         return true;
@@ -193,7 +193,7 @@ export const updateDate = async (start, end) => {
     })
 }
 
-export const updateBlockoutPeriod = async (thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime) => {
+export const updateBlockoutPeriod = async (thisBlockout, thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime) => {
     const db = getDatabase();
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
@@ -248,6 +248,7 @@ export const updateBlockoutPeriod = async (thisPeriodId, thisPeriod, startDate, 
             name : thisPeriod,
             startDateTime : startDateTime.toMillis(),
             endDateTime : endDateTime.toMillis(),
+            blockoutId : thisBlockout,
         })
     }
 }
