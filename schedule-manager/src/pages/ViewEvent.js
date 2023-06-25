@@ -67,7 +67,7 @@ function ViewEvent() {
           Members:
           <ul>
             {members.map((member) => (
-              <li key={member.itemId}>{member}</li>
+              <li key={member ? member.itemId : null}>{member ? member : "missing telegram handle"}</li>
             ))}
           </ul>
         </h1>
