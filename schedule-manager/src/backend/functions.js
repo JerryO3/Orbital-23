@@ -218,6 +218,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
         [userId] : true
     })))
+    .then(() => uniqueId);
 }
 
 export async function newEventByStartEnd(projectId, eventId, eventName, startDate, startTime, endDate, endTime, members) {
@@ -252,18 +253,33 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
     }
 
     const uniqueId = eventId === null ? uuidv4() : eventId;
-    console.log(members)
-    const memberPromises = members
-    .map(member => memberQuery(member.itemId, 'events/')
-        .then(events => memberQuery(member.itemId, 'periods/')
-            .then(periods => periods.concat(events)))
-        .then(x => console.log(x))
-        .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
-            .then(x => [member,x]))) // converts clashWindow and profile into a single promise
-    console.log(memberPromises);
+
+    // console.log(members)
+    const memberPromises = members.map(async member => {
+        const events = await memberQuery(member.itemId, 'events/').then(items => items.filter(item => item.itemId !== eventId));
+        const periods = await memberQuery(member.itemId, 'periods/').then(items => items.filter(item => item.itemId !== eventId));
+        const allItems = periods.concat(events);
+        const clashCheckResult = await cc.checkClash(allItems, startDateTime, endDateTime);
+        return [member, clashCheckResult];
+      });
+
+    // // console.log(members)
+    // const memberPromises = await members
+    // .map(member => memberQuery(member.itemId, 'events/')
+    //     .then(events => memberQuery(member.itemId, 'periods/')
+    //         .then(periods => periods.concat(events)))
+    //     // .then(x => console.log(x))
+    //     .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
+    //         .then(x => [member,x]))) // converts clashWindow and profile into a single promise
+    // // console.log(memberPromises);
 
     if (members.length === 1) {
-        memberPromises[0].then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects!
+        return memberPromises[0]
+        .then(x => !x[1].clash ? updater(x[0].itemId) : false) // works for single-user projects! 
+        .then(x => {
+            // console.log(x); 
+            return x;});
+      
     } else {
     return memberPromises
     .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
@@ -272,7 +288,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         ? x.map(y => {console.log(y[0].itemId); updater(y[0].itemId);}) // applies updater using map 
         : x.filter(y => y[1].clash) // filters out clashing people to be printed out
         )
-    .then(x => console.log(x)) // prints out clashing people
+    .then(x => {console.log(x); return x}) // prints out clashing people
     ;
     }  
 
