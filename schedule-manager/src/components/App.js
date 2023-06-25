@@ -69,7 +69,6 @@ function App() {
         <Route path="/dashboard" element={<p.Dashboard />} />
         <Route path="/resetPw" element={<p.ResetPw />} />
         <Route path="/newPw" element={<p.NewPw />} />
-        <Route path='/blockout' element={<p.Blockout />} />
         <Route path='/blockoutCreated' element={<p.BlockoutCreated />} />
         <Route path='/settings' element={<p.Settings />} />
         <Route path='/newProject' element={<p.NewProject />} />

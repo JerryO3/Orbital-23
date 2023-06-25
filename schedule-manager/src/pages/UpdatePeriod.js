@@ -64,10 +64,10 @@ function UpdatePeriod() {
 
     const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, name, startDate, startTime, endDate, endTime)
     const isClash = result.clash;
-    console.log(isClash);
-    setAvailable(isClash);
-    if (isClash) {
-      // window.location.href='/periodCreated';
+    console.log(!isClash);
+    setAvailable(!isClash);
+    if (!isClash) {
+      window.location.href='/periodCreated';
     }
   };
 

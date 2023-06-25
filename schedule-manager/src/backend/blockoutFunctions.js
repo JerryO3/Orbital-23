@@ -138,8 +138,8 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
     const endDateTime =  time.moment(endYear, endMonth, endDay, endHour, endMin);
 
     const memberPromises = [userId]
-    .map(member => col.memberQuery(member.itemId, 'events/')
-        .then(events => col.memberQuery(member.itemId, 'periods/')
+    .map(member => col.memberQuery(member, 'events/')
+        .then(events => col.memberQuery(member, 'periods/')
             .then(periods => periods.concat(events)))
         .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
             .then(x => [member,x]))) // converts clashWindow and profile into a single promise
@@ -232,15 +232,17 @@ export const updateBlockoutPeriod = async (thisBlockout, thisPeriodId, thisPerio
         return [result];
     }
 
-    const memberPromises = [userId]
-    .map(member => col.memberQuery(member.itemId, 'events/')
-        .then(events => col.memberQuery(member.itemId, 'periods/')
-            .then(periods => periods.concat(events)))
-        .then(x => cc.checkClash(x, startDateTime, endDateTime) // mapse the profile array into an array of promises
-            .then(x => [member,x]))) // converts clashWindow and profile into a single promise
+    const memberPromises = [userId].map(async member => {
+        const events = await col.memberQuery(member, 'events/').then(items => items.filter(item => item.itemId !== thisPeriodId));
+        const periods = await col.memberQuery(member, 'periods/').then(items => items.filter(item => item.itemId !== thisPeriodId))
+        const allItems = periods.concat(events);
+        const combinedData = await cc.checkClash(allItems, startDateTime, endDateTime).then(clash => [member, clash]);
+        return combinedData;
+      });
+       // converts clashWindow and profile into a single promise
 
     return memberPromises[0].then(x => {
-        console.log(x[1])
+        // console.log(x[1])
         if (!x[1].clash) {
             updater()
             return x[1];

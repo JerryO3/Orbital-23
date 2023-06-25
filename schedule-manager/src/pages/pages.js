@@ -1,5 +1,4 @@
 export {default as ManageMembers} from './ManageMembers';
-export {default as Blockout} from './Blockout';
 export {default as BlockoutCreated} from './BlockoutCreated';
 export {default as Dashboard} from './Dashboard';
 export {default as Home} from './Home';
