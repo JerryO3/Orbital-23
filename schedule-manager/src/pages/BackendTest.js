@@ -83,8 +83,8 @@ function BackendTest() {
                     )} 
             buttonText="Delete Node" />
         <ClickDebug func={
-            () => console.log(localStorage.getItem('projectId'))} 
-            buttonText="Get Field" />
+            () => console.log(JSON.parse(JSON.stringify(authpkg.getAuth(app).currentUser)))} 
+            buttonText="Get User" />
         <ClickDebug func={
             () => fn.removeProjectHelper(localStorage.getItem('projectId'))
         } 
