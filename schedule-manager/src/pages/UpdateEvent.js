@@ -104,13 +104,13 @@ function UpdateEvent() {
     }
 
     const result = await fn.newEventByStartEnd(projectId, thisEventId, thisEvent, startDate, startTime, endDate, endTime, members)
-    // .then(() => window.location.href='/eventCreated');
+    .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
 
-    setAvailable(result);
+    // setAvailable(result);
 
-    if(result) {
-      window.location.href='/eventCreated';
-    }
+    // if(result) {
+    //   window.location.href='/eventCreated';
+    // }
   };
 
   const toggleMemberSelection = (memberId) => {
