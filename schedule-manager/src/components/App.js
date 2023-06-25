@@ -50,7 +50,7 @@ function NavBar() {
     <ul className='ul'>
       <ul className='leftItems'>
       <button class="split" type="home" data-testid="homeLogo">
-        <Link to="/"><img src={logo} alt="Schedule Manager" className='logo'/></Link>
+        <Link to="/"><img src={logo} alt="Schedule Manager" className='navBarLogo'/></Link>
       </button>
       <text class="split">Schedule Manager</text>
       </ul>
