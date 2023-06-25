@@ -174,7 +174,7 @@ function UpdateEvent() {
                   className={`toggle ${selectedMembers.includes(member.itemId) ? 'selected' : ''}`}
                   onClick={() => toggleMemberSelection(member.itemId)}
                 >
-                  {member.telegramHandle}
+                  {member.username}
                 </button>
               ))}
   
