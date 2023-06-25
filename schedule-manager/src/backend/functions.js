@@ -90,15 +90,15 @@ export const readEventsData = () => { // returns a promise containing an array
       });
 }
 
-export const registerWithEmailandPw = (username, email, password) => { // changed initializeData to be blocking
-    authpkg.createUserWithEmailAndPassword(authpkg.getAuth(app), email, password)
+export const registerWithEmailandPw = async (username, email, password) => { // changed initializeData to be blocking
+    return authpkg.createUserWithEmailAndPassword(authpkg.getAuth(app), email, password)
     .then(() => initializeData(email, username)
         .then(() => window.location.href = "/submit"))
     .catch((error) => {console.log(error)});
 }
 
 export async function login(email, password) { // fixed bug regarding redirecting due to local storage
-    const creds = await authpkg.signInWithEmailAndPassword(authpkg.getAuth(app), email, password)
+    return authpkg.signInWithEmailAndPassword(authpkg.getAuth(app), email, password)
     .then(x => {
         const user = authpkg.getAuth(app).currentUser;
         localStorage.setItem('user', JSON.stringify(user));
