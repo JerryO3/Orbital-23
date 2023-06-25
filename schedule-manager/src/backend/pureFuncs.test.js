@@ -312,6 +312,6 @@ test('removeEvent', async () => {
     .then(() => localStorage.setItem('eventId', 'RandomUid1'))
 
     const b = await fn.removeEvent()
-    .then(x => expect(x).toBe(null))
+    .then(x => expect(x).toBe(undefined))
     .finally(() => {fn.removeEvent(); fn.removeProject()})
 })
