@@ -36,7 +36,7 @@ function ViewEvent() {
         setEndTime(fn.getTime(data.endDateTime));
 
         const result = await col.getMembers("events/", thisEventId);
-        setMembers(result.map(x => x.telegramHandle));
+        setMembers(result.map(x => x.username));
         
       } catch (error) {
         console.error('Error fetching event data:', error);
@@ -67,7 +67,7 @@ function ViewEvent() {
           Members:
           <ul>
             {members.map((member) => (
-              <li key={member ? member.itemId : null}>{member ? member : "missing telegram handle"}</li>
+              <li key={member ? member.itemId : null}>{member}</li>
             ))}
           </ul>
         </h1>
