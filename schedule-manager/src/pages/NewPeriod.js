@@ -55,8 +55,8 @@ function NewEvent() {
     console.log(result)
     const isClash = result[0].clash;
     console.log(isClash);
-    setAvailable(isClash);
-    if (isClash) {
+    setAvailable(!isClash);
+    if (!isClash) {
       window.location.href='/periodCreated';
     }
   }

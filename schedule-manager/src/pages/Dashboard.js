@@ -68,6 +68,7 @@ function Dashboard() {
     } else {
       // console.log(event);
       localStorage.setItem('blockoutId', event.blockoutId);
+      localStorage.setItem('periodName', event.name);
       localStorage.setItem('periodId', event.periodId);
       window.location.href = "./updatePeriod"
       }
