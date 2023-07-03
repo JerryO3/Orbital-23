@@ -290,7 +290,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         ? x.map(y => {console.log(y[0]); updater(y[0]);}) // applies updater using map 
         : x.filter(y => y[1].clash) // filters out clashing people to be printed out
         )
-    .then(x => {console.log(x); return x}) // prints out clashing people
+    .then(x => {console.log(x); return false}) // prints out clashing people
     ;
     }  
 
