@@ -19,14 +19,14 @@ export async function addUser(email) {
             [userId] : true
         })
 
-        updateMembership([userId], thisProjectId);
+        updateMembership([userId], "projects", thisProjectId);
     }
 }
 
-export function updateMembership(membersArr, itemId) {
+export function updateMembership(membersArr, field, itemId) {
     const db = getDatabase();
     for (var memberId in membersArr) {
-        update(ref(db, "/membership/" + memberId), {
+        update(ref(db, "/membership/" + memberId + "/" + field), {
             [itemId] : true
         })
     }
