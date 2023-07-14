@@ -85,11 +85,12 @@ export default function ProjectButtons(projectList) {
   var eventList = eventMock;
   projectList = dataMock;
 
+  const [projects, setProjects] = useState([]);
   const [name, setName] = useState("");
   const [mode, setMode] = useState(0);
   const [newProj, setNewProj] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
-  // console.log(dataMock)
+
   useEffect(() => {
     const updateWidth = () => {
         setWidth(window.innerWidth)
@@ -102,8 +103,28 @@ export default function ProjectButtons(projectList) {
     })
   }, [width])
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = await fn.getUserId()
+        const member = await col.memberQuery(userId, "projects/");
+        setProjects(member);
+        // console.log(member);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (projects.length > 0) {
+    projectList = projects
+  }
+
+  console.log(projects)
+
   function ButtonAndChart({dataProp}) {
-    console.log(dataProp)
     return (
       <>
       <div class="flex justify-center">
