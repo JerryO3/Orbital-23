@@ -103,7 +103,8 @@ export async function login(email, password) { // fixed bug regarding redirectin
     .then(x => {
         const user = authpkg.getAuth(app).currentUser;
         localStorage.setItem('user', JSON.stringify(user));
-        window.location.href = '/dashboard'; }) 
+        window.location.href = '/dashboard'; 
+    }) 
     .catch((error) => {console.log(error)});
 }
 

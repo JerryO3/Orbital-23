@@ -6,6 +6,7 @@ import { useState } from 'react';
 import logo from '../assets/logo.png';
 import ReactDOM from 'react-dom/client';
 import { registerWithEmailandPw } from "../backend/functions";
+import RegisterBox from "../components/RegisterBox";
 
 function Register() {
   const [username, setUsername] = useState("");
@@ -30,7 +31,6 @@ function Register() {
   
   const storedUser = localStorage.getItem('user');
   if (storedUser) {
-      // User is logged in, redirect to the desired page
       window.location.href = '/landing';
   };
 
@@ -76,90 +76,91 @@ function Register() {
   }
 
   return (
-    <div className="container">
-      <div className="logo">
-          <img src={logo} alt="Schedule Manager" />
-      </div>
-      <h1 className="welcomeMessage">
-        Welcome to Schedule Manager.
-        <br></br>
-        Please Register for an Account.
-      </h1>
-      <div className="loginBox">
-        <form className="form" onSubmit={(e) => e.preventDefault()}>
-          <input 
-            type="username" 
-            placeholder="Username" 
-            name="username" 
-            value={username} 
-            onClick = {() => setUsernameAttempt(true)}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setUsernameLength(e.target.value.length)
-              }
-            } />
+    <RegisterBox />
+    // <div className="container">
+    //   <div className="logo">
+    //       <img src={logo} alt="Schedule Manager" />
+    //   </div>
+    //   <h1 className="welcomeMessage">
+    //     Welcome to Schedule Manager.
+    //     <br></br>
+    //     Please Register for an Account.
+    //   </h1>
+    //   <div className="loginBox">
+    //     <form className="form" onSubmit={(e) => e.preventDefault()}>
+    //       <input 
+    //         type="username" 
+    //         placeholder="Username" 
+    //         name="username" 
+    //         value={username} 
+    //         onClick = {() => setUsernameAttempt(true)}
+    //         onChange={(e) => {
+    //           setUsername(e.target.value);
+    //           setUsernameLength(e.target.value.length)
+    //           }
+    //         } />
             
 
-          <input 
-            type="emailAddress" 
-            placeholder="Email" 
-            name="email" value={email} 
-            onClick={() => setEmailAttempt(true)}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              checkAvailability("email", e.target.value, setEmailAvailable);
-              checkEmailChar(e.target.value)
-              }
-            } />
+    //       <input 
+    //         type="emailAddress" 
+    //         placeholder="Email" 
+    //         name="email" value={email} 
+    //         onClick={() => setEmailAttempt(true)}
+    //         onChange={(e) => {
+    //           setEmail(e.target.value);
+    //           checkAvailability("email", e.target.value, setEmailAvailable);
+    //           checkEmailChar(e.target.value)
+    //           }
+    //         } />
             
 
-          <input 
-            type="password" 
-            placeholder="Password" 
-            name="password" 
-            value={password} 
-            onClick={() => setPasswordAttempt(true)}
-            onChange={(e) => {
-              setPassword(e.target.value)
-              checkPasswordChar(e.target.value)
-              checkPasswordMatch(e.target.value, confirmPassword)
-              } 
-            }/>
+    //       <input 
+    //         type="password" 
+    //         placeholder="Password" 
+    //         name="password" 
+    //         value={password} 
+    //         onClick={() => setPasswordAttempt(true)}
+    //         onChange={(e) => {
+    //           setPassword(e.target.value)
+    //           checkPasswordChar(e.target.value)
+    //           checkPasswordMatch(e.target.value, confirmPassword)
+    //           } 
+    //         }/>
 
-          <input 
-            type="password" 
-            placeholder="Confirm Password" 
-            name="confirmPassword" 
-            value={confirmPassword}
-            onClick={() => setConfirmPasswordAttempt(true)}
-            onChange={(e) => {
-              setConfirmPassword(e.target.value)
-              checkPasswordMatch(password, e.target.value)
-              }
-            } />
+    //       <input 
+    //         type="password" 
+    //         placeholder="Confirm Password" 
+    //         name="confirmPassword" 
+    //         value={confirmPassword}
+    //         onClick={() => setConfirmPasswordAttempt(true)}
+    //         onChange={(e) => {
+    //           setConfirmPassword(e.target.value)
+    //           checkPasswordMatch(password, e.target.value)
+    //           }
+    //         } />
 
-          <div className="warningBox">
-            {!usernameAvailable && <p className="warning">This username is already taken. Please choose a different one.</p>}
-            {!emailAvailable && emailAttempt && <p className="warning">This email is already in use. Please use a different one.</p>}
-            {!emailChar && emailAttempt && <p className="warning">Invalid email.</p>}
-            {!passwordChar && passwordAttempt && <p className="warning">Password must be at least 8 characters long and contain both letters and numbers.</p>}
-            {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
-            </div>
+    //       <div className="warningBox">
+    //         {!usernameAvailable && <p className="warning">This username is already taken. Please choose a different one.</p>}
+    //         {!emailAvailable && emailAttempt && <p className="warning">This email is already in use. Please use a different one.</p>}
+    //         {!emailChar && emailAttempt && <p className="warning">Invalid email.</p>}
+    //         {!passwordChar && passwordAttempt && <p className="warning">Password must be at least 8 characters long and contain both letters and numbers.</p>}
+    //         {!confirmPasswordMatch && confirmPasswordAttempt && <p className="warning">Password does not match.</p>}
+    //         </div>
 
-          <Link to="/login">
-          <button type="login" >
-            Already Have an Account?
-          </button>
-          </Link>
+    //       <Link to="/login">
+    //       <button type="login" >
+    //         Already Have an Account?
+    //       </button>
+    //       </Link>
           
-          <button 
-            type="submit" 
-            onClick = {() => {allChecks();}}>
-            Submit
-          </button>
-        </form>
-      </div>
-    </div>
+    //       <button 
+    //         type="submit" 
+    //         onClick = {() => {allChecks();}}>
+    //         Submit
+    //       </button>
+    //     </form>
+    //   </div>
+    // </div>
   );
 }
 

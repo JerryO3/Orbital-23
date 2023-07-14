@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="bg-slate-50 h-screen w-screen content-center">
+        <div class="rounded-xl content-center">
+            <form onsubmit={}>
+                <input
+                data-testid="emailForm"
+                type="email"
+                placeholder="Email"
+                name="email"
+                value={email}
+                onChange={} />
+              <input
+                type="password"
+                placeholder="Password"
+                name="password"
+                value={password}
+                onChange={} />
+              {hasAttempted && <p>Invalid Login Credentials.</p>}
+              <button
+                  type="submit"
+                  onClick={}
+                >
+                Sign In
+              </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
