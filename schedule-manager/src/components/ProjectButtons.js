@@ -21,6 +21,7 @@ export default function ProjectButtons(projectList) {
 
   projectList = projects;
 
+
   useEffect(() => {
     const updateWidth = () => {
         setWidth(window.innerWidth)
@@ -55,8 +56,8 @@ export default function ProjectButtons(projectList) {
     fetchData();
   },[mode, newProj]);
 
+
   function ButtonAndChart({dataProp}) {
-    console.log(dataProp)
     return (
       <>
       <div key={state} class="flex justify-center">
