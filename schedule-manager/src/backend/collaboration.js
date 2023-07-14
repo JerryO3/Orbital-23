@@ -32,9 +32,9 @@ export function updateMembership(membersArr, itemId) {
     }
 }
 
-export async function removeItem(membersArr, itemId) {
+export async function removeItem(membersArr, field, itemId) {
     const db = getDatabase();
-    membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + itemId)));
+    membersArr.map((memberId) => remove(ref(db, "/membership/" + memberId + "/" + field + itemId)));
 }
 
 async function getUserId(email){
@@ -108,7 +108,7 @@ export async function getMembers(field, itemId) {
 
 export const deleteUser = async (userId, field, itemId) => {
     const db = getDatabase();
-    removeItem([userId], itemId);
+    removeItem([userId], field, itemId);
     remove(ref(db, field + itemId + "/members/" + userId))
     // remove(child(path, userId));
 }

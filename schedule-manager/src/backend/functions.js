@@ -213,7 +213,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     
     return update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
-    }).then(() => update(ref(db, "/membership/" + userId), {
+    }).then(() => update(ref(db, "/membership/" + userId + "projects"), {
         [uniqueId] : true
     }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
         [userId] : true
@@ -305,7 +305,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         update(ref(db, "/events/" + uniqueId + '/members'), {
             [uid] : true,
         });
-        update(ref(db, "/membership/" + uid), {
+        update(ref(db, "/membership/" + uid) + "/events", {
             [uniqueId] : true
         });
         return true;
@@ -358,7 +358,7 @@ export const removeEvent = async () => { // now returns a promise, shifting side
     const membersRef = ref(db, "projects/" + projectId + "/members");
     return remove(itemRef)
     .then(() => get(membersRef)
-        .then(snapshot => removeItem(Object.keys(snapshot.val()), eventId)))
+        .then(snapshot => removeItem(Object.keys(snapshot.val()), "events/", eventId)))
     .then(() => {
         console.log("Item deleted successfully");
     })
@@ -378,7 +378,7 @@ const removeEventHelper = async (eventId) => { // now returns promise, !need to 
     const membersRef = ref(db, "projects/" + projectId + "/members");
     return remove(itemRef)
     .then(() => get(membersRef)
-        .then(snapshot => removeItem(Object.keys(snapshot.val()), eventId)))
+        .then(snapshot => removeItem(Object.keys(snapshot.val()), "events/", eventId)))
     .then(() => {
         console.log("Event deleted successfully");
     })
@@ -396,7 +396,7 @@ export const removeProjectHelper = async (projectId) => { // now returns promise
     const itemRef = ref(db, '/projects/' + projectId);
     const membersRef = ref(db, "projects/" + projectId + "/members");
     return get(membersRef)
-    .then(snapshot => removeItem(Object.keys(snapshot.val()), projectId))
+    .then(snapshot => removeItem(Object.keys(snapshot.val()), "projects/", projectId))
     .then(() => remove(itemRef))
     .then(() => {
         console.log("Project deleted successfully");

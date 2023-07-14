@@ -21,7 +21,7 @@ export const newBlockout = async (blockoutName, startDate, endDate) => { // now 
         userId : userId,
         startDate : startDate,
         endDate : endDate,
-    }).then(() => update(ref(db, "/membership/" + userId), {
+    }).then(() => update(ref(db, "/membership/" + userId + "/blockouts"), {
         [uniqueId] : true
     }))
 }
@@ -35,7 +35,7 @@ export const removePeriod = async () => { // now returns a promise, shifting sid
     const userId = user.uid;
     // const membersRef = ref(db, "projects/" + projectId + "/members");
     return remove(itemRef)
-    .then(col.removeItem([userId], periodId))
+    .then(col.removeItem([userId], "periods/", periodId))
 }
 
 const removePeriodHelper = async (periodId) => { // now returns promise, !need to change project structure so that can remove membership
@@ -43,7 +43,7 @@ const removePeriodHelper = async (periodId) => { // now returns promise, !need t
     const itemRef = ref(db, '/periods/' + periodId);
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
-    return col.removeItem([userId], periodId)
+    return col.removeItem([userId], "periods/", periodId)
     .then(() => remove(itemRef))
     .then(() => {
         console.log("Event deleted successfully");
@@ -58,7 +58,7 @@ export const removeBlockoutHelper = async (blockoutId) => { // now returns promi
     const itemRef = ref(db, '/blockouts/' + blockoutId);
     const user = JSON.parse(localStorage.getItem('user'));
     const userId = user.uid;
-    return col.removeItem([userId], blockoutId)
+    return col.removeItem([userId], "blockouts/", blockoutId)
     .then(() => remove(itemRef))
     .then(() => {
         console.log("Project deleted successfully");
@@ -174,7 +174,7 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
             endDateTime : endDateTime.toMillis(),
             blockoutId : thisBlockout,
         });
-        update(ref(db, "/membership/" + userId), {
+        update(ref(db, "/membership/" + userId + "/periods"), {
             [uniqueId] : true
         });
         return true;
