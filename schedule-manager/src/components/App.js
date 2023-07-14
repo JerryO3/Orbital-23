@@ -7,10 +7,9 @@ import BackendTest from '../pages/BackendTest';
 
 
 function App() {
-  const storedUser = localStorage.getItem('user');
   return (
     <Router>
-      <NavBar />
+      <Header />
       <Routes>
         <Route path="/" element={<p.Home />} />
         <Route path="/login" element={<p.Login />} />
@@ -43,59 +42,52 @@ function App() {
   );
 }
 
+function Header() {
+  return (
+    <div>
+    <header class="bg-teal-700 text-white sticky top-0 z-10">
+        <section class="max-w-7xl mx-auto p-4 flex justify-between items-center">
+            <h1 class="text-3xl font-medium">
+              <a href="">🗒️ScheduleManager</a>
+            </h1>
+            <NavBar />
+        </section>
+    </header>
+    </div>
+  )
+}
+
 function NavBar() {
   const storedUser = localStorage.getItem('user');
+  if (storedUser) {
+    return (<LoggedInNav />)
+  } else {
+    return (<LoggedOutNav />)
+  }
+}
+
+function LoggedOutNav() {
+    return (
+      <div>
+      <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button>
+      <nav class="hidden sm:block space-x-8 text-xl font-semibold" aria-label="main">
+          <a href="/login" class="hover:opacity-90 p-4">Login</a>
+          <a href="/register" class="hover:opacity-90 p-4">Register</a>
+      </nav>
+      </div>
+    )
+}
+
+function LoggedInNav() {
   return (
-    <nav className='navigationBar'>
-    <ul className='ul'>
-      <ul className='leftItems'>
-      <button class="split" type="home" data-testid="homeLogo">
-        <Link to="/"><img src={logo} alt="Schedule Manager" className='navBarLogo'/></Link>
-      </button>
-      <text class="split">Schedule Manager</text>
-      </ul>
-      </ul>
-      <ul className='rightItems'>
-        {!storedUser ?
-        (<ul className='rightItems'>
-          <Link to="/login">
-            <button data-testid="loginButton">
-            Login
-            </button>
-          </Link>
-          
-          <Link to="/register">
-            <button data-testid="registerButton">
-              Register
-            </button>
-          </Link>
-        </ul>
-        )
-        : 
-        (<ul className='rightItems'>
-          <Link to="/dashboard">
-            <button>
-              Home
-            </button>
-          </Link>
-
-          <Link to='/settings'>
-          <button>
-            Settings
-          </button>
-          </Link>
-
-          <button
-            type="logout"
-            onClick={() => {fn.logout()}}
-          >
-            Logout
-          </button>
-        </ul>
-        )
-        }
-        </ul>
-  </nav>
+    <div>
+    <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button>
+    <nav class="hidden sm:block space-x-8 text-xl font-semibold" aria-label="main">
+        <a href="/dashboard" class="hover:opacity-90 p-4">Home</a>
+        <a href="/settings" class="hover:opacity-90 p-4">Settings</a>
+        <button onClick={() => fn.logout()} class="hover:opacity-90 p-4">Log Out</button>
+    </nav>
+    </div>
   )
 }
 

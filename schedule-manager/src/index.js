@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './components/App';
 import reportWebVitals from './backend/reportWebVitals';
+import Footer from './components/Footer';
 // Import the functions you need from the SDKs you need
 
 let db;
