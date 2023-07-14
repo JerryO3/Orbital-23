@@ -5,6 +5,10 @@ export const now = () => {
     return lux.DateTime.now();
 }
 
+export const nowMillis = () => {
+    return lux.DateTime.now().toMillis();
+}
+
 export const moment = ( // rounds timings to a resolution of 5 mins (rounds downward)
     year = lux.DateTime.now().year,
     month = lux.DateTime.now().month,

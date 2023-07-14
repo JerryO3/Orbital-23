@@ -258,8 +258,10 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
 
     // console.log(members)
     const memberPromises = members.map(async member => {
-        const events = await memberQuery(member, 'events/').then(items => items.filter(item => item.itemId !== eventId));
-        const periods = await memberQuery(member, 'periods/').then(items => items.filter(item => item.itemId !== eventId));
+        const events = await memberQuery(member, 'events/')
+        .then(items => items.filter(item => item.itemId !== eventId));
+        const periods = await memberQuery(member, 'periods/')
+        .then(items => items.filter(item => item.itemId !== eventId));
         const allItems = periods.concat(events);
         const clashCheckResult = await cc.checkClash(allItems, startDateTime, endDateTime);
         return [member, clashCheckResult];
@@ -306,7 +308,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         update(ref(db, "/events/" + uniqueId + '/members'), {
             [uid] : true,
         });
-        update(ref(db, "/membership/" + uid) + "/events", {
+        update(ref(db, "/membership/" + uid + "/events"), {
             [uniqueId] : true
         });
         return true;

@@ -14,7 +14,10 @@ function ViewBlockout() {
     const fetchData = async () => {
       try {
         const userId = await fn.getUserId()
-        const member = await col.memberQuery(userId, "blockouts/");
+        const member = null
+
+        // await col.memberQuery(userId, "blockouts/");
+
         setBlockouts(member);
       } catch (error) {
         console.error('Error fetching data:', error);

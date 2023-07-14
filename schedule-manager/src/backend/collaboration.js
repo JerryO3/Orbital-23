@@ -51,15 +51,15 @@ export async function memberQuery(userId, field) {
     const db = getDatabase();
     
     // Query member's projects
-    const memberItemsRef = ref(db, "membership/" + userId);
+    const memberItemsRef = ref(db, "membership/" + userId + "/" + field);
     const memberItemsSnapshot = await get(memberItemsRef);
-
+    console.log(memberItemsSnapshot.val())
     // Array to store the project details
     const items = [];
 
     if (memberItemsSnapshot.exists()) {
     const itemIds = Object.keys(memberItemsSnapshot.val());
-    
+    console.log(itemIds);
     // Fetch project details for each project ID
     for (const itemId of itemIds) {
         // console.log(itemId)
@@ -111,4 +111,9 @@ export const deleteUser = async (userId, field, itemId) => {
     removeItem([userId], field, itemId);
     remove(ref(db, field + itemId + "/members/" + userId))
     // remove(child(path, userId));
+}
+
+export const getName = async (userId) => {
+    const db = getDatabase();
+    return get(ref(db, "/users/" + userId + "/username")).then(snapshot => snapshot.val());
 }
