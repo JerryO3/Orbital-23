@@ -7,89 +7,20 @@ import { LabelList, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, L
 import UpdateEventComp from "./UpdateEventComp";
 import NewEventComp from "./NewEventComp";
 import * as col from '../backend/collaboration';
-
-const dataMock = [
-    {
-      ProjName: "Outdoor Cooking",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    },
-    {
-      ProjName: "Algorithms Class",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    },
-    {
-      ProjName: "Project 3",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    },
-    {
-      ProjName: "Project 4",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    },
-    {
-      ProjName: "Project 4",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    },
-    {
-      ProjName: "Project 4",
-      t:"",
-      v: "56.66%",
-      e: 17,
-      te: 30
-    }
-  ]
-
-  var totalEvents=30;
-
-const eventMock = [
-  {
-    eventName: 'Event 1',
-    eventTime: '1000-1200',
-    eventMembers: ["A", "B"]
-  },
-  {
-    eventName: 'Event 2',
-    eventTime: '1300-1600',
-    eventMembers: ["A", "B"]
-  },
-  {
-    eventName: 'Event 3',
-    eventTime: '1300-1600',
-    eventMembers: ["A", "B"]
-  },
-  {
-    eventName: 'Event 4',
-    eventTime: '1300-1600',
-    eventMembers: ["A", "B"]
-  }
-]
-
-// mock data^
+import * as t from "../backend/time";
+import * as lux from "luxon";
 
 export default function ProjectButtons(projectList) {
-
-  var eventList = eventMock;
-  projectList = dataMock;
 
   const [name, setName] = useState("");
   const [mode, setMode] = useState(0);
   const [newProj, setNewProj] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
-  // console.log(dataMock)
+  const [projects, setProjects] = useState([]);
+  const [state, updateState] = useState(0);
+
+  projectList = projects;
+
   useEffect(() => {
     const updateWidth = () => {
         setWidth(window.innerWidth)
@@ -102,34 +33,54 @@ export default function ProjectButtons(projectList) {
     })
   }, [width])
 
+  useEffect(() => {
+    const fetchData = async () => {
+
+        const userId = await fn.getUserId()
+        const member = await col.memberQuery(userId, "/projects/");
+        const proj = member
+          .map(x => {fn.queryByValue("events", "projectId", x.itemId)
+            // .then(y => {y.map(z => {z.names = Object.keys(z.members).map(ids => col.getName(ids))}); return y;})
+            .then(y => {x.events = y; return x;})
+            .then(x => {x.numEvents = x.events.length; return x;})
+            .then(x => {x.eventsDone = x.events.filter(e => e.endDateTime < t.nowMillis()); x.numEventsDone = x.eventsDone.length; return x;})
+            .then(x => {localStorage[x.itemId] = JSON.stringify(x); return x}) 
+            .then(x => {localStorage["projectName"] = x.name})
+          return x;});
+          console.log(localStorage);
+        setProjects(proj);
+        
+
+    };
+    fetchData();
+  },[mode, newProj]);
+
   function ButtonAndChart({dataProp}) {
     console.log(dataProp)
     return (
       <>
-      <div class="flex justify-center">
+      <div key={state} class="flex justify-center">
       <button 
         type="button" 
-        class="max-h-20"
-        onClick={() => {setMode(1)}}> 
-        {/* use onclick to set the local storage project and 
-        populate the event array */}
+        class="max-h-20 flex"
+        onClick={() => { localStorage['projectId'] = dataProp.itemId; localStorage['projectName'] = dataProp.name; setMode(1);}}> 
       <div class=" text-base text-center max-h-20 font-semibold">
-      {dataProp.ProjName}
+      {dataProp.name}
       </div>
-      </button>
       <div class="ml-auto">
       <BarChart width={width * 0.25} height={60} data={[dataProp]} layout="vertical">
-        <XAxis type="number" domain={[0, totalEvents]}/>
-        <YAxis type='category' dataKey='t' />
+        <XAxis type="number" domain={[0, dataProp.numEvents]}/>
+        <YAxis type='category' dataKey='numEventsDone' />
         <Tooltip />
         <Bar barSize={15} 
             layout="vertical" 
-            dataKey="e" 
+            dataKey="numEventsDone" 
             fill="#82ca9d">
             <LabelList dataKey="v" />
             </Bar>
       </BarChart>
       </div>
+      </button>
       </div>
       <hr></hr>
       </>
@@ -224,7 +175,15 @@ export default function ProjectButtons(projectList) {
     );
   }
 
+  // console.log(localStorage)
+
   function EventButton({dataProp}) {
+    const[names, setNames] = useState([]);
+
+    Object.keys(dataProp.members).map(x => col.getName(x))
+    .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b]))))
+    .then(x => setNames(x))
+    
     return (
       <div class="py-1 px-4">
       <button 
@@ -233,15 +192,16 @@ export default function ProjectButtons(projectList) {
         onClick={() => {setMode(2)}}>
       <div class="grid grid-cols-3 p-2 hover:opacity-80 bg-slate-200 rounded-2xl text-sm">
       <div class="font-bold">
-        <div>{dataProp.eventName}</div>
-        <div>{dataProp.eventTime}</div>
+        <div>{dataProp.name}</div>
+        <div>{lux.DateTime.fromMillis(dataProp.startDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)+"-"}</div>
+        <div>{lux.DateTime.fromMillis(dataProp.endDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)}</div>
       </div>
       <div class="overflow-auto">
-      {dataProp.eventMembers.map(x => (<div>{x}</div>))}
+      {names}
       </div>
       <button        
         type="button" 
-        onClick={() => null}> 
+        onClick={() => fn.removeEvent()}> 
         {/* delete event function above^ */}
       <div class="hover:opacity-80 bg-teal-500 text-white font-semibold rounded-xl">
       Delete Event
@@ -253,6 +213,12 @@ export default function ProjectButtons(projectList) {
     )
   }
   // ^ use above to map the event array into components
+
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+  
+  delay(1000).then(() => updateState(1));
 
   if (mode == 4) {
     return (
@@ -304,9 +270,18 @@ export default function ProjectButtons(projectList) {
   } else if (mode == 1) {
     return (
       <>
-      <div class="font-semibold px-4 pb-4">{localStorage.getItem('projectName')}</div>
-      {eventList.map(x => (<EventButton dataProp={x}/>))} 
-      {/*^ map the event array to <EventButton /> above  */}
+      <div class="font-semibold px-4 pb-4 flex justify-between">
+        <div>{localStorage.getItem('projectName')}</div>
+        <button 
+        type="registrationButton" 
+        class="w-fit max-w-9 px-2"
+        onClick={() => {localStorage.removeItem(localStorage["projectId"]); fn.removeProject().then(() => setMode(0))}}>
+        <div class=" hover:bg-red-500 text-base text-center px-4  font-semibold rounded-2xl">
+        Delete Project
+        </div>
+      </button>
+      </div>
+      {JSON.parse(localStorage.getItem(localStorage.getItem('projectId'))).events.map(x => (<EventButton dataProp={x}/>))} 
       <div class="flex justify-evenly pt-4">
       <button type="registrationButton" 
       class="w-fit max-w-9 "
@@ -326,7 +301,7 @@ export default function ProjectButtons(projectList) {
       <button 
         type="registrationButton" 
         class="w-fit max-w-9 h-12 hover:opacity-90"
-        onClick={() => {setMode(0)}}>
+        onClick={() => {setMode(0); localStorage['projectId'] = null}}>
         {/* use onclick to clear the local storage project and 
             depopulate the event array */}
         <div class="bg-teal-500 text-base text-center px-4 text-white font-semibold rounded-2xl">
@@ -338,7 +313,7 @@ export default function ProjectButtons(projectList) {
       )
   } else {
     return (
-      <div class="flex-col">
+      <div key={state} class="flex-col">
           {newProj && 
                 <div class="flex justify-between text-sm py-4">
                 <div class="font-semibold pr-4">
@@ -355,7 +330,7 @@ export default function ProjectButtons(projectList) {
                   type="registrationButton" 
                   class="pb-4"
                   onClick={() => {
-                    // create new project
+                    fn.newProject(name).then(() => setNewProj(false));
                   }}>
                   <div class="pl-4">
                     <div class="w-full hover:opacity-70 text-base font-semibold text-center px-4 h-full rounded-2xl">
@@ -373,10 +348,10 @@ export default function ProjectButtons(projectList) {
           {newProj ? "Back":"New Project"}
           </div>
         </button>
-
         <div class="overflow-y-auto scroll-px-0.5 h-72">
         {projectList.map(x => (< ButtonAndChart dataProp={x} />))}
         </div>
+        <button onClick={() => localStorage.clear()}>Debug Button to Clear Local Storage (log in again)</button>
       </div>
       )
   }

@@ -22,7 +22,10 @@ export default function CalendarComp() {
         try {
           const userId = await fn.getUserId()
   
-          const member = await col.memberQuery(userId, "events/");
+          const member = null
+
+          // await col.memberQuery(userId, "events/");
+
           const allEvents = member.map(x => {
             const start = new Date(x.startDateTime); 
             const end = new Date(x.endDateTime);
@@ -33,7 +36,10 @@ export default function CalendarComp() {
             return { name , start, end, projectId, eventId, type };
           })
   
-          const memberPeriod = await col.memberQuery(userId, "periods/")
+          const memberPeriod = null;
+
+          // await col.memberQuery(userId, "periods/")
+          
           // console.log(memberPeriod)
           const allPeriods = memberPeriod.map(x => {
             const start = new Date(x.startDateTime); 
