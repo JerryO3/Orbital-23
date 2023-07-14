@@ -214,7 +214,7 @@ export const newProject = async (projectName) => { // now returns a promise void
     
     return update(ref(db, "/projects/" + uniqueId), {
         name : projectName,
-    }).then(() => update(ref(db, "/membership/" + userId + "projects"), {
+    }).then(() => update(ref(db, "/membership/" + userId + "/projects"), {
         [uniqueId] : true
     }).then(() => update(ref(db, "/projects/" + uniqueId + '/members'), {
         [userId] : true
