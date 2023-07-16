@@ -123,7 +123,7 @@ export async function logout() {
     .then(() => window.location.href = '/')
     .catch((error) => {console.log(error)});
 
-    localStorage.removeItem('user');
+    localStorage.clear();
 }
 
 export function getField(field) { // now returns a promise, allowing the username to load asynchronously

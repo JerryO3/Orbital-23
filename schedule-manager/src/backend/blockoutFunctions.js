@@ -193,9 +193,9 @@ export const updateDate = async (start, end) => {
         startDate : start,
         endDate : end,
     })
-    .then(() => {
-        alert('Window Updated!')
-    })
+    // .then(() => {
+    //     alert('Window Updated!')
+    // })
 }
 
 export const updateBlockoutPeriod = async (thisBlockout, thisPeriodId, thisPeriod, startDate, startTime, endDate, endTime) => {

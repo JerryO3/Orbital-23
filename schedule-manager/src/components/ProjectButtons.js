@@ -10,16 +10,16 @@ import * as col from '../backend/collaboration';
 import * as t from "../backend/time";
 import * as lux from "luxon";
 
-export default function ProjectButtons(projectList) {
-
+export default function ProjectButtons({dataProp}) {
+  console.log(dataProp)
   const [name, setName] = useState("");
-  const [mode, setMode] = useState(0);
+  const [mode, setMode] = useState(dataProp);
   const [newProj, setNewProj] = useState(false);
   const [width, setWidth] = useState(window.innerWidth);
   const [projects, setProjects] = useState([]);
   const [state, updateState] = useState(0);
 
-  projectList = projects;
+  var projectList = projects;
 
   useEffect(() => {
     const updateWidth = () => {
@@ -56,7 +56,7 @@ export default function ProjectButtons(projectList) {
   },[mode, newProj]);
 
   function ButtonAndChart({dataProp}) {
-    console.log(dataProp)
+    // console.log(dataProp)
     return (
       <>
       <div key={state} class="flex justify-center">
@@ -110,12 +110,14 @@ export default function ProjectButtons(projectList) {
   
     const handleAddMember = async () => {
       await col.addUser(email)
-      .then(window.location.href = "/userAdded");
+      .then(updateState(Math.random()))
+      // .then(window.location.href = "/userAdded");
     };
   
     const handleRemoveMember = async () => {
       await fn.removeFromProject(selectedMembers, thisProject)
-      .then(window.location.href = "/userAdded");
+      .then(updateState(Math.random()))
+      // .then(window.location.href = "/userAdded");
     };
   
     useEffect(() => {
@@ -132,7 +134,7 @@ export default function ProjectButtons(projectList) {
     }, [thisProject]);
   
     return (
-      <div>
+      <div key={state}>
         <form onSubmit={(e) => e.preventDefault()}>
           <div class="pb-4 font-semibold">{localStorage.getItem("projectName")} Members:</div>
           <hr></hr>
@@ -185,12 +187,14 @@ export default function ProjectButtons(projectList) {
     .then(x => setNames(x))
     
     return (
-      <div class="py-1 px-4">
+      <div class="flex py-1 px-4">
       <button 
         class="w-full"
         type="button" 
-        onClick={() => {setMode(2)}}>
-      <div class="grid grid-cols-3 p-2 hover:opacity-80 bg-slate-200 rounded-2xl text-sm">
+        onClick={() => {localStorage['eventId'] = dataProp.itemId; 
+                        localStorage['eventName'] = dataProp.name;
+                        setMode(2);}}>
+      <div class="grid grid-cols-2 p-2 hover:opacity-80 bg-slate-200 rounded-2xl text-sm">
       <div class="font-bold">
         <div>{dataProp.name}</div>
         <div>{lux.DateTime.fromMillis(dataProp.startDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)+"-"}</div>
@@ -199,14 +203,15 @@ export default function ProjectButtons(projectList) {
       <div class="overflow-auto">
       {names}
       </div>
-      <button        
-        type="button" 
-        onClick={() => fn.removeEvent()}> 
-        {/* delete event function above^ */}
-      <div class="hover:opacity-80 bg-teal-500 text-white font-semibold rounded-xl">
-      Delete Event
       </div>
       </button>
+      <button        
+        type="button" 
+        onClick={() => null}
+        > 
+        {/* delete event function above^ */}
+      <div class="hover:bg-red-500 h-full text-center font-semibold rounded-xl">
+      Delete Event
       </div>
       </button>
       </div>
@@ -271,17 +276,21 @@ export default function ProjectButtons(projectList) {
     return (
       <>
       <div class="font-semibold px-4 pb-4 flex justify-between">
-        <div>{localStorage.getItem('projectName')}</div>
-        <button 
-        type="registrationButton" 
-        class="w-fit max-w-9 px-2"
-        onClick={() => {localStorage.removeItem(localStorage["projectId"]); fn.removeProject().then(() => setMode(0))}}>
-        <div class=" hover:bg-red-500 text-base text-center px-4  font-semibold rounded-2xl">
-        Delete Project
+        <div class="bg-teal-500 py-2 px-4 rounded-xl w-full flex justify-between">
+          <div class="text-white font-bold text-lg">{localStorage.getItem('projectName')}</div>
+          <button 
+            type="registrationButton" 
+            class="w-fit max-w-9 px-2"
+            onClick={() => {localStorage.removeItem(localStorage["projectId"]); fn.removeProject().then(() => setMode(0))}}>
+            <div class=" hover:bg-red-500 text-base text-center px-4  font-semibold rounded-2xl">
+            Delete Project
+            </div>
+          </button>
         </div>
-      </button>
       </div>
+      <div class="max-h-96 overflow-auto">
       {JSON.parse(localStorage.getItem(localStorage.getItem('projectId'))).events.map(x => (<EventButton dataProp={x}/>))} 
+      </div>
       <div class="flex justify-evenly pt-4">
       <button type="registrationButton" 
       class="w-fit max-w-9 "
@@ -351,7 +360,7 @@ export default function ProjectButtons(projectList) {
         <div class="overflow-y-auto scroll-px-0.5 h-72">
         {projectList.map(x => (< ButtonAndChart dataProp={x} />))}
         </div>
-        <button onClick={() => localStorage.clear()}>Debug Button to Clear Local Storage (log in again)</button>
+        {/* <button onClick={() => localStorage.clear()}>Debug Button to Clear Local Storage (log in again)</button> */}
       </div>
       )
   }

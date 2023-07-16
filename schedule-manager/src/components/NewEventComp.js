@@ -23,6 +23,8 @@ function NewEventComp() {
   const thisProject = localStorage.getItem('projectId');
 
   const [available, setAvailable] = useState(true);
+  const [created, setCreated] = useState(false);
+
   // console.log(members[0]);
   async function handleSubmit(e){
     e.preventDefault();
@@ -40,7 +42,7 @@ function NewEventComp() {
     }
 
     const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, selectedMembers)
-    .then(x => x === false ? setAvailable(false) : window.location.href='/eventCreated');
+    .then(x => {setAvailable(x); setCreated(x);})
   };
 
   const toggleMemberSelection = (memberId) => {
@@ -52,6 +54,10 @@ function NewEventComp() {
       setSelectedMembers([...selectedMembers, memberId]);
     }
   };
+
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,6 +126,8 @@ function NewEventComp() {
             onChange={(e) => setEndTime(e.target.value)} />
         </div>
         <hr></hr>
+        {created && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
+        {!available && <p className="warning">Event Creation Failed. One or more team members are unavailable at this timing.</p>}
         <div class="flex justify-between pt-4">
           <div class="flex">
           <div class="font-semibold flex items-center">Event Members:</div>
@@ -138,8 +146,7 @@ function NewEventComp() {
                 </button>
               </form>
               ))}
-  
-            {!available && <p className="warning">This clashes with a pre-existing event. Please choose a different timing.</p>}
+    
           </div>
           </div>
 
@@ -206,6 +213,8 @@ function NewEventComp() {
             onChange={(e) => setEndTime(e.target.value)} />
         </div>
         <hr></hr>
+        {created && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
+        {!available && <p className="warning">Event Creation Failed. One or more team members are unavailable at this timing.</p>}
         <div class="flex justify-between pt-4">
           <div class="flex">
           <div class="font-semibold flex items-center">Event Members:</div>
@@ -225,7 +234,6 @@ function NewEventComp() {
               </form>
               ))}
   
-            {!available && <p className="warning">This clashes with a pre-existing event. Please choose a different timing.</p>}
           </div>
           </div>
 
