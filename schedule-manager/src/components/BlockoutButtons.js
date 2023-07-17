@@ -298,30 +298,41 @@ export default function BlockoutButtons({dataProp}) {
         console.log(err);
       };
     
+      // fn.getItem('periods/', thisPeriodId)
+      // .then(x => periodData === null
+      //   ? setName(x.name)
+      //   : null, chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setStartDate(fn.getDate(x.startDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setStartTime(fn.getTime(x.startDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setEndDate(fn.getDate(x.endDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setEndTime(fn.getTime(x.endDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => setPeriodData(x)), chainError)
+
       fn.getItem('periods/', thisPeriodId)
-      .then(x => periodData === null
-        ? setName(x.name)
-        : null, chainError)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setStartDate(fn.getDate(x.startDateTime))
-          : null, chainError), chainError)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setStartTime(fn.getTime(x.startDateTime))
-          : null, chainError), chainError)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setEndDate(fn.getDate(x.endDateTime))
-          : null, chainError), chainError)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setEndTime(fn.getTime(x.endDateTime))
-          : null, chainError), chainError)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => setPeriodData(x)), chainError)
-    
-      // console.log(periodData);
+      .then(x => {
+        if (periodData === null) {
+          setName(x.name);
+          setStartDate(fn.getDate(x.startDateTime));
+          setStartTime(fn.getTime(x.startDateTime));
+          setEndDate(fn.getDate(x.endDateTime));
+          setEndTime(fn.getTime(x.endDateTime));
+        }
+        return x;
+      })
+      .then(x => setPeriodData(x))
     
       const handleSubmit = async () => {
         // Validate the form fields

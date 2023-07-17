@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-      <footer id="footer" class="bg-teal-700 text-white text-xl content-end">
+      <footer id="footer" class="bg-teal-700 text-white sm:text-xl content-end">
       <section class="max-w-7xl mx-auto p-4 flex flex-col sm:flex-row sm:justify-between">
           <address class="gap-2">
               <p>An Orbital Project by:</p>

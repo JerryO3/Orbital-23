@@ -11,7 +11,7 @@ import * as t from "../backend/time";
 import * as lux from "luxon";
 
 export default function ProjectButtons({dataProp}) {
-  console.log(dataProp)
+  // console.log(dataProp)
   const [name, setName] = useState("");
   const [mode, setMode] = useState(dataProp);
   const [newProj, setNewProj] = useState(false);
@@ -21,10 +21,18 @@ export default function ProjectButtons({dataProp}) {
 
   var projectList = projects;
 
+  useEffect(() => {
+    const updater = () => {
+      delay(1000).then(() => updateState(1)).then(console.log(3));
+      console.log(1);
+    }
+    updater()
+  },[state])
 
   useEffect(() => {
     const updateWidth = () => {
-        setWidth(window.innerWidth)
+        if (window.innerWidth < 1024) {setWidth(window.innerWidth * 3)}
+        else {setWidth(window.innerWidth)}
     }
     window.addEventListener('resize', updateWidth);
 
@@ -32,7 +40,7 @@ export default function ProjectButtons({dataProp}) {
     return(() => {
         window.removeEventListener('resize', updateWidth);
     })
-  }, [width])
+  }, [width, state])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +49,6 @@ export default function ProjectButtons({dataProp}) {
         const member = await col.memberQuery(userId, "/projects/");
         const proj = member
           .map(x => {fn.queryByValue("events", "projectId", x.itemId)
-            // .then(y => {y.map(z => {z.names = Object.keys(z.members).map(ids => col.getName(ids))}); return y;})
             .then(y => {x.events = y; return x;})
             .then(x => {x.numEvents = x.events.length; return x;})
             .then(x => {x.eventsDone = x.events.filter(e => e.endDateTime < t.nowMillis()); x.numEventsDone = x.eventsDone.length; return x;})
@@ -60,16 +67,16 @@ export default function ProjectButtons({dataProp}) {
   function ButtonAndChart({dataProp}) {
     return (
       <>
-      <div key={state} class="flex justify-center">
+      <div class="flex xl:justify-end">
       <button 
         type="button" 
         class="max-h-20 flex"
         onClick={() => { localStorage['projectId'] = dataProp.itemId; localStorage['projectName'] = dataProp.name; setMode(1);}}> 
-      <div class=" text-base text-center max-h-20 font-semibold">
+      <div class=" text-base max-h-20 font-semibold">
       {dataProp.name}
       </div>
-      <div class="ml-auto">
-      <BarChart width={width * 0.25} height={60} data={[dataProp]} layout="vertical">
+      <div key={state} class="ml-auto lg:hidden xl:block ">
+      <BarChart width={width * 0.2} height={60} data={[dataProp]} layout="vertical">
         <XAxis type="number" domain={[0, dataProp.numEvents]}/>
         <YAxis type='category' dataKey='numEventsDone' />
         <Tooltip />
@@ -135,11 +142,11 @@ export default function ProjectButtons({dataProp}) {
     }, [thisProject]);
   
     return (
-      <div key={state}>
+      <div>
         <form onSubmit={(e) => e.preventDefault()}>
           <div class="pb-4 font-semibold">{localStorage.getItem("projectName")} Members:</div>
           <hr></hr>
-          <div class="flex py-4 justify-between">
+          <div key={state} class="flex py-4 justify-between">
             <ul>
               {members.map((member) => (
                 <li key={member.itemId}>
@@ -201,8 +208,8 @@ export default function ProjectButtons({dataProp}) {
         <div>{lux.DateTime.fromMillis(dataProp.startDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)+"-"}</div>
         <div>{lux.DateTime.fromMillis(dataProp.endDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)}</div>
       </div>
-      <div class="overflow-auto">
-      {names}
+      <div class="overflow-auto flex-col">
+      {Array.isArray(names) ? names.map(x => (<div>{x}</div>)) : names}
       </div>
       </div>
       </button>
@@ -223,8 +230,10 @@ export default function ProjectButtons({dataProp}) {
   function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
-  
-  delay(1000).then(() => updateState(1));
+
+  async function delayedStateChange() {
+    return delay(1000).then(() => updateState(Math.random()));
+  }
 
   if (mode == 4) {
     return (
@@ -282,7 +291,10 @@ export default function ProjectButtons({dataProp}) {
           <button 
             type="registrationButton" 
             class="w-fit max-w-9 px-2"
-            onClick={() => {localStorage.removeItem(localStorage["projectId"]); fn.removeProject().then(() => setMode(0))}}>
+            onClick={() => {
+              localStorage.removeItem(localStorage["projectId"]);
+              delayedStateChange(); 
+              fn.removeProject().then(() => setMode(0))}}>
             <div class=" hover:bg-red-500 text-base text-center px-4  font-semibold rounded-2xl">
             Delete Project
             </div>
@@ -290,7 +302,9 @@ export default function ProjectButtons({dataProp}) {
         </div>
       </div>
       <div class="max-h-96 overflow-auto">
-      {JSON.parse(localStorage.getItem(localStorage.getItem('projectId'))).events.map(x => (<EventButton dataProp={x}/>))} 
+      {JSON.parse(localStorage.getItem(localStorage.getItem('projectId'))) 
+        ? JSON.parse(localStorage.getItem(localStorage.getItem('projectId'))).events.map(x => (<EventButton dataProp={x}/>))
+        : null} 
       </div>
       <div class="flex justify-evenly pt-4">
       <button type="registrationButton" 
@@ -311,9 +325,11 @@ export default function ProjectButtons({dataProp}) {
       <button 
         type="registrationButton" 
         class="w-fit max-w-9 h-12 hover:opacity-90"
-        onClick={() => {setMode(0); localStorage['projectId'] = null}}>
-        {/* use onclick to clear the local storage project and 
-            depopulate the event array */}
+        onClick={() => {
+          setMode(0); 
+          localStorage['projectId'] = null;
+          updateState(Math.random());
+        }}>
         <div class="bg-teal-500 text-base text-center px-4 text-white font-semibold rounded-2xl">
         Back to Projects
         </div>
@@ -323,7 +339,7 @@ export default function ProjectButtons({dataProp}) {
       )
   } else {
     return (
-      <div key={state} class="flex-col">
+      <div class="flex-col">
           {newProj && 
                 <div class="flex justify-between text-sm py-4">
                 <div class="font-semibold pr-4">
@@ -337,10 +353,11 @@ export default function ProjectButtons({dataProp}) {
                   onChange={(e) => {console.log(e); setName(e.target.value)}}
                   value={name} />
                 <button 
+                  key={state}
                   type="registrationButton" 
                   class="pb-4"
                   onClick={() => {
-                    fn.newProject(name).then(() => setNewProj(false));
+                    fn.newProject(name).then(() => setNewProj(false)).then(() => updateState(Math.random()));
                   }}>
                   <div class="pl-4">
                     <div class="w-full hover:opacity-70 text-base font-semibold text-center px-4 h-full rounded-2xl">
@@ -353,7 +370,7 @@ export default function ProjectButtons({dataProp}) {
         <button 
           type="registrationButton" 
           class="w-full pb-4"
-          onClick={() => {newProj ? setNewProj(false) : setNewProj(true)}}>
+          onClick={() => {updateState(Math.random()); newProj ? setNewProj(false) : setNewProj(true)}}>
           <div class="bg-teal-500 w-full hover:opacity-90 text-base text-center px-4 text-white font-semibold rounded-2xl">
           {newProj ? "Back":"New Project"}
           </div>

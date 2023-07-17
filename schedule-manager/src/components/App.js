@@ -46,8 +46,8 @@ function Header() {
   return (
     <div>
     <header class="bg-teal-700 text-white sticky top-0 z-10">
-        <section class="max-w-7xl mx-auto p-4 flex justify-between items-center">
-            <h1 class="text-3xl font-medium">
+        <section class="max-w-7xl mx-auto p-4 lg:flex justify-between items-center">
+            <h1 class="text-xl lg:text-3xl font-medium">
               <a href="">🗒️ScheduleManager</a>
             </h1>
             <NavBar />
@@ -69,10 +69,10 @@ function NavBar() {
 function LoggedOutNav() {
     return (
       <div>
-      <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button>
-      <nav class="hidden sm:block space-x-8 text-xl font-semibold" aria-label="main">
-          <a href="/login" class="hover:opacity-90 p-4">Login</a>
-          <a href="/register" class="hover:opacity-90 p-4">Register</a>
+      {/* <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button> */}
+      <nav class="space-x-8 text-sm lg:text-xl font-semibold" aria-label="main">
+          <a href="/login" class="hover:opacity-90 p-3">Login</a>
+          <a href="/register" class="hover:opacity-90 p-3">Register</a>
       </nav>
       </div>
     )
@@ -81,11 +81,11 @@ function LoggedOutNav() {
 function LoggedInNav() {
   return (
     <div>
-    <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button>
-    <nav class="hidden sm:block space-x-8 text-xl font-semibold" aria-label="main">
-        <a href="/dashboard" class="hover:opacity-90 p-4">Home</a>
-        <a href="/settings" class="hover:opacity-90 p-4">Settings</a>
-        <button onClick={() => fn.logout()} class="hover:opacity-90 p-4">Log Out</button>
+    {/* <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button> */}
+    <nav class="space-x-8 text-sm lg:text-xl font-semibold" aria-label="main">
+        <a href="/dashboard" class="hover:opacity-90 p-3">Home</a>
+        <a href="/settings" class="hover:opacity-90 p-3">Settings</a>
+        <button onClick={() => fn.logout()} class="hover:opacity-90 p-3">Log Out</button>
     </nav>
     </div>
   )
