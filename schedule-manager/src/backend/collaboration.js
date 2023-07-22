@@ -53,13 +53,13 @@ export async function memberQuery(userId, field) {
     // Query member's projects
     const memberItemsRef = ref(db, "membership/" + userId + "/" + field);
     const memberItemsSnapshot = await get(memberItemsRef);
-    console.log(memberItemsSnapshot.val())
+    // console.log(memberItemsSnapshot.val())
     // Array to store the project details
     const items = [];
 
     if (memberItemsSnapshot.exists()) {
     const itemIds = Object.keys(memberItemsSnapshot.val());
-    console.log(itemIds);
+    // console.log(itemIds);
     // Fetch project details for each project ID
     for (const itemId of itemIds) {
         // console.log(itemId)

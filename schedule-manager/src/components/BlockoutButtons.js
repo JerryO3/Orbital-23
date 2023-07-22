@@ -4,35 +4,33 @@ import logo from '../assets/logo.png';
 import * as fn from '../backend/functions'
 import { Container } from "postcss";
 import * as bl from '../backend/blockoutFunctions';
-import { LabelList, BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import * as col from '../backend/collaboration';
+import * as lux from "luxon";
+import { data } from "autoprefixer";
 
-const mock = [
-    {
-        prop1 : "Medical Appointment",
-        prop2 : "1",
-        prop3 : "1"
-    },
-    {
-        prop1 : "CS1101S Class",
-        prop2 : "1",
-        prop3 : "1"
-    },
-    {
-        prop1 : "Tuition",
-        prop2 : "1",
-        prop3 : "1"
-    },
-    {
-        prop1 : "Training Schedule",
-        prop2 : "1",
-        prop3 : "1"
-    }
-]
+export default function BlockoutButtons({dataProp}) {
+  var BOList;
 
+    const [mode, setMode] = useState(dataProp);
+    const [blockouts, setBlockouts] = useState([]);
+  console.log(dataProp)
+  console.log(mode)
 
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const userId = await fn.getUserId()
+          const member = await col.memberQuery(userId, "blockouts/");
+          setBlockouts(member);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+    },[mode]);
 
-export default function BlockoutButtons(BOList) {
-    const [mode, setMode] = useState(0);
+    console.log(blockouts)
 
     function UpdateBlockout() { 
         const [periods, setPeriods] = useState([]);
@@ -41,7 +39,8 @@ export default function BlockoutButtons(BOList) {
         const thisBlockoutId = localStorage.getItem('blockoutId');
         const thisBlockoutName = localStorage.getItem('blockoutName');
         
-        
+        console.log(periods)
+
         useEffect(() => {
           const fetchData = async () => {
             try {
@@ -60,7 +59,7 @@ export default function BlockoutButtons(BOList) {
           };
       
           fetchData();
-        }, [thisBlockoutId]);
+        }, []);
       
         const handleStartDateChange = (e) => {
           setStartDate((e.target.value));
@@ -75,7 +74,7 @@ export default function BlockoutButtons(BOList) {
             alert('Start Date cannot be after End Date.');
             return; // Stop the submission
           }
-          await bl.updateDate(startDate, endDate);
+          await bl.updateDate(startDate, endDate).then(() => setMode(0))
         };
       
         // localStorage.removeItem('projectName')
@@ -110,26 +109,29 @@ export default function BlockoutButtons(BOList) {
                       {periods.map((period) => (
                         <button 
                           type="button"
-                          class="w-full flex justify-between"
+                          class="w-full flex justify-between py-4"
                           key={period.id} 
                           onClick={() =>
                           {localStorage.setItem('periodName', period.name);
                           localStorage.setItem('periodId', period.itemId);
                           setMode(3)}}>
-                          <div>{period.name}</div>
+                          <div class="w-12 text-sm font-semibold">{period.name}</div>
+                          <div class="text-xs">
+                          <div>{lux.DateTime.fromMillis(period.startDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)}</div>
+                          <div>to</div>
+                          <div>{lux.DateTime.fromMillis(period.endDateTime).toLocaleString(lux.DateTime.DATETIME_SHORT)}</div>
+                          </div>
                           <div>
                             <button        
-                            type="button" 
-                            onClick={() => null}> 
-                            {/* 
+                            type="button"
                             onClick={
-                              () => {
+                              () => { localStorage.setItem('periodName', period.name);
+                                      localStorage.setItem('periodId', period.itemId);
                                       bl.removePeriod()
-                                      .then(() => window.location.href='/periodCreated');
+                                      .then(() => setMode(1));
                                     }
-                              }                              
-                            */}
-                            <div class="opacity-80 hover:opacity-70 bg-sky-700 text-white text-sm font-semibold rounded-xl px-4">
+                              }>                           
+                            <div class="hover:bg-red-500  text-sm font-semibold rounded-xl px-4">
                             Delete Period
                             </div>
                             </button>
@@ -159,7 +161,7 @@ export default function BlockoutButtons(BOList) {
                         onClick={
                             () => {
                                 bl.removeBlockout()
-                                .then(() => window.location.href='/blockoutCreated');
+                                .then(() => setMode(0));
                                 }
                             }
                         >
@@ -222,8 +224,8 @@ export default function BlockoutButtons(BOList) {
                         type="submit"
                         onClick={
                             () => {
-                                bl.removeBlockout()
-                                .then(() => window.location.href='/blockoutCreated');
+                              bl.removeBlockout()
+                              .then(() => setMode(0));
                                 }
                             }
                         >
@@ -256,10 +258,16 @@ export default function BlockoutButtons(BOList) {
         return(
         <button
         type="button"
-        onClick={() => {setMode(1)}}>
+        onClick={() => {setMode(1); 
+                        localStorage['blockoutId'] = dataProp.itemId; 
+                        localStorage['blockoutName'] = dataProp.name;
+                      }}>
         <div class="px-2 ">
-            <div class="bg-sky-700 text-sm w-28 text-white font-semibold hover:opacity-70 flex opacity-80 items-center p-4 h-20 rounded-3xl text-center ">
-                <div class="text-center w-full">{dataProp.prop1}</div>
+            <div class="bg-sky-700 text-sm w-28 text-white font-semibold hover:opacity-70 opacity-80 items-center p-2 h-20 rounded-3xl text-center ">
+                <div class="text-center w-full underline">{dataProp.name}</div>
+                <div class="text-center text-xs w-full">{dataProp.startDate}</div>
+                <div class="text-center text-xs w-full"> to </div>
+                <div class="text-center text-xs w-full">{dataProp.endDate}</div>
             </div>
         </div>
         </button>
@@ -285,31 +293,46 @@ export default function BlockoutButtons(BOList) {
       const handleToggle = () => {
         setChecked(!checked);
       };
+
+      function chainError(err) {
+        console.log(err);
+      };
     
+      // fn.getItem('periods/', thisPeriodId)
+      // .then(x => periodData === null
+      //   ? setName(x.name)
+      //   : null, chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setStartDate(fn.getDate(x.startDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setStartTime(fn.getTime(x.startDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setEndDate(fn.getDate(x.endDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => periodData === null
+      //     ? setEndTime(fn.getTime(x.endDateTime))
+      //     : null, chainError), chainError)
+      // .then(() => fn.getItem('periods/', thisPeriodId)
+      //   .then(x => setPeriodData(x)), chainError)
+
       fn.getItem('periods/', thisPeriodId)
-      .then(x => periodData === null
-        ? setName(x.name)
-        : null)
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setStartDate(fn.getDate(x.startDateTime))
-          : null))
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setStartTime(fn.getTime(x.startDateTime))
-          : null))
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setEndDate(fn.getDate(x.endDateTime))
-          : null))
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => periodData === null
-          ? setEndTime(fn.getTime(x.endDateTime))
-          : null))
-      .then(() => fn.getItem('periods/', thisPeriodId)
-        .then(x => setPeriodData(x)))
-    
-      // console.log(periodData);
+      .then(x => {
+        if (periodData === null) {
+          setName(x.name);
+          setStartDate(fn.getDate(x.startDateTime));
+          setStartTime(fn.getTime(x.startDateTime));
+          setEndDate(fn.getDate(x.endDateTime));
+          setEndTime(fn.getTime(x.endDateTime));
+        }
+        return x;
+      }, chainError)
+      .then(x => setPeriodData(x), chainError)
     
       const handleSubmit = async () => {
         // Validate the form fields
@@ -428,18 +451,6 @@ export default function BlockoutButtons(BOList) {
                   >
                   Update Period
                 </button>
-    
-                {/* <button
-                    type="submit"
-                    onClick={
-                      () => {
-                              bl.removePeriod()
-                              .then(() => window.location.href='/periodCreated');
-                            }
-                      }
-                  >
-                  Delete Period
-                </button> */}
                 </div>
               </form>
           </div>
@@ -493,9 +504,6 @@ export default function BlockoutButtons(BOList) {
         const isClash = result[0].clash;
         console.log(isClash);
         setAvailable(!isClash);
-        if (!isClash) {
-          window.location.href='/periodCreated';
-        }
       }
     
       return (
@@ -616,8 +624,8 @@ export default function BlockoutButtons(BOList) {
           return; // Stop the submission
         }
     
-        const result = await bl.newBlockout(name, startDate, endDate)
-        .then(() => window.location.href='/blockoutCreated');
+        return bl.newBlockout(name, startDate, endDate)
+        .then(() => setMode(0));
       }
     
         return  (
@@ -667,7 +675,8 @@ export default function BlockoutButtons(BOList) {
       );
     }
 
-    BOList = mock;
+    BOList = blockouts;
+
     if (mode == 4) {
       return <NewBlockout />
     }
@@ -694,11 +703,11 @@ export default function BlockoutButtons(BOList) {
         <button 
         type="registrationButton" 
         class="w-full h-12 hover:opacity-90"
-        onClick={() => {setMode(0)}}>
+        onClick={() => {setMode(1)}}>
         {/* use onclick to clear the local storage project and 
             depopulate the event array */}
         <div class="bg-sky-700 opacity-80 text-base text-center px-4 text-white font-semibold rounded-2xl">
-        Back to Projects
+        Back to Periods
         </div>
         </button>
         </div>

@@ -54,65 +54,40 @@ function Settings() { // to fix using the new getField
     setTelegramHandle(e.target.value);
   };
 
-  const handleNotificationDurationChange = (e) => {
-    setNotificationDuration(Number(e.target.value));
-  };
+  // const handleNotificationDurationChange = (e) => {
+  //   setNotificationDuration(Number(e.target.value));
+  // };
 
   const handleDisplayNameChange = (e) => {
     setDisplayName(e.target.value);
   };
 
   return (
-    <div className="container">
-      {/* <div>
-      <div className="logo" onClick={handleProfileImageClick}>
-        {profilePhoto ? (
-          <img src={URL.createObjectURL(profilePhoto)} alt="Profile" />
-        ) : (
-          <img src={logo} alt="Profile" />
-        )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleProfilePhotoChange}
-            style={{ display: 'none' }}
-            ref={fileInputRef}
-            />
-      </div>
-      </div> */}
-
-      <h1 className="welcomeMessage">
-          Settings
-      </h1>
-
-      
-      <div className="loginBox">
-      <form className='form' onSubmit={(e) => e.preventDefault()}>
-        <div>
-          <label>
-            Display Name:
+    <div class="flex justify-center items-center h-screen">
+   
+      <div class="w-fit ">
+        <div class="text-xl text-center pb-10">Settings</div>
+        <hr></hr>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <div class="flex justify-between">
+          <div class="py-2 pr-4">Display Name:</div>
             <input type="text" value={displayName} 
             onChange={handleDisplayNameChange} 
             />
-          </label>
         </div>
 
-        <div>
-          <label>
-          Notification Duration:
-                <input type="number" value={notificationDuration} 
-                onChange={handleNotificationDurationChange} 
-                />
-          </label>
-        </div>
+        {/* <div class="flex justify-between">
+          <div class="py-2 pr-4">Notification Duration:</div>
+            <input type="number" value={notificationDuration} 
+            onChange={handleNotificationDurationChange} 
+            />
+        </div> */}
 
-        <div>
-          <label>
-            Telegram Handle:
+        <div class="flex justify-between">
+          <div class="py-2 pr-4">Telegram Handle:</div>
             <input type="text" value={telegramHandle} 
             onChange={handleTelegramHandleChange} 
             />
-          </label>
         </div>
 
         {/* <div>
@@ -141,10 +116,16 @@ function Settings() { // to fix using the new getField
             </div>
           )}
         </div> */}
-
-        <button type='submit' onClick={() => 
+        <hr></hr>
+        <div class="pt-10">
+        <button 
+        class="w-full bg-teal-700 text-white rounded-xl"
+        type='submit' 
+        onClick={() => 
         {fn.updateProfile(displayName, notificationDuration, telegramHandle);
-        console.log('Settings saved!');}}>Save Changes</button>
+        console.log('Settings saved!');}}>Save Changes
+        </button>
+        </div>
       </form>
     </div>
     </div>
