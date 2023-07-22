@@ -43,8 +43,7 @@ function LoginBox() {
               <button type="button" class=" w-full bg-teal-700 text-xl text-center text-white font-semibold p-1 rounded-2xl"
                   onClick={
                       () => {
-                        fn.login(email, password);
-                        setHasAttempted(true);
+                        fn.login(email, password).catch((error) => setHasAttempted(true));
                       }
                   }
                 >

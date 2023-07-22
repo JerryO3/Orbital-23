@@ -18,6 +18,7 @@ export default function ProjectButtons({dataProp}) {
   const [width, setWidth] = useState(window.innerWidth);
   const [projects, setProjects] = useState([]);
   const [state, updateState] = useState(0);
+  const [fetch, callFetch] = useState(0);
 
   var projectList = projects;
 
@@ -31,7 +32,7 @@ export default function ProjectButtons({dataProp}) {
 
   useEffect(() => {
     const updateWidth = () => {
-        if (window.innerWidth < 1024) {setWidth(window.innerWidth * 3)}
+        if (window.innerWidth < 1280) {setWidth(window.innerWidth * 3)}
         else {setWidth(window.innerWidth)}
     }
     window.addEventListener('resize', updateWidth);
@@ -53,7 +54,7 @@ export default function ProjectButtons({dataProp}) {
             .then(x => {x.numEvents = x.events.length; return x;})
             .then(x => {x.eventsDone = x.events.filter(e => e.endDateTime < t.nowMillis()); x.numEventsDone = x.eventsDone.length; return x;})
             .then(x => {localStorage[x.itemId] = JSON.stringify(x); return x}) 
-            .then(x => {localStorage["projectName"] = x.name})
+            // .then(x => {localStorage["projectName"] = x.name})
           return x;});
           console.log(localStorage);
         setProjects(proj);
@@ -61,13 +62,14 @@ export default function ProjectButtons({dataProp}) {
 
     };
     fetchData();
-  },[mode, newProj]);
+  },[mode, newProj, fetch]);
 
 
   function ButtonAndChart({dataProp}) {
+    console.log(dataProp.name)
     return (
       <>
-      <div class="flex xl:justify-end">
+      <div class="flex justify-end">
       <button 
         type="button" 
         class="max-h-20 flex"
@@ -75,7 +77,7 @@ export default function ProjectButtons({dataProp}) {
       <div class=" text-base max-h-20 font-semibold">
       {dataProp.name}
       </div>
-      <div key={state} class="ml-auto lg:hidden xl:block ">
+      <div key={state} class="ml-auto">
       <BarChart width={width * 0.2} height={60} data={[dataProp]} layout="vertical">
         <XAxis type="number" domain={[0, dataProp.numEvents]}/>
         <YAxis type='category' dataKey='numEventsDone' />
@@ -195,7 +197,7 @@ export default function ProjectButtons({dataProp}) {
     .then(x => setNames(x))
     
     return (
-      <div class="flex py-1 px-4">
+      <div key={state} class="flex py-1 px-4">
       <button 
         class="w-full"
         type="button" 
@@ -215,7 +217,13 @@ export default function ProjectButtons({dataProp}) {
       </button>
       <button        
         type="button" 
-        onClick={() => null}
+        onClick={() => {
+          localStorage['eventId'] = dataProp.itemId; 
+          localStorage['eventName'] = dataProp.name;
+          console.log(localStorage['eventId']); 
+          console.log(localStorage['eventName']);
+          fn.removeEvent().then(() => setMode(0))
+        }}
         > 
         {/* delete event function above^ */}
       <div class="hover:bg-red-500 h-full text-center font-semibold rounded-xl">
@@ -231,11 +239,18 @@ export default function ProjectButtons({dataProp}) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
 
+  // delay(1000).then(() => updateState(1))
+
   async function delayedStateChange() {
     return delay(1000).then(() => updateState(Math.random()));
   }
 
-  if (mode == 4) {
+  if (mode ==5) {
+    delay(1000).then(() => setMode(1));
+    return (
+    <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>
+    )
+  } else if (mode == 4) {
     return (
       <div>
       <ManageMembers />
@@ -284,7 +299,7 @@ export default function ProjectButtons({dataProp}) {
     )
   } else if (mode == 1) {
     return (
-      <>
+      <div key={state}>
       <div class="font-semibold px-4 pb-4 flex justify-between">
         <div class="bg-teal-500 py-2 px-4 rounded-xl w-full flex justify-between">
           <div class="text-white font-bold text-lg">{localStorage.getItem('projectName')}</div>
@@ -328,6 +343,7 @@ export default function ProjectButtons({dataProp}) {
         onClick={() => {
           setMode(0); 
           localStorage['projectId'] = null;
+          localStorage['projectName'] = null;
           updateState(Math.random());
         }}>
         <div class="bg-teal-500 text-base text-center px-4 text-white font-semibold rounded-2xl">
@@ -335,7 +351,7 @@ export default function ProjectButtons({dataProp}) {
         </div>
       </button>
       </div>
-      </> 
+      </div> 
       )
   } else {
     return (

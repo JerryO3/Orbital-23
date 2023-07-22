@@ -48,7 +48,7 @@ function Header() {
     <header class="bg-teal-700 text-white sticky top-0 z-10">
         <section class="max-w-7xl mx-auto p-4 lg:flex justify-between items-center">
             <h1 class="text-xl lg:text-3xl font-medium">
-              <a href="">🗒️ScheduleManager</a>
+              <a href="/">🗒️ScheduleManager</a>
             </h1>
             <NavBar />
         </section>

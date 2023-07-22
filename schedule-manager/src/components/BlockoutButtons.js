@@ -59,7 +59,7 @@ export default function BlockoutButtons({dataProp}) {
           };
       
           fetchData();
-        }, [thisBlockoutId]);
+        }, []);
       
         const handleStartDateChange = (e) => {
           setStartDate((e.target.value));
@@ -331,8 +331,8 @@ export default function BlockoutButtons({dataProp}) {
           setEndTime(fn.getTime(x.endDateTime));
         }
         return x;
-      })
-      .then(x => setPeriodData(x))
+      }, chainError)
+      .then(x => setPeriodData(x), chainError)
     
       const handleSubmit = async () => {
         // Validate the form fields

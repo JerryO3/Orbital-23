@@ -105,7 +105,7 @@ export async function login(email, password) { // fixed bug regarding redirectin
         localStorage.setItem('user', JSON.stringify(user));
         window.location.href = '/dashboard'; 
     }) 
-    .catch((error) => {console.log(error)});
+    // .catch((error) => error);
 }
 
 async function loginWithCreds(credential) { // fixed bug that causes emails to not be written to the db due to async
@@ -282,7 +282,7 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         return memberPromises[0]
         .then(x => !x[1].clash ? updater(x[0]) : false) // works for single-user projects! 
         .then(x => {
-            // console.log(x); 
+            console.log(x); 
             return x;});
       
     } else {
@@ -290,10 +290,11 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
     .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
     // ^ reduces array of promises into a promise that returns an array
     .then(x => x.reduce((a,b) => Array.isArray(a) ? !a[1].clash && !b[1].clash : a && !b[1].clash) // checks all members if clear
-        ? x.map(y => {console.log(y[0]); updater(y[0]);}) // applies updater using map 
-        : x.filter(y => y[1].clash) // filters out clashing people to be printed out
+        ? x.map(y => {console.log(y[0]); return updater(y[0]);}) // applies updater using map 
+        : x.map(y => !y[1].clash) 
         )
-    .then(x => {console.log(x); return false}) // prints out clashing people
+    .then(x => {console.log(x); return x.reduce((a,b) => a && b)})
+    .then(x => {console.log(x); return x})
     ;
     }  
 

@@ -54,9 +54,9 @@ function Settings() { // to fix using the new getField
     setTelegramHandle(e.target.value);
   };
 
-  const handleNotificationDurationChange = (e) => {
-    setNotificationDuration(Number(e.target.value));
-  };
+  // const handleNotificationDurationChange = (e) => {
+  //   setNotificationDuration(Number(e.target.value));
+  // };
 
   const handleDisplayNameChange = (e) => {
     setDisplayName(e.target.value);
@@ -76,12 +76,12 @@ function Settings() { // to fix using the new getField
             />
         </div>
 
-        <div class="flex justify-between">
+        {/* <div class="flex justify-between">
           <div class="py-2 pr-4">Notification Duration:</div>
             <input type="number" value={notificationDuration} 
             onChange={handleNotificationDurationChange} 
             />
-        </div>
+        </div> */}
 
         <div class="flex justify-between">
           <div class="py-2 pr-4">Telegram Handle:</div>

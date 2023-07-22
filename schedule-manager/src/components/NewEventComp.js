@@ -48,7 +48,7 @@ function NewEventComp() {
     }
 
     const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, selectedMembers)
-    .then(x => x === false ? setAvailable(false) : setCreated(x))
+    .then(x => {setAvailable(x); setCreated(x); return x}).then(x => console.log(x))
   };
 
   const toggleMemberSelection = (memberId) => {
@@ -87,8 +87,12 @@ function NewEventComp() {
 
     const searchDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const duration = hours * 3600000 + minutes * 60000
-    // console.log(searchDateTime);
-    // console.log(duration);
+
+    if (hours < 0 || minutes < 0 || minutes > 60) {
+      alert('Invalid Search Duration. Ensure that there are no negative values, and minutes should not exceed 60.');
+      return; // Stop the submission
+    }
+
     const result = await sTTester(selectedMembers, searchDateTime, duration, null)
     .then(x => {setStartTime(x[0]); setStartDate(x[1]); setEndTime(x[2]); setEndDate(x[3])})
   }
@@ -163,14 +167,14 @@ function NewEventComp() {
         {created && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
         {!available && <p className="warning">Event Creation Failed. One or more team members are unavailable at this timing.</p>}
         
-        <div class="flex justify-between text-sm py-4 items-center">
+        <div class="sm:flex justify-between text-sm py-4 items-center">
           <div class="font-semibold">
             <div>Suggest a Timing</div>
             <div>(Select Members Below:)</div>
           </div>
           <div>
-            <div class="flex justify-between pb-2">
-            <div class="px-4">Search From:</div>
+            <div class="sm:flex justify-between pb-2">
+            <div class="sm:px-4">Search From:</div>
               <input
                 type="date"
                 placeholder="Start Date"
@@ -184,20 +188,20 @@ function NewEventComp() {
                 value={searchTime}
                 onChange={(e) => setSearchTime(e.target.value)} />
             </div>
-            <div class="flex justify-end">
-            <div class="px-4">Duration:</div>
-              <div class="px-4">Hours:</div>
+            <div class="sm:flex justify-end">
+            <div class="sm:px-4">Duration:</div>
+              <div class="sm:px-4">Hours:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 min="0"
                 name="hours"
                 value={hours}
                 onChange={(e) => setHours(e.target.value)} />
-              <div class="px-4">Minutes:</div>
+              <div class="sm:px-4">Minutes:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 max="60"
@@ -310,46 +314,49 @@ function NewEventComp() {
         {created && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
         {!available && <p className="warning">Event Creation Failed. One or more team members are unavailable at this timing.</p>}
         
-        <div class="flex justify-between text-sm py-4">
-          <div class="font-semibold">Suggest a Timing</div>
+        <div class="sm:flex justify-between text-sm py-4 items-center">
+          <div class="font-semibold">
+            <div>Suggest a Timing</div>
+            <div>(Select Members Below:)</div>
+          </div>
           <div>
-            <div class="flex justify-between">
-            <div class="px-4">Search From:</div>
+            <div class="sm:flex justify-between pb-2">
+            <div class="sm:px-4">Search From:</div>
               <input
                 type="date"
                 placeholder="Start Date"
                 name="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)} />
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)} />
               <input
                 type="time"
                 placeholder="Start Time"
                 name="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)} />
+                value={searchTime}
+                onChange={(e) => setSearchTime(e.target.value)} />
             </div>
-            <div class="flex justify-end">
-            <div class="px-4">Duration:</div>
-              <div class="px-4">Hours:</div>
+            <div class="sm:flex justify-end">
+            <div class="sm:px-4">Duration:</div>
+              <div class="sm:px-4">Hours:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 min="0"
                 name="hours"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)} />
-              <div class="px-4">Minutes:</div>
+                value={hours}
+                onChange={(e) => setHours(e.target.value)} />
+              <div class="sm:px-4">Minutes:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 max="60"
                 min="0"
                 step="5"
                 name="minutes"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)} />
+                value={minutes}
+                onChange={(e) => setMinutes(e.target.value)} />
             </div>
           </div>
           <button

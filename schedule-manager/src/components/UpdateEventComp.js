@@ -130,7 +130,7 @@ function UpdateEventComp() {
     }
 
     const result = await fn.newEventByStartEnd(projectId, thisEventId, thisEvent, startDate, startTime, endDate, endTime, selectedMembers)
-    .then(x => x === false ? setAvailable(false) : setUpdated(x));
+    .then(x => {setAvailable(x); setUpdated(x); return x}).then(x => console.log(x));
   };
 
   const toggleMemberSelection = (memberId) => {
@@ -193,14 +193,14 @@ function UpdateEventComp() {
         {updated && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
         {!available && <p className="warning">Event Creation Failed. One or more team members are unavailable at this timing.</p>}
         
-        <div class="flex justify-between text-sm py-4 items-center">
+        <div class="sm:flex justify-between text-sm py-4 items-center">
           <div class="font-semibold">
             <div>Suggest a Timing</div>
             <div>(Select Members Below:)</div>
           </div>
           <div>
-            <div class="flex justify-between pb-2">
-            <div class="px-4">Search From:</div>
+            <div class="sm:flex justify-between pb-2">
+            <div class="sm:px-4">Search From:</div>
               <input
                 type="date"
                 placeholder="Start Date"
@@ -214,20 +214,20 @@ function UpdateEventComp() {
                 value={searchTime}
                 onChange={(e) => setSearchTime(e.target.value)} />
             </div>
-            <div class="flex justify-end">
-            <div class="px-4">Duration:</div>
-              <div class="px-4">Hours:</div>
+            <div class="sm:flex justify-end">
+            <div class="sm:px-4">Duration:</div>
+              <div class="sm:px-4">Hours:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 min="0"
                 name="hours"
                 value={hours}
                 onChange={(e) => setHours(e.target.value)} />
-              <div class="px-4">Minutes:</div>
+              <div class="sm:px-4">Minutes:</div>
               <input
-                onKeyDown={(e) => e.preventDefault()}
+                onKeyDown={(e) => {if (window.innerWidth > 400) {e.preventDefault()} else {}}}
                 class="w-10"
                 type="number"
                 max="60"
