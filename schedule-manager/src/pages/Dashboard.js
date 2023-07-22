@@ -33,6 +33,8 @@ function Dashboard() {
       fetchData();
     },[]);
 
+    useEffect(() => onValue(ref(getDatabase(), "membership/" + fn.getUserId() + "/events"), x => {fetchData(); console.log(items)}),[])
+
     const fetchData = async () => {
       try {
         const userId = await fn.getUserId()
