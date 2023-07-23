@@ -91,10 +91,10 @@ function LoggedInNav() {
     <div>
     {/* <button class="text-5xl sm:hidden focus:outline-none"> &#9776; </button> */}
     <nav class="space-x-8 text-sm lg:text-xl font-semibold" aria-label="main">
-      <Link to="/register">
+      <Link to="/dashboard">
         <a data-testid="navHome" href="/dashboard" class="hover:opacity-90 p-3">Home</a>
       </Link>  
-      <Link to="/register">
+      <Link to="/settings">
         <a data-testid="navSettings" href="/settings" class="hover:opacity-90 p-3">Settings</a>
       </Link>
         <button data-testid="navLogout" onClick={() => fn.logout()} class="hover:opacity-90 p-3">Log Out</button>
