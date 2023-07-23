@@ -86,7 +86,7 @@ function Dashboard() {
         setBOScreenMode(3);
         updateBOState(Math.random());
       }
-      console.log(1)
+      // console.log(1)
     };
   
     const eventWrapperComponent = ({ event, children }) => {
@@ -185,7 +185,7 @@ function Dashboard() {
 
   function Notif({dataProp}) {
     return (
-      <div class="pt-2">
+      <div data-testid="notifs" class="pt-2">
       <div class="flex justify-between text-sm bg-slate-200 rounded-xl">
         <div class="p-2">{dataProp.message}</div>
         <button class="p-2 hover:bg-red-500 rounded-xl" onClick={() => dataProp.action()}>Manage</button>
@@ -208,7 +208,7 @@ function Dashboard() {
             <div class="col-start-1 bg-slate-100 h-fit p-2 sm:p-5 sm:text-2xl text-center font-medium items-center rounded-2xl">
               <p class="pb-4">What's Up {userName}?</p>
               <div>
-              <p class="w-full text-lg flex">Notifications:</p>
+              <p data-testid="notifs" class="w-full text-lg flex">Notifications:</p>
               <hr></hr>
               <Notifs />
               </div>
@@ -216,13 +216,13 @@ function Dashboard() {
           </div>
 
           <div class="pb-5">
-          <p class="font-medium lg:text-2xl">Projects</p>
+          <p data-testid="projs" class="font-medium lg:text-2xl">Projects</p>
             <div key={projState} class="col-start-1 w-fit min-w-full bg-slate-100 h-fit px-3 sm:px-10 py-4 items-center rounded-2xl">
             <ProjectButtons dataProp={projScreenMode}/>
             </div>
           </div>
 
-          <div class="pb-5">
+          <div data-testid="blockouts" class="pb-5">
           <p class="font-medium lg:text-2xl">Block Outs</p>
             <div key={BOState} class="col-start-1 bg-slate-100 h-fit px-3 sm:px-10 py-4 items-center rounded-2xl">
             <BlockoutButtons dataProp={BOScreenMode}/>
@@ -231,7 +231,7 @@ function Dashboard() {
         </div>
         
         <div class="bg-slate-200 xl:w-3/5 h-full xl:py-10 sm:px-5 items-center">
-          <div class="col-start-1 bg-slate-100 h-full sm:px-10 pb-20 sm:pt-10 items-center rounded-2xl">
+          <div data-testid="calendar" class="col-start-1 bg-slate-100 h-full sm:px-10 pb-20 sm:pt-10 items-center rounded-2xl">
             <CalendarComp />
           </div>
         </div>

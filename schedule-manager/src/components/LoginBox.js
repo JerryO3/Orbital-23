@@ -31,16 +31,17 @@ function LoginBox() {
             <div class="py-1">
             <div class="text-xl text-black font-semibold p-1">
               <input class="rounded-2xl px-3 py-1 w-full"
+                data-testid="pwForm"
                 type="password"
                 placeholder="Password"
                 name="password"
                 value={password}
-                onChange={(e) => {console.log(e); setPassword(e.target.value)}} />
-              {hasAttempted && <p>Invalid Login Credentials.</p>}
+                onChange={(e) => { setPassword(e.target.value)}} />
+              {hasAttempted && <p data-testid="invalidCred">Invalid Login Credentials.</p>}
             </div>
             </div>
 
-              <button type="button" class=" w-full bg-teal-700 text-xl text-center text-white font-semibold p-1 rounded-2xl"
+              <button data-testid="loginSubmit" type="button" class=" w-full bg-teal-700 text-xl text-center text-white font-semibold p-1 rounded-2xl"
                   onClick={
                       () => {
                         fn.login(email, password).catch((error) => setHasAttempted(true));

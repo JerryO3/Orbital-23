@@ -151,7 +151,6 @@ export async function newBlockoutPeriod(thisBlockout, name, startDate, startTime
                 return newBlockoutPeriod(thisBlockout, name, futureStart, startTime, futureEnd, endTime, checked, cycle, clash);
             } else {
                 if (clash.length <= 0) {
-                    console.log(1)
                     return [...clash, x[1]];
                 } else {
                     return clash;

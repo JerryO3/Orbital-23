@@ -9,7 +9,7 @@ function Settings() { // to fix using the new getField
   // const [notificationEnabled, setNotificationEnabled] = useState(false);
   const [retrievedSettings, setRetrievedSettings] = useState(false);
   const [displayName, setDisplayName] = useState("");
-  const [telegramHandle, setTelegramHandle] = useState("@");
+  const [telegramHandle, setTelegramHandle] = useState("");
   const [notificationDuration, setNotificationDuration] = useState(0);
   fn.getField('notificationDuration')
   .then(x => retrievedSettings 
@@ -62,6 +62,14 @@ function Settings() { // to fix using the new getField
     setDisplayName(e.target.value);
   };
 
+  var trimmedTelegramHandle;
+
+  if (telegramHandle.startsWith("@")) {
+    trimmedTelegramHandle = telegramHandle.substring(1)
+  } else {
+    trimmedTelegramHandle = telegramHandle;
+  }
+
   return (
     <div class="flex justify-center items-center h-screen">
    
@@ -71,7 +79,7 @@ function Settings() { // to fix using the new getField
       <form onSubmit={(e) => e.preventDefault()}>
         <div class="flex justify-between">
           <div class="py-2 pr-4">Display Name:</div>
-            <input type="text" value={displayName} 
+            <input data-testid="nameForm" type="text" value={displayName} 
             onChange={handleDisplayNameChange} 
             />
         </div>
@@ -85,7 +93,7 @@ function Settings() { // to fix using the new getField
 
         <div class="flex justify-between">
           <div class="py-2 pr-4">Telegram Handle:</div>
-            <input type="text" value={telegramHandle} 
+            <input data-testid="handleForm" type="text" value={telegramHandle} 
             onChange={handleTelegramHandleChange} 
             />
         </div>
@@ -120,9 +128,10 @@ function Settings() { // to fix using the new getField
         <div class="pt-10">
         <button 
         class="w-full bg-teal-700 text-white rounded-xl"
+        data-testid="submitButton"
         type='submit' 
         onClick={() => 
-        {fn.updateProfile(displayName, notificationDuration, telegramHandle);
+        {fn.updateProfile(displayName, notificationDuration, trimmedTelegramHandle);
         console.log('Settings saved!');}}>Save Changes
         </button>
         </div>

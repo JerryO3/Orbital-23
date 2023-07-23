@@ -33,7 +33,7 @@ function Gmail() {
           .then((userCredential) => {
             // Handle successful login
             // You can redirect or perform any other actions here
-            console.log(userCredential);
+            // console.log(userCredential);
           })
           .catch((error) => {
             // Handle login error

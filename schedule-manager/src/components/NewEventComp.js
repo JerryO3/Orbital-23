@@ -48,7 +48,7 @@ function NewEventComp() {
     }
 
     const result = await fn.newEventByStartEnd(thisProject, null, name, startDate, startTime, endDate, endTime, selectedMembers)
-    .then(x => {setAvailable(x); setCreated(x); return x}).then(x => console.log(x))
+    .then(x => {setAvailable(x); setCreated(x); return x})
   };
 
   const toggleMemberSelection = (memberId) => {
@@ -129,7 +129,7 @@ function NewEventComp() {
             placeholder="Event Name"
             name="name"
             value={name}
-            onChange={(e) => {console.log(e); setName(e.target.value)}} />
+            onChange={(e) => { setName(e.target.value)}} />
         </div>
         <hr></hr>
         <div class="flex justify-between text-sm py-4">

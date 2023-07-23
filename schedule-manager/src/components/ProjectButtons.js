@@ -24,8 +24,7 @@ export default function ProjectButtons({dataProp}) {
 
   useEffect(() => {
     const updater = () => {
-      delay(1000).then(() => updateState(1)).then(console.log(3));
-      console.log(1);
+      delay(1000).then(() => updateState(1));
     }
     updater()
   },[state])
@@ -56,7 +55,7 @@ export default function ProjectButtons({dataProp}) {
             .then(x => {localStorage[x.itemId] = JSON.stringify(x); return x}) 
             // .then(x => {localStorage["projectName"] = x.name})
           return x;});
-          console.log(localStorage);
+          // console.log(localStorage);
         setProjects(proj);
         
 
@@ -66,7 +65,7 @@ export default function ProjectButtons({dataProp}) {
 
 
   function ButtonAndChart({dataProp}) {
-    console.log(dataProp.name)
+    // console.log(dataProp.name)
     return (
       <>
       <div class="flex justify-end">
@@ -220,8 +219,8 @@ export default function ProjectButtons({dataProp}) {
         onClick={() => {
           localStorage['eventId'] = dataProp.itemId; 
           localStorage['eventName'] = dataProp.name;
-          console.log(localStorage['eventId']); 
-          console.log(localStorage['eventName']);
+          // console.log(localStorage['eventId']); 
+          // console.log(localStorage['eventName']);
           fn.removeEvent().then(() => setMode(0))
         }}
         > 
@@ -366,7 +365,7 @@ export default function ProjectButtons({dataProp}) {
                   type="name"
                   placeholder="New Project Name"
                   name="name"
-                  onChange={(e) => {console.log(e); setName(e.target.value)}}
+                  onChange={(e) => { setName(e.target.value)}}
                   value={name} />
                 <button 
                   key={state}

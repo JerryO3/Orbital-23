@@ -19,8 +19,16 @@ class EventNew {
 }
 
 export const getUserId = () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    return user.uid;
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user.uid;
+    } catch(e) {
+        if (e instanceof TypeError) {
+            throw new Error("Not Logged In");
+        } else {
+            throw e;
+        }
+    }
 }
 
 const initializeData = async (userEmail, userName) => { // now returns a promise<void> allowing it to be blocking
@@ -33,23 +41,31 @@ const initializeData = async (userEmail, userName) => { // now returns a promise
 }
 
 export const queryByValue = (dbRef, field, queryId) => { // returns a promise containing an array
-    const db = getDatabase();
-    const itemsRef = ref(db, dbRef);
-    const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
-    // console.log(queryId)
-    return get(itemsQuery).then((snapshot) => {
-        if (snapshot.exists()) {
-          const items = [];
-          snapshot.forEach((childSnapshot) => {
-            const itemId = childSnapshot.key;
-            const itemData = childSnapshot.val();
-            items.push({ itemId, ...itemData });
-          });
-          return items;
+    try {
+        const db = getDatabase();
+        const itemsRef = ref(db, dbRef);
+        const itemsQuery = query(itemsRef, orderByChild(field), equalTo(queryId));
+        // console.log(queryId)
+        return get(itemsQuery).then((snapshot) => {
+            if (snapshot.exists()) {
+            const items = [];
+            snapshot.forEach((childSnapshot) => {
+                const itemId = childSnapshot.key;
+                const itemData = childSnapshot.val();
+                items.push({ itemId, ...itemData });
+            });
+            return items;
+            } else {
+            return [];
+            }
+        }).catch(e => {});
+    } catch(e) {
+        if (e instanceof TypeError) {
+            return Promise.reject("Non-string db ref");
         } else {
-          return [];
+            return Promise.reject(e.toString());
         }
-    });
+    }
 }
 
 export const readProjectsData = () => { // returns a promise containing an array
@@ -179,12 +195,12 @@ export async function loginWGoogle() { // need to test, not sure if works
     }
 }
 
-export const resetPw = () => { // have not implemented
+export const resetPw = () => { // have not implemented (deprecated)
     let password = prompt("new password");
     authpkg.updatePassword(authpkg.getAuth(app).currentUser, password);
 }
 
-export const updateEmailAdd = () => { // have not implemented
+export const updateEmailAdd = () => { // have not implemented (deprecated)
     let email = prompt("new email");
     authpkg.updateEmail(authpkg.getAuth(app).currentUser, email);
 }
@@ -293,8 +309,8 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
         ? x.map(y => {console.log(y[0]); return updater(y[0]);}) // applies updater using map 
         : x.map(y => !y[1].clash) 
         )
-    .then(x => {console.log(x); return x.reduce((a,b) => a && b)})
-    .then(x => {console.log(x); return x})
+    .then(x => { return x.reduce((a,b) => a && b)})
+    .then(x => { return x})
     ;
     }  
 
@@ -473,16 +489,16 @@ export function getTime(timestamp) {
 }
 
 export async function removeFromEvent(userId, itemId) {
-    console.log(userId)
-    console.log(itemId)
+    // console.log(userId)
+    // console.log(itemId)
     deleteUser(userId, "events/", itemId);
 }
 
 export async function removeFromProject(userId, itemId) {
     const db = getDatabase();
-    console.log(itemId);
+    // console.log(itemId);
     for(var user of userId){
-        console.log(userId);
+        // console.log(userId);
         deleteUser(user, "projects/", itemId);
         const reference = ref(db, "events");
         const que = query(reference, orderByChild("projectId"), equalTo(itemId));

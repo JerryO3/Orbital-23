@@ -62,7 +62,7 @@ function Home() {
     </div>
     <div class="sm:text-xl py-10 px-10">
         <p class="pb-4 font-semibold">Let us know what you think! Or aid our bug-squashing!</p>
-        <a class="underline text-blue-600" href="https://forms.gle/VcJ2aqPUm1octQ8C9">Bug Reporting and Feedback Form (Google Forms)</a>
+        <a data-testid="feedbackButton" class="underline text-blue-600" href="https://forms.gle/VcJ2aqPUm1octQ8C9">Bug Reporting and Feedback Form (Google Forms)</a>
       </div>
     </div>
   );
