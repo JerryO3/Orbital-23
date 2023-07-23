@@ -1,35 +1,33 @@
-const { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild, equalTo, child } = require("firebase/database");
-const bot = require('./app')
 const fn = require('./functions')
 const admin = require('firebase-admin');
 const { DateTime } = require("luxon");
-const {checkClash} = require('./checkClash');
-const { v4: uuidv4 } = require('uuid');
 
 const db = admin.database();
-let userId = null;
-let chatId = null;
-let projectId = null;
-let isStarted = !(userId === null || chatId === null);
-let isSetup = projectId !== null;
 
 async function handleStart(ctx) {
+    // Initialize the session if not already present
+    ctx.session = ctx.session || {};
+    // ctx.session.createState = 'awaiting_name';
+  
     const telegramHandle = ctx.from.username;
     userId = await fn.userIdFromTele(telegramHandle)
+    ctx.session.userId = userId;
     chatId = ctx.chat.id;
-    isStarted = true
+    ctx.session.isStarted = true
     ctx.reply('Hello there! Welcome to Schedule Manager.', {
     })
 }
 
 async function handleProjects(ctx) {
-  if (!isStarted) {
+  ctx.session = ctx.session || {};
+  if (!ctx.session.isStarted) {
     ctx.reply("Please start the bot by typing /start.");
     return;
   }
 
   try {
-      membership = await (await db.ref('membership/' + userId + '/projects').get()).val()
+      const userId = ctx.session.userId
+      const membership = await (await db.ref('membership/' + userId + '/projects').get()).val()
       if (membership) {
           const keyboard = {
               inline_keyboard : []
@@ -152,8 +150,11 @@ async function handleCallback(query) {
   }
 
   if (data.startsWith("setup_")) {
-    projectId = data.split("_")[2];
-    isSetup = true;
+    const projectId = data.split("_")[2];
+    query.session = query.session || {};
+    
+    query.session.projectId = projectId
+    query.session.isSetup = true;
 
     const reply_message = "Bot now set up.";
     query.reply(reply_message);
@@ -163,10 +164,13 @@ async function handleCallback(query) {
 // Handler for /upcoming command
 async function handleUpcoming(ctx) {
   // Your logic for /reminder command
-  if (!isStarted) {
+  ctx.session = ctx.session || {};
+  if (!ctx.session.isStarted) {
     ctx.reply("Please start the bot by typing /start.");
     return;
   }
+
+  const userId = ctx.session.userId
 
   const events = await fn.memberQuery(userId, 'events/')
 
@@ -201,7 +205,6 @@ await Promise.all(promises);
 }
 
 async function handleSetup(ctx) {
-  const groupId = ctx.chat.id; // Group ID of the chat
   const chatMembers = await ctx.getChatAdministrators();
   const usernames = await Promise.all(
     chatMembers
@@ -253,6 +256,7 @@ async function handleSetup(ctx) {
 
   if (keyboard.inline_keyboard.length > 0) {
     // Send the reply message with the list of projects and the inline keyboard
+    console.log('test')
     ctx.reply(replyMessage, { reply_markup: keyboard });
   } else {
     ctx.reply("There are no existing projects with all current members.");
@@ -260,11 +264,13 @@ async function handleSetup(ctx) {
 }
 
 async function handleEvent(ctx) {
-  if (!isSetup) {
+  ctx.session = ctx.session || {};
+  if (!ctx.session.isSetup) {
     ctx.reply("Please setup the bot by typing /start.");
     return;
   }
 
+  const projectId = ctx.session.projectId
   const projectRef = db.ref(`/projects/${projectId}`);
   const projectSnapshot = await projectRef.once('value');
   const project = projectSnapshot.val();
@@ -273,7 +279,7 @@ async function handleEvent(ctx) {
   const eventsSnapshot = await eventsRef.orderByChild('projectId').equalTo(projectId).once('value');
   const events = eventsSnapshot.val();
 
-  console.log(projectId)
+  // console.log(projectId)
 
   if (events) {
     let replyMessage = `Events for Project: ${projectName}\n`;
@@ -302,48 +308,12 @@ async function handleEvent(ctx) {
 
 // Function to handle the /create command
 async function handleCreate(ctx) {
-  // Ask the user for the event name
+  // Initialize the session if not already present
+  ctx.session = ctx.session || {};
+  
+  // Set the state to 'awaiting_name' to prompt the user for the event name
+  ctx.session.createState = 'awaiting_name';
   ctx.reply("Please enter the event name:");
-
-  // Register the next message handler to get the event name
-  bot.on(message("text"), async (message) => {
-    const eventName = message.text;
-    // Now you have the event name, you can prompt for the event start and end date/time
-
-    // Ask the user for the event start date and time
-    ctx.reply("Please enter the event start date and time (YYYY-MM-DD HH:mm):");
-
-    // Register the next message handler to get the event start date and time
-    bot.on(message("text"), async (message) => {
-      const eventStart = message.text;
-      // Now you have the event start date and time, you can prompt for the event end date and time
-
-      // Ask the user for the event end date and time
-      ctx.reply("Please enter the event end date and time (YYYY-MM-DD HH:mm):");
-
-      // Register the next message handler to get the event end date and time
-      bot.on(message("text"), async (message) => {
-        const eventEnd = message.text;
-        // Now you have all the event details, you can check for event clashes with existing events
-
-        // Fetch the list of group members from the database
-        const groupId = ctx.chat.id; // Group ID of the chat
-        const chatMembers = await ctx.getChatAdministrators();
-        const usernames = await Promise.all(
-          chatMembers
-            .filter((member) => member.user.username !== undefined)
-            .map((member) => fn.userIdFromTele(member.user.username))
-        );
-        
-        const eventId = uuidv4();
-        // Query the database to check for event clashes
-        fn.newEvent(projectId, eventId, eventName, eventStart, eventEnd, usernames, ctx)
-
-        // Clear the message handlers to prevent multiple event creations
-        bot.removeMiddleware();
-      })
-    })
-  })
 }
 
 module.exports = {
