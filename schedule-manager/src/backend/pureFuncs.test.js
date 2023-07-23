@@ -20,11 +20,11 @@ import { analytics } from './Firebase';
 
 // Edge-Cases:
 // 1. Empty String dbRef => takes the db root
-// 2. Nonexistent dbRef => return []
-// 3. Nonexistent field => return []
+// 2. Nonexistent dbRef => return undefined
+// 3. Nonexistent field => return undefined
 // 4. Non-String dbRef arg => error to catch
 // 5. Non-String field arg => error to catch
-// 6. Field is not designated indexOn => ??
+// 6. Field is not designated indexOn => return undefined
 //  */
 
 jest.spyOn(window, 'alert').mockImplementation(() => {});
@@ -35,71 +35,128 @@ const a =
 const b = JSON.stringify(a);
 localStorage.setItem('user', b)
 
-// test('queryByValue', async () => {
-//     const a = await fn.queryByValue('projects','userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2").then(x => expect(x).toStrictEqual(
-//         [
-//             {
-//               itemId: '336a33fe-2aa5-4963-a6aa-4ed4b4adf5b9',
-//               name: 'project1',
-//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-//             },
-//             {
-//               itemId: '88cc97ea-30bb-40b5-abd5-b66c95ebfd8f',
-//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-//               name: '54321',
-//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-//             },
-//             {
-//               itemId: 'd766e26e-0fd4-4275-825b-268219315550',
-//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-//               name: '1234',
-//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-//             },
-//             {
-//               itemId: 'e5805c8b-8727-4def-a16c-8c121c194095',
-//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-//               name: 'Test1323',
-//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-//             },
-//             {
-//               itemId: 'fc82b69d-3ed1-4aa8-baac-c23f36737167',
-//               members: { aDQfdKcJ0vb91IjwnYhLwYaFgfZ2: true },
-//               name: '1234',
-//               userId: 'aDQfdKcJ0vb91IjwnYhLwYaFgfZ2'
-//             }
-//           ]
-//     ))
-// });
+test('queryByValue', async () => {
+    const a = await fn.queryByValue('events','projectId',"456b13e5-9a83-4998-b6c8-6eb1f55af32c").then(x => expect(x).toStrictEqual(
+        [
+            {
+            "endDateTime": 1689015000000,
+            "itemId": "06277721-2c08-49ba-a063-192d2b5ed70f",
+            "members": {
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "D",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689011400000,
+            },
+            {
+            "endDateTime": 1689916200000,
+            "itemId": "19dc8cf5-4510-4ff0-a21e-d3a30825ed5c",
+            "members": {
+            "N0cfVfAknhXMVXhMuA8oY51OLot1": true,
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Test2",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689873000000,
+            },
+            {
+            "endDateTime": 1690002600000,
+            "itemId": "1c700a8e-8f5b-430e-9203-8f00a647af47",
+            "members": {
+            "N0cfVfAknhXMVXhMuA8oY51OLot1": true,
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Test2",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689959400000,
+            },
+            {
+            "endDateTime": 1690009500000,
+            "itemId": "366f79bc-8bb3-4481-aa74-acbe9af04f19",
+            "members": {
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "A",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1690005900000,
+            },
+            {
+            "endDateTime": 1689628800000,
+            "itemId": "a0c6a85e-8811-433f-8466-6c20746dde05",
+            "members": {
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Event1",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689625200000,
+            },
+            {
+            "endDateTime": 1689636000000,
+            "itemId": "a8b95534-7c91-4e21-b076-24fc90b7b343",
+            "members": {
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Event1",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689632400000,
+            },
+            {
+            "endDateTime": 1689746700000,
+            "itemId": "c9e60fdc-baef-4ea3-9485-47983fd7428f",
+            "members": {
+            "N0cfVfAknhXMVXhMuA8oY51OLot1": true,
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Test",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689699900000,
+            },
+            {
+            "endDateTime": 1689833100000,
+            "itemId": "e9f36e46-e708-46cd-b4a2-0772a1052627",
+            "members": {
+            "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2": true,
+            },
+            "name": "Test",
+            "projectId": "456b13e5-9a83-4998-b6c8-6eb1f55af32c",
+            "startDateTime": 1689786300000,
+            },
+        ]
+    ))
+});
 
-// test('queryByValueEC1', async () => { // to fix behaviour
-//     const a = await fn.queryByValue('','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC1', async () => { // to fix behaviour
+    await expect(fn.queryByValue('','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")).rejects.toEqual(
+        "Error: child failed: path argument was an invalid path = \"\". Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""
+    )
+});
 
-// test('queryByValueEC2', async () => { // to fix behaviour
-//     const a = await fn.queryByValue('nonexistentRef','projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC2', async () => { // to fix behaviour
+    const a = await fn.queryByValue('projects','nonexistentField',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+    .then(x => expect(x).toBe())
+});
 
-// test('queryByValueEC3', async () => { // to fix behaviour
-//     const a = await fn.queryByValue('projects','nonexistentField',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC3', async () => { // to fix behaviour
+    const a = await fn.queryByValue('projects','nonexistentField',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
+    .then(x => expect(x).toBe())
+});
 
-// test('queryByValueEC4', async () => { // to fix behaviour
-//     const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC4', async () => { // to fix behaviour
+    await expect(fn.queryByValue('events',123,"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")).rejects.toEqual(
+        "Error: orderByChild failed: path argument was an invalid path = \"123\". Paths must be non-empty strings and can't contain \".\", \"#\", \"$\", \"[\", or \"]\""
+    )
+});
 
-// test('queryByValueEC5', async () => { // to fix behaviour
-//     const a = await fn.queryByValue(123,'userId',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC5', async () => { // to fix behaviour
+    await expect(fn.queryByValue(123,'projects',"aDQfdKcJ0vb91IjwnYhLwYaFgfZ2")).rejects.toEqual(
+        "Non-string db ref"
+    )
+});
 
-// test('queryByValueEC6', async () => { // to fix behaviour
-//     const a = await fn.queryByValue('events','startDateTime',"project1")
-//     .then(x => expect(x).toBe())
-// });
+test('queryByValueEC6', async () => { // to fix behaviour
+    const a = await fn.queryByValue('events','startDateTime',"project1")
+    .then(x => expect(x).toBe())
+});
 
 /*
 getField(field)
@@ -315,3 +372,34 @@ test('removeEvent', async () => {
     .then(x => expect(x).toBe(undefined))
     .finally(() => {fn.removeEvent(); fn.removeProject()})
 })
+
+test('getUserId', async () => {
+    localStorage.removeItem('user');
+    expect(fn.getUserId).toThrow('Not Logged In');
+    localStorage.setItem('user', b);
+})
+
+test('login', async () => {
+    await expect(fn.login('','').catch(e => e.toString())).resolves.toEqual(
+        "FirebaseError: Firebase: Error (auth/network-request-failed)."
+    )
+})
+
+test('getItem', async () => {
+    const a = await fn.getItem('periods/', '334597c6-9eb8-42eb-aa82-17b9807fe8eb')
+    expect(a).toEqual(
+        {"blockoutId": "f76ff51a-7432-4e99-8a4d-e5cb7f000c3d", "endDateTime": 1690141500000, "name": "A", "startDateTime": 1690134300000, "userId": "aDQfdKcJ0vb91IjwnYhLwYaFgfZ2"}
+    )
+})
+
+test('getItemEC1', async () => {
+    const a = await fn.getItem('periods/', 'noSuchPeriod')
+    expect(a).toEqual(null)
+})
+
+test('getItemEC2', async () => {
+    const a = await fn.getItem('noSuchDB', '334597c6-9eb8-42eb-aa82-17b9807fe8eb')
+    expect(a).toEqual(null)
+})
+
+

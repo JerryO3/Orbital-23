@@ -38,7 +38,6 @@ function unpackFromStartEnd(jsonObject) {
         jsonObject = JSON.parse(jsonObject);
     }
     const intervalArr = [];
-    console.log(jsonObject)
     if (Array.isArray(jsonObject)) {
         for (var key in jsonObject) {
             intervalArr.push([lux.DateTime.fromMillis(jsonObject[key].startDateTime), lux.DateTime.fromMillis(jsonObject[key].endDateTime), key, jsonObject[key]])
@@ -132,7 +131,7 @@ export function sTTester(members, start, duration, eventId) {
     
     // console.log(memberPromises)
     return memberPromises.then(x => suggestTime(x, start, duration))
-    .then(x => {console.log(intervaltoStrings(x)); return intervaltoStrings(x)});
+    .then(x => {return intervaltoStrings(x)});
 }
 
 function intervaltoStrings(int) {
@@ -153,7 +152,7 @@ function suggestTime(arrOfArrs, start, duration) { // start: DateTime, duration:
         .map(arr => unpackFromStartEnd(arr))
         .map(arr => arr.sort((a,b) => a.interval.start - b.interval.start))
     
-    console.log(sortedArrs);
+    // console.log(sortedArrs);
 
     var invalidSuggestion = true;
     var interval = lux.Interval.fromDateTimes(start, start.plus(duration));
@@ -213,7 +212,7 @@ function suggestTime(arrOfArrs, start, duration) { // start: DateTime, duration:
 
     while(invalidSuggestion) {
         const conflictedScheds = sortedArrs.map(arr => helper(arr)).filter(x => x.clash);
-        console.log(conflictedScheds.map(x => x.windowEnd))
+        // console.log(conflictedScheds.map(x => x.windowEnd))
         if (conflictedScheds.length > 0) {
             var newStart = lux.DateTime.max(...conflictedScheds.map(x => x.windowEnd));
             interval = lux.Interval.fromDateTimes(newStart, newStart.plus(duration));

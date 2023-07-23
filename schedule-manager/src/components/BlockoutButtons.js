@@ -13,8 +13,8 @@ export default function BlockoutButtons({dataProp}) {
 
     const [mode, setMode] = useState(dataProp);
     const [blockouts, setBlockouts] = useState([]);
-  console.log(dataProp)
-  console.log(mode)
+  // console.log(dataProp)
+  // console.log(mode)
 
     useEffect(() => {
       const fetchData = async () => {
@@ -30,7 +30,7 @@ export default function BlockoutButtons({dataProp}) {
       fetchData();
     },[mode]);
 
-    console.log(blockouts)
+    // console.log(blockouts)
 
     function UpdateBlockout() { 
         const [periods, setPeriods] = useState([]);
@@ -39,7 +39,7 @@ export default function BlockoutButtons({dataProp}) {
         const thisBlockoutId = localStorage.getItem('blockoutId');
         const thisBlockoutName = localStorage.getItem('blockoutName');
         
-        console.log(periods)
+        // console.log(periods)
 
         useEffect(() => {
           const fetchData = async () => {
@@ -295,7 +295,7 @@ export default function BlockoutButtons({dataProp}) {
       };
 
       function chainError(err) {
-        console.log(err);
+        // console.log(err);
       };
     
       // fn.getItem('periods/', thisPeriodId)
@@ -352,7 +352,7 @@ export default function BlockoutButtons({dataProp}) {
     
         const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, name, startDate, startTime, endDate, endTime)
         const isClash = result.clash;
-        console.log(!isClash);
+        // console.log(!isClash);
         setAvailable(!isClash);
         if (!isClash) {
           window.location.href='/periodCreated';
@@ -500,9 +500,9 @@ export default function BlockoutButtons({dataProp}) {
         }
     
         const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
-        console.log(result)
+        // console.log(result)
         const isClash = result[0].clash;
-        console.log(isClash);
+        // console.log(isClash);
         setAvailable(!isClash);
       }
     

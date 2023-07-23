@@ -28,7 +28,7 @@ function UpdateProject() {
   // })
 
   // localStorage.removeItem('projectName')
-  console.log(events);
+  // console.log(events);
 
   if (thisProjectName === null) { 
     window.location.href = '/viewProject'

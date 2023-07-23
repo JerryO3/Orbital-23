@@ -77,6 +77,7 @@ function RegisterBox() {
         <div class="py-1">
         <div class="text-xl text-black font-semibold p-1">
         <input class="rounded-2xl px-3 py-1 w-full"
+            data-testid="usernameForm"
             type="username" 
             placeholder="Username" 
             name="username" 
@@ -93,6 +94,7 @@ function RegisterBox() {
         <div class="py-1">
         <div class="text-xl text-black font-semibold p-1">
         <input class="rounded-2xl px-3 py-1 w-full"
+            data-testid="emailForm"
             type="emailAddress" 
             placeholder="Email" 
             name="email" value={email} 
@@ -109,6 +111,7 @@ function RegisterBox() {
         <div class="py-1">
         <div class="text-xl text-black font-semibold p-1">
         <input class="rounded-2xl px-3 py-1 w-full"
+            data-testid="pwForm"
             type="password" 
             placeholder="Password" 
             name="password" 
@@ -126,6 +129,7 @@ function RegisterBox() {
         <div class="py-1">
         <div class="text-xl text-black font-semibold p-1">
         <input class="rounded-2xl px-3 py-1 w-full"
+            data-testid="cnfmForm"
             type="password" 
             placeholder="Confirm Password" 
             name="confirmPassword" 
@@ -148,7 +152,7 @@ function RegisterBox() {
         </div>
 
         <Link to="/login">
-            <button type="login" class="w-full pb-1 pt-2">
+            <button data-testid="submitButton" type="login" class="w-full pb-1 pt-2">
             <div class="bg-teal-700 text-xl text-center text-white font-semibold p-1 rounded-2xl">
             Already Have an Account?
             </div>
