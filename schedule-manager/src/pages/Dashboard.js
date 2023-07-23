@@ -146,19 +146,20 @@ function Dashboard() {
               "Display Name not Updated",
               () => window.location.href="/settings"
             ]
-          ),
-          fn.getField('telegramHandle').then(x => x !== "" ? () => null : 
-            () => [
-              "telegramHandle not Updated",
-              () => window.location.href="/settings"
-            ]
-          ),
-          fn.getField('username').then(x => x !== "" ? () => null : 
-            () => [
-              "Display Name not Updated",
-              () => window.location.href="/settings"
-            ]
           )
+          // ,
+          // fn.getField('telegramHandle').then(x => x && x !== "" ? () => null : 
+          //   () => [
+          //     "telegramHandle not Updated",
+          //     () => window.location.href="/settings"
+          //   ]
+          // ),
+          // fn.getField('username').then(x => x && x !== "" ? () => null : 
+          //   () => [
+          //     "Display Name not Updated",
+          //     () => window.location.href="/settings"
+          //   ]
+          // )
         ]
         .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a) ? a.concat([b]) : [a,b]))))
         // .then(x => console.log(x))
