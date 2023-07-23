@@ -10,6 +10,7 @@
     "firebase-admin": "^11.9.0",
     "firebase-functions": "^4.4.1",
     "luxon": "^3.3.0",
+    "node-schedule": "^2.1.1",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-big-calendar": "^1.8.1",
@@ -17,6 +18,7 @@
     "react-router-dom": "^6.12.1",
     "react-scripts": "5.0.1",
     "recharts": "^2.7.2",
+    "telegraf": "^4.12.2",
     "url": "^0.11.1",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4"
