@@ -168,3 +168,16 @@ However, we understood the importance of branching early on, and took many preca
 Unfortunately, we rarely logged down any issues, as we did not understand the importance of logging issues down as opposed to solving them on the spot. This resulting in minimal issues being opened, and closed.
 ![image](https://github.com/JerryO3/Orbital-23/assets/122331089/4b547c4e-4148-46a8-b03a-84e18d9ac96d)
 
+<h3>Problems Faced:</h3>
+
+Our project was marred with difficulties, the most significant being our approach to detecting clashes and suggesting appropriate timings. It took us quite a few days before we decided to adopt a binary search approach to greedily identify the earliest timing to a seed timing given by the user. This allowed us to come up with a search that takes knlogn time complexity.
+
+Another significant issue faced was regarding testing, as we had difficulties configuring jest. As a result, we were not able to carry out system testing. However, we tried to mitigate that by adopting more stringent unit testing.
+
+Finally, we are still facing issues regarding deploying the telegram bot, which we are currently diagnosing and will attempt to push out by splashdown.
+
+<h3>Proposed Level of Achievement:</h3>
+Apollo 11
+
+<h3>Final Thoughts:</h3>
+It is a truly challenging endeavour to try to come up with a technical solution to what I feel is a very human problem. When users are lazy to update their calendars, these are the downstream effects that come with forgetting appointments. We had initially hoped to alleviate this issue, but noted that it still boils back down to the discipline of the user at the end of the day. We hope that the introduction of the telegram bot will make it slightly easier for users to update their calendars in real time, but are also skeptical of the impact that this can have, given the plethora of good scheduling applications such as teams and google calendar. All in all, I felt that this was a very good exercise in learning about software and web development, and we will use our takeaways and learning in the different technologies used to our benefit in our future projects.
