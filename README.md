@@ -42,6 +42,7 @@ free or already booked on those dates. It would be great if I could automate thi
 ![Glance](https://github.com/JerryO3/Orbital-23/assets/122331089/51b12e9e-fb12-4088-8d04-afbf8a8ced11)
 
 5. Responsive Calendar with realtime updates, and clickable events
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/31d325fd-ae09-45e1-b950-9ce1ee36fe05)
 
 6. Event Conflict Detection for all selected event members during the event creation and updating phase
 ![Conflict](https://github.com/JerryO3/Orbital-23/assets/122331089/f8de649c-d917-4a89-9fc7-bab29a378f62)
