@@ -33,6 +33,7 @@ free or already booked on those dates. It would be great if I could automate thi
 ![Collab1](https://github.com/JerryO3/Orbital-23/assets/122331089/215ca1f2-8689-48ea-8a0a-2d0f7a4407a9)
 
 2. Event Creation with the ability to toggle membership of project members
+![Screenshot 2023-07-26 205143](https://github.com/JerryO3/Orbital-23/assets/122331089/a3880039-432e-432f-8927-95cfda11ecee)
 
 3. Updating Event name, start date and time, end date and time, and membership after previous event creation
 ![Collab2](https://github.com/JerryO3/Orbital-23/assets/122331089/f68d2514-be49-427f-81ea-55af6bb8843c)
