@@ -132,41 +132,42 @@ To minimize tree-depth, we opted to split the database into 6 "branches" from th
 
 <p>1. blockouts: containing start and end date, name and associated userid</p>
 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/ba03eb48-5834-4098-8dd0-c0c3df81606c)
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/212a1b53-780a-4a14-bba0-f8b21c956187)
 
 <p>2. events: containing start and end datetime, members object [key: userid, value: boolean (something like fingerprint hashtable)], name and projectid</p>
 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/ddfc05cb-1c52-4db0-bb51-8051bcf4baac)
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/09fcb603-730b-4640-be58-e9291715a6d2)
 
 <p>3. membership: Most critically, the next level within this branch is userid, and this branch contains all events, projects, periods, blockouts that are associated with the user. This allows for the collaborative functionality for projects and events, as well as being a one-stop-shop for calendar data and conflict detection</p>
 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/9dadff46-c406-442d-bbd5-fe8c94171f7d)
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/483951ed-6d57-4f4c-9819-81f66f804f4c)
 
 <p>4. periods: containing start and end datetime, userid, name and blockoutid</p>
 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/6e14953e-72a2-495f-b5b8-7544267c338f)
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/d6586470-04d6-4343-a972-cc131f5274f4)
 
 <p>5. projects: contains project members and project name</p>
 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/6df4e5ed-cbaf-4bcc-94a1-98a703a25736)
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/5c4a436b-aba9-4f21-a8bb-6e3d9fca09b6)
 
 <p>6. users: contains user preferences and information</p>
 
-![Screenshot 2023-07-26 145603](https://github.com/JerryO3/Orbital-23/assets/122331089/c9e65dfc-8c08-4c7d-9b36-865befdfe80d)
+![Screenshot 2023-07-26 145603](https://github.com/JerryO3/Orbital-23/assets/122331089/9c63e59b-bc21-4d91-970c-d43a1d872e64)
 
 In addition, the use of unique ids for users, events and projects ensures that users can name their projects with non-unique names, and still be able to access their projects/events easily.
 
 <h3>SWE practices:</h3>
 GitHub version control proved to be very useful, especially when we wanted to go back to a previous branch before the code broke. However, we did not really understand the importance of describing commits and comments, resulting in minimal description of our commits, and poorly recorded history of changes. 
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/9dd9fc61-a6dd-47bd-b48c-c6c76b8b60eb)
 
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/d09756a5-9d6b-42fc-8a21-f657142a1d9c)
 
 However, we understood the importance of branching early on, and took many precautions to ensure that merging did not result in catastrophic results. This helped ensure that the main branch did not break, as new features were always being tested on new branches. Reviewing the pull requests and ensuring that both members understood what the other was adding to the codebase was also crucial.
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/47c9e0b3-3315-45ac-9874-7bf0713f5f7c)
 
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/d311aa0f-5fc4-4df9-9fd7-bfa4ac05431d)
 
 Unfortunately, we rarely logged down any issues, as we did not understand the importance of logging issues down as opposed to solving them on the spot. This resulting in minimal issues being opened, and closed.
-![image](https://github.com/JerryO3/Orbital-23/assets/122331089/4b547c4e-4148-46a8-b03a-84e18d9ac96d)
+
+![image](https://github.com/JerryO3/Orbital-23/assets/122331089/320c7d91-2d61-46ec-a4b6-1c3ebb6923b5)
 
 <h3>Problems Faced:</h3>
 
