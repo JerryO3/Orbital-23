@@ -8,14 +8,15 @@ import ReactDOM from 'react-dom/client';
 
 function NewPw() {
   return (
-    <div className="container">
-      <div className="logo">
-          <img src={logo} alt="Schedule Manager" />
+    <div class="flex items-center bg-slate-50 w-screen h-screen">
+    <form class="mx-auto w-96 bg-slate-200 p-4 rounded-2xl" onSubmit={(e) => e.preventDefault()}>
+      <div class="text-9xl text-center p-10">
+      🗒️
+      <div class="text-2xl font-semibold pt-10">ScheduleManager</div>
+      <div class="text-xl font-semibold pt-10">A link has been sent to your email!</div>
       </div>
-      <h1 className="welcomeMessage">
-          A link has been sent to your email.
-      </h1>
-    </div>
+    </form>
+</div>
   );
 }
 
