@@ -2,13 +2,6 @@ import * as lux from "luxon";
 import { getDatabase, ref, set, remove, get, update, onValue, query, orderByChild } from "firebase/database";
 import { removeItem, getMembers, memberQuery, deleteUser} from './collaboration';
 
-// function getData(ref) {
-//     var returnVal;
-//     const sortedEvents = query(ref, orderByChild('start'));
-//     onValue(sortedEvents, (snapshot) => {returnVal = snapshot.val()});
-//     return returnVal;
-// }
-
 class IntervalEvent {
     interval;
     key;

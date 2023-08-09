@@ -13,8 +13,6 @@ export default function BlockoutButtons({dataProp}) {
 
     const [mode, setMode] = useState(dataProp);
     const [blockouts, setBlockouts] = useState([]);
-  // console.log(dataProp)
-  // console.log(mode)
 
     useEffect(() => {
       const fetchData = async () => {
@@ -30,8 +28,6 @@ export default function BlockoutButtons({dataProp}) {
       fetchData();
     },[mode]);
 
-    // console.log(blockouts)
-
     function UpdateBlockout() { 
         const [periods, setPeriods] = useState([]);
         const [startDate, setStartDate] = useState("");
@@ -39,8 +35,6 @@ export default function BlockoutButtons({dataProp}) {
         const thisBlockoutId = localStorage.getItem('blockoutId');
         const thisBlockoutName = localStorage.getItem('blockoutName');
         
-        // console.log(periods)
-
         useEffect(() => {
           const fetchData = async () => {
             try {
@@ -76,8 +70,6 @@ export default function BlockoutButtons({dataProp}) {
           }
           await bl.updateDate(startDate, endDate).then(() => setMode(0))
         };
-      
-        // localStorage.removeItem('projectName')
       
         if (thisBlockoutName === null) { 
           window.location.href = '/viewBlockout'
@@ -295,31 +287,8 @@ export default function BlockoutButtons({dataProp}) {
       };
 
       function chainError(err) {
-        // console.log(err);
+        console.log(err);
       };
-    
-      // fn.getItem('periods/', thisPeriodId)
-      // .then(x => periodData === null
-      //   ? setName(x.name)
-      //   : null, chainError)
-      // .then(() => fn.getItem('periods/', thisPeriodId)
-      //   .then(x => periodData === null
-      //     ? setStartDate(fn.getDate(x.startDateTime))
-      //     : null, chainError), chainError)
-      // .then(() => fn.getItem('periods/', thisPeriodId)
-      //   .then(x => periodData === null
-      //     ? setStartTime(fn.getTime(x.startDateTime))
-      //     : null, chainError), chainError)
-      // .then(() => fn.getItem('periods/', thisPeriodId)
-      //   .then(x => periodData === null
-      //     ? setEndDate(fn.getDate(x.endDateTime))
-      //     : null, chainError), chainError)
-      // .then(() => fn.getItem('periods/', thisPeriodId)
-      //   .then(x => periodData === null
-      //     ? setEndTime(fn.getTime(x.endDateTime))
-      //     : null, chainError), chainError)
-      // .then(() => fn.getItem('periods/', thisPeriodId)
-      //   .then(x => setPeriodData(x)), chainError)
 
       fn.getItem('periods/', thisPeriodId)
       .then(x => {
@@ -352,7 +321,6 @@ export default function BlockoutButtons({dataProp}) {
     
         const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, name, startDate, startTime, endDate, endTime)
         const isClash = result.clash;
-        // console.log(!isClash);
         setAvailable(!isClash);
         if (!isClash) {
           window.location.href='/periodCreated';
@@ -500,9 +468,7 @@ export default function BlockoutButtons({dataProp}) {
         }
     
         const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
-        // console.log(result)
         const isClash = result[0].clash;
-        // console.log(isClash);
         setAvailable(!isClash);
       }
     

@@ -36,16 +36,24 @@ function unpackFromStartEnd(jsonObject) {
 }
 
 function binarySearch(arr, interval) {
+    // console.log(interval);
+    // console.log(arr)
     if (arr.length === 0) {
         return new ClashWindow(false);
     }
     arr.sort((a,b) => a.interval.start - b.interval.start);
+    // console.log(interval.start);
+    // console.log(arr.flatMap(x => [x.interval.s, x.interval.e]))
+    // console.log(arr.
+    //     flatMap(x => [x.interval.contains(interval.start),
+    //                   x.interval.contains(interval.end)]));
     var leftAdj;
     var rightAdj;
     var low = 0;
     const key = interval.start
     var high = arr.length - 1;
     while (low < high) {
+        // console.log([low,high])
         var mid = low + Math.floor((high-low)/2);
         if (arr[mid].interval.contains(key)) {
             return new ClashWindow(true, 0, 0);
@@ -57,6 +65,7 @@ function binarySearch(arr, interval) {
             leftAdj = arr[mid];
         }
     }
+    // console.log(low)
     if (arr[low].interval.contains(key)) {
         return new ClashWindow(true, 0, 0);
     } else if (arr[low].interval.isAfter(key)) {
@@ -87,6 +96,7 @@ function binarySearch(arr, interval) {
 async function checkClash(promise, startDateTime, endDateTime) {
     var jsonObject = await promise;
     var interval = lux.Interval.fromDateTimes(startDateTime,endDateTime);
+    // console.log(jsonObject)
     return binarySearch(unpackFromStartEnd(jsonObject), interval);
 }
 

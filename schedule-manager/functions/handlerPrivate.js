@@ -7,6 +7,7 @@ const db = admin.database();
 async function handleStart(ctx) {
     // Initialize the session if not already present
     ctx.session = ctx.session || {};
+    // ctx.session.createState = 'awaiting_name';
   
     const telegramHandle = ctx.from.username;
     userId = await fn.userIdFromTele(telegramHandle)
@@ -123,6 +124,7 @@ async function handleCallback(query) {
           // Replace the following dummy data with actual data fetched from the database.
           member_ref = db.ref('users/' + member_id)
           memberSnapshot = await member_ref.get()
+          // console.log(memberSnapshot)
           const member = memberSnapshot.val();
 
           if (member && member.telegramHandle) {
@@ -210,8 +212,6 @@ async function handleSetup(ctx) {
       .map((member) => fn.userIdFromTele(member.user.username))
   );
 
-  console.log(usernames)
-
   // Fetch the list of projects from the database
   const projectsRef = db.ref('projects');
   const projectsSnapshot = await projectsRef.once('value');
@@ -278,6 +278,8 @@ async function handleEvent(ctx) {
   const eventsRef = db.ref('events');
   const eventsSnapshot = await eventsRef.orderByChild('projectId').equalTo(projectId).once('value');
   const events = eventsSnapshot.val();
+
+  // console.log(projectId)
 
   if (events) {
     let replyMessage = `Events for Project: ${projectName}\n`;

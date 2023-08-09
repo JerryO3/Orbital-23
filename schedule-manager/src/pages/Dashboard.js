@@ -22,7 +22,6 @@ function Dashboard() {
   function CalendarComp() {
     const storedUser = localStorage.getItem('user');
     const [items, setItems] = useState([])
-    // const [periods, setPeriods] = useState([]);
   
     if (!storedUser) {
         // User is not logged in, redirect to the desired page
@@ -53,7 +52,6 @@ function Dashboard() {
 
         const memberPeriod = await col.memberQuery(userId, "periods/")
         
-        // console.log(memberPeriod)
         const allPeriods = memberPeriod.map(x => {
           const start = new Date(x.startDateTime); 
           const end = new Date(x.endDateTime);
@@ -64,7 +62,6 @@ function Dashboard() {
           return { name , start, end, blockoutId, periodId, type };
         })
         setItems([...allEvents, ...allPeriods])
-        // console.log(periods);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -86,7 +83,6 @@ function Dashboard() {
         setBOScreenMode(3);
         updateBOState(Math.random());
       }
-      // console.log(1)
     };
   
     const eventWrapperComponent = ({ event, children }) => {
@@ -147,27 +143,11 @@ function Dashboard() {
               () => window.location.href="/settings"
             ]
           )
-          // ,
-          // fn.getField('telegramHandle').then(x => x && x !== "" ? () => null : 
-          //   () => [
-          //     "telegramHandle not Updated",
-          //     () => window.location.href="/settings"
-          //   ]
-          // ),
-          // fn.getField('username').then(x => x && x !== "" ? () => null : 
-          //   () => [
-          //     "Display Name not Updated",
-          //     () => window.location.href="/settings"
-          //   ]
-          // )
         ]
         .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a) ? a.concat([b]) : [a,b]))))
-        // .then(x => console.log(x))
         .then(x => x.map(y => y()))
         .then(x => x.filter(y => y !== null))
-        // .then(x => console.log(x))
         .then(x => setNotifs(x))
-      // list of notifiable items that will be mapped to Notifs
       }
       console.log(Notifiables());
     },[])

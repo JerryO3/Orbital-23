@@ -333,43 +333,6 @@ export async function newEventByStartEnd(projectId, eventId, eventName, startDat
 
 }
 
-export const newBlockoutByStartEnd = (blockoutName, startDate, startTime, endDate, endTime) => {
-    const db = getDatabase();
-    const user = JSON.parse(localStorage.getItem('user'));
-    const userId = user.uid;
-
-    const startDateInput = startDate;
-    const startYear = parseInt(startDateInput.substr(0,4), 10);
-    const startMonth = parseInt(startDateInput.substr(5,2), 10);
-    const startDay = parseInt(startDateInput.substr(8,2), 10);
-
-    const startTimeInput = startTime;
-    const startHour = parseInt(startTimeInput.substr(0,2), 10);
-    const startMin = parseInt(startTimeInput.substr(3,2), 10);
-
-    const endDateInput = endDate;
-    const endYear = parseInt(endDateInput.substr(0,4), 10);
-    const endMonth = parseInt(endDateInput.substr(5,2), 10);
-    const endDay = parseInt(endDateInput.substr(8,4), 10);
-
-    const endTimeInput = endTime;
-    const endHour = parseInt(endTimeInput.substr(0,2), 10);
-    const endMin = parseInt(endTimeInput.substr(3,2), 10);
-
-    const startDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
-    const endDateTime = time.moment(endYear, endMonth, endDay, endHour, endMin);
-
-    const uniqueId = uuidv4();
-
-    update(ref(db, "/blockout/" + userId + "/" + uniqueId), {
-        name: blockoutName,
-        startDateTime: startDateTime,
-        endDateTime: endDateTime,
-    });
-
-    window.location.href='/blockoutCreated';
-}  
-
 export const removeEvent = async () => { // now returns a promise, shifting side effect to change event page
     const db = getDatabase();
     const eventId = localStorage.getItem('eventId');
@@ -455,10 +418,6 @@ export async function updateProfile(username, notificationDuration, telegramHand
         notificationDuration : notificationDuration,
         telegramHandle : telegramHandle
     }).then(() =>  alert('Profile Updated!'))
-
-    // const storage = getStorage();
-    // const storageRef = ref(storage, 'profile-photos/' + profilePhoto);
-    // uploadBytesResumable(storageRef, profilePhoto)
 }
 
 export const getItem = async (dbRef, id) => {
@@ -489,16 +448,12 @@ export function getTime(timestamp) {
 }
 
 export async function removeFromEvent(userId, itemId) {
-    // console.log(userId)
-    // console.log(itemId)
     deleteUser(userId, "events/", itemId);
 }
 
 export async function removeFromProject(userId, itemId) {
     const db = getDatabase();
-    // console.log(itemId);
     for(var user of userId){
-        // console.log(userId);
         deleteUser(user, "projects/", itemId);
         const reference = ref(db, "events");
         const que = query(reference, orderByChild("projectId"), equalTo(itemId));

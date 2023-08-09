@@ -37,15 +37,19 @@ async function memberQuery(userId, field) {
   // Query member's projects
   const memberItemsRef = ref(db, "membership/" + userId + "/" + field);
   const memberItemsSnapshot = await get(memberItemsRef);
+  // console.log(memberItemsSnapshot.val())
   // Array to store the project details
   const items = [];
 
   if (memberItemsSnapshot.exists()) {
   const itemIds = Object.keys(memberItemsSnapshot.val());
+  // console.log(itemIds);
   // Fetch project details for each project ID
   for (const itemId of itemIds) {
+      // console.log(itemId)
       const itemRef = ref(db, [field] + itemId);
       const itemSnapshot = await get(itemRef);
+      // console.log(itemSnapshot.exists())
 
       if (itemSnapshot.exists()) {
       const itemId = itemSnapshot.key;
@@ -78,6 +82,7 @@ async function newEvent(projectId, eventId, eventName, startDateTime, endDateTim
 
   const uniqueId = eventId === null ? uuidv4() : eventId;
 
+  // console.log(members)
   const memberPromises = members.map(async member => {
       const events = await memberQuery(member, 'events/')
       .then(items => items.filter(item => item.itemId !== eventId));
@@ -89,9 +94,11 @@ async function newEvent(projectId, eventId, eventName, startDateTime, endDateTim
     });
 
   if (members.length === 1) {
+      // console.log(memberPromises[0]);
       return memberPromises[0]
       .then(x => !x[1].clash ? updater(x[0]) : ctx.reply('Unable to create event due to clash')) // works for single-user projects! 
       .then(x => {
+          // console.log(x); 
           return x;});
     
   } else {
@@ -99,12 +106,28 @@ async function newEvent(projectId, eventId, eventName, startDateTime, endDateTim
   .reduce((x,y) => (x.then(a => y.then(b => Array.isArray(a[0]) ? a.concat([b]) : [a,b])))) 
   // ^ reduces array of promises into a promise that returns an array
   .then(x => x.reduce((a,b) => Array.isArray(a) ? !a[1].clash && !b[1].clash : a && !b[1].clash) // checks all members if clear
-      ? x.map(y => {ctx.reply("Event created successfully!"); updater(y[0]);}) // applies updater using map 
+      ? x.map(y => {console.log(y[0]); updater(y[0]);}) // applies updater using map 
       : ctx.reply('Unable to create event due to clash') // filters out clashing people to be printed out
-      );
+      )
+  // .then(x => {console.log(x); return false}) // prints out clashing people
+  ;
   }  
 
   function updater(uid) {
+      // console.log(uid)
+      // update(db.ref("/events/" + uniqueId), {// helps to update while within promise wrapper
+      //     name: eventName,
+      //     startDateTime: startDateTime.toMillis(),
+      //     endDateTime: endDateTime.toMillis(),
+      //     projectId : projectId,
+      // });
+      // update(db.ref("/events/" + uniqueId + '/members'), {
+      //     [uid] : true,
+      // });
+      // update(db.ref("/membership/" + uid + "/events"), {
+      //     [uniqueId] : true
+      // });
+
       db.ref("/events/" + uniqueId).update({// helps to update while within promise wrapper
         name: eventName,
         startDateTime: startDateTime.toMillis(),
@@ -117,6 +140,7 @@ async function newEvent(projectId, eventId, eventName, startDateTime, endDateTim
       db.ref("/membership/" + uid + "/events").update({
         [uniqueId] : true
       });
+      ctx.reply("Event created successfully!");
   }
 
 }

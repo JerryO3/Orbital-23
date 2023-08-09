@@ -11,7 +11,6 @@ import * as t from "../backend/time";
 import * as lux from "luxon";
 
 export default function ProjectButtons({dataProp}) {
-  // console.log(dataProp)
   const [name, setName] = useState("");
   const [mode, setMode] = useState(dataProp);
   const [newProj, setNewProj] = useState(false);
@@ -53,9 +52,7 @@ export default function ProjectButtons({dataProp}) {
             .then(x => {x.numEvents = x.events.length; return x;})
             .then(x => {x.eventsDone = x.events.filter(e => e.endDateTime < t.nowMillis()); x.numEventsDone = x.eventsDone.length; return x;})
             .then(x => {localStorage[x.itemId] = JSON.stringify(x); return x}) 
-            // .then(x => {localStorage["projectName"] = x.name})
           return x;});
-          // console.log(localStorage);
         setProjects(proj);
         
 
@@ -65,7 +62,6 @@ export default function ProjectButtons({dataProp}) {
 
 
   function ButtonAndChart({dataProp}) {
-    // console.log(dataProp.name)
     return (
       <>
       <div class="flex justify-end">
@@ -120,13 +116,11 @@ export default function ProjectButtons({dataProp}) {
     const handleAddMember = async () => {
       await col.addUser(email)
       .then(updateState(Math.random()))
-      // .then(window.location.href = "/userAdded");
     };
   
     const handleRemoveMember = async () => {
       await fn.removeFromProject(selectedMembers, thisProject)
       .then(updateState(Math.random()))
-      // .then(window.location.href = "/userAdded");
     };
   
     useEffect(() => {
@@ -186,8 +180,6 @@ export default function ProjectButtons({dataProp}) {
     );
   }
 
-  // console.log(localStorage)
-
   function EventButton({dataProp}) {
     const[names, setNames] = useState([]);
 
@@ -219,8 +211,6 @@ export default function ProjectButtons({dataProp}) {
         onClick={() => {
           localStorage['eventId'] = dataProp.itemId; 
           localStorage['eventName'] = dataProp.name;
-          // console.log(localStorage['eventId']); 
-          // console.log(localStorage['eventName']);
           fn.removeEvent().then(() => setMode(0))
         }}
         > 
@@ -237,8 +227,6 @@ export default function ProjectButtons({dataProp}) {
   function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
-
-  // delay(1000).then(() => updateState(1))
 
   async function delayedStateChange() {
     return delay(1000).then(() => updateState(Math.random()));

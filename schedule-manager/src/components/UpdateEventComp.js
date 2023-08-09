@@ -28,38 +28,6 @@ function UpdateEventComp() {
 
   const [available, setAvailable] = useState(true);
   const [updated, setUpdated] = useState(false);
-
-  // console.log(selectedMembers)
-
-  // fn.getItem('events/', thisEventId)
-  // .then(x => eventData === null
-  //   ? setStartDate(fn.getDate(x.startDateTime))
-  //   : null)
-  // .then(() => fn.getItem('events/', thisEventId)
-  //   .then(x => eventData === null
-  //     ? setStartTime(fn.getTime(x.startDateTime))
-  //     : null))
-  // .then(() => fn.getItem('events/', thisEventId)
-  //   .then(x => eventData === null
-  //     ? setEndDate(fn.getDate(x.endDateTime))
-  //     : null))
-  // .then(() => fn.getItem('events/', thisEventId)
-  //   .then(x => eventData === null
-  //     ? setEndTime(fn.getTime(x.endDateTime))
-  //     : null))
-  // .then(() => col.getMembers("projects/", projectId)
-  //     .then(x => eventData === null
-  //       ? setMembers(x)
-  //       : null))
-  // .then(col.getMembers("events/", thisEventId)
-  //   .then((x) => {
-  //     if (eventData === null) {
-  //       const itemIds = x.map((item) => item.itemId);
-  //       setSelectedMembers(itemIds);
-  //     }
-  //   }))
-  // .then(() => fn.getItem('events/', thisEventId)
-  //   .then(x => setEventData(x)))
   
   async function search(e) {
     e.preventDefault();
@@ -87,8 +55,7 @@ function UpdateEventComp() {
 
     const searchDateTime = time.moment(startYear, startMonth, startDay, startHour, startMin);
     const duration = hours * 3600000 + minutes * 60000
-    // console.log(searchDateTime);
-    // console.log(duration);
+
     const result = await sTTester(selectedMembers, searchDateTime, duration, null)
     .then(x => {setStartTime(x[0]); setStartDate(x[1]); setEndTime(x[2]); setEndDate(x[3])})
   }
