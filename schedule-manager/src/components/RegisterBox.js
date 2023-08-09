@@ -55,17 +55,29 @@ function RegisterBox() {
   }
 
   function allChecks() {
-    if (usernameAvailable 
-      && emailAvailable 
-      && usernameLength > 0 
-      && emailChar 
-      && passwordChar 
-      && confirmPasswordMatch) {
-        return registerWithEmailandPw(username, email, password);
-      } else {
-        setHasAttempted(true);
-      }
+    if (
+      usernameAvailable &&
+      emailAvailable &&
+      usernameLength > 0 &&
+      emailChar &&
+      passwordChar &&
+      confirmPasswordMatch
+    ) {
+      // Register user and handle any success/failure within this function
+      registerWithEmailandPw(username, email, password)
+        .then(() => {
+          // Registration was successful, do not set hasAttempted
+        })
+        .catch((error) => {
+          // Registration failed, set hasAttempted
+          setHasAttempted(true);
+        });
+    } else {
+      // Set hasAttempted if the checks fail
+      setHasAttempted(true);
+    }
   }
+  
 
   return (
         <div class="flex items-center bg-slate-50 w-screen h-screen">
