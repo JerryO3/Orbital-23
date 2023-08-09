@@ -3,7 +3,6 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes, Link} from 'react-router-dom';
 import * as p from '../pages/pages'
 import * as fn from "../backend/functions";
-import BackendTest from '../pages/BackendTest';
 import LoginBox from "./LoginBox";
 
 
