@@ -33,6 +33,7 @@ function Dashboard() {
     },[]);
 
     useEffect(() => onValue(ref(getDatabase(), "membership/" + fn.getUserId() + "/events"), x => {fetchData(); console.log(items)}),[])
+    useEffect(() => onValue(ref(getDatabase(), "membership/" + fn.getUserId() + "/periods"), x => {fetchData(); console.log(items)}),[])
 
     const fetchData = async () => {
       try {
