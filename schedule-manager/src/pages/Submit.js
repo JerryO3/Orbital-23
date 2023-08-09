@@ -10,24 +10,24 @@ function Submit() {
   };
   
   return (
-    <div className="container">
-      <div className="logo">
-          <img src={logo} alt="Schedule Manager" />
-      </div>
-      <h1 class = "welcomeMessage">
-        An account has been created successfully!
-        <br></br>
-        Please login to continue.
-      </h1>
-      <form className="form" onSubmit={(e) => e.preventDefault()}>
-      <div className="loginBox">
-          <Link to="/login">
-            <button>
-                Login
-            </button>
-          </Link>
-      </div>
-      </form>
+      <div class="flex items-center bg-slate-50 w-screen h-screen">
+        <form class="mx-auto w-96 bg-slate-200 p-4 rounded-2xl" onSubmit={(e) => e.preventDefault()}>
+          <div class="text-9xl text-center p-10">
+          🗒️
+          <div class="text-2xl font-semibold pt-10">ScheduleManager</div>
+          <div class="text-xl font-semibold pt-10">Account Created Successfully!</div>
+          </div>
+          <div class="py-1">
+
+            <Link to="/login">
+              <button type="registrationButton" class="w-full pb-1 pt-2">
+                <div class="bg-teal-700 text-xl text-center text-white font-semibold p-1 rounded-2xl">
+                  Login
+                </div>
+              </button>
+            </Link>
+          </div>
+        </form>
     </div>
   );
 }
