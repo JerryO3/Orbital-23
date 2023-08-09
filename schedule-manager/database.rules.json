@@ -1,0 +1,18 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "users" : {
+      ".indexOn" : ["email", "telegramHandle"]
+    },
+    "projects" : {
+      ".indexOn" : ["members", "name"]
+    },
+    "events": {
+      ".indexOn": ["projectId", "user"]
+    },
+    "periods": {
+      ".indexOn": ["blockoutId"]
+    }
+  }
+}
