@@ -322,9 +322,9 @@ export default function BlockoutButtons({dataProp}) {
         const result = await bl.updateBlockoutPeriod(thisBlockoutId, thisPeriodId, name, startDate, startTime, endDate, endTime)
         const isClash = result.clash;
         setAvailable(!isClash);
-        if (!isClash) {
-          window.location.href='/periodCreated';
-        }
+        // if (!isClash) {
+        //   window.location.href='/periodCreated';
+        // }
       };
     
         return (
@@ -443,7 +443,8 @@ export default function BlockoutButtons({dataProp}) {
       };
     
       const [available, setAvailable] = useState(true);
-    
+      const [created, setCreated] = useState(false);
+
       async function handleSubmit(e){
         e.preventDefault();
     
@@ -467,9 +468,12 @@ export default function BlockoutButtons({dataProp}) {
           return;
         }
     
-        const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
-        const isClash = result[0].clash;
-        setAvailable(!isClash);
+        // const result = await bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, []);
+        // const isClash = result[0].clash;
+        // setAvailable(!isClash);
+
+        bl.newBlockoutPeriod(thisBlockout, name, startDate, startTime, endDate, endTime, checked, cycle, [])
+        .then(x => {setAvailable(!x[0].clash); setCreated(!x[0].clash); return x[0]})
       }
     
       return (
@@ -520,6 +524,10 @@ export default function BlockoutButtons({dataProp}) {
                   onChange={(e) => setEndTime(e.target.value)} />
                 </div>
                 <hr></hr>
+                
+                {created && <div class="text-center font-semibold p-2 text-white bg-teal-500">Event Created!</div>}
+                {!available && <p className="warning">This clashes with a pre-existing event/period. Please choose a different timing.</p>}
+
                 <div class="flex justify-between">
                   <div class="flex justify-between text-sm py-4">
                     <div class="flex items-center">
@@ -548,8 +556,6 @@ export default function BlockoutButtons({dataProp}) {
                     </div>
                   )}
                   </div>
-                
-                  {!available && <p className="warning">This clashes with a pre-existing event/period. Please choose a different timing.</p>}
     
                   <button
                     class="hover:opacity-70 font-semibold pl-4"
