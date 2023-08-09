@@ -20,25 +20,7 @@ function App() {
         <Route path="/dashboard" element={<p.Dashboard />} />
         <Route path="/resetPw" element={<p.ResetPw />} />
         <Route path="/newPw" element={<p.NewPw />} />
-        <Route path='/blockoutCreated' element={<p.BlockoutCreated />} />
         <Route path='/settings' element={<p.Settings />} />
-        <Route path='/newProject' element={<p.NewProject />} />
-        <Route path='/newEvent' element={<p.NewEvent />} />
-        <Route path='/eventCreated' element={<p.EventCreated />} />
-        <Route path='/updateProject' element={<p.UpdateProject />} />
-        <Route path='/updateEvent' element={<p.UpdateEvent />} />
-        <Route path='/projectCreated' element={<p.ProjectCreated />} />
-        <Route path='/viewProject' element={<p.ViewProject />} />
-        <Route path='/TestingPage' element={<BackendTest />} />
-        <Route path='/manageMembers' element={<p.ManageMembers />} />
-        <Route path='/userAdded' element={<p.UserAdded />} />
-        <Route path='/viewBlockout' element={<p.ViewBlockout />} />
-        <Route path='/newBlockout' element={<p.NewBlockout />} />
-        <Route path='/newPeriod' element={<p.NewPeriod />} />
-        <Route path='/updatePeriod' element={<p.UpdatePeriod />} />
-        <Route path='/periodCreated' element={<p.PeriodCreated />} />
-        <Route path='/viewEvent' element={<p.ViewEvent />} />
-        <Route path='/updateBlockout' element={<p.UpdateBlockout />} />
       </Routes>
     </Router>
   );
